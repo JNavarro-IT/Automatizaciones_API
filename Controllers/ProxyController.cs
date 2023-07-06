@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
@@ -16,7 +14,12 @@ public class ProxyController : ControllerBase
     [HttpGet("{*url}")]
     public async Task<IActionResult> Get(string url)
     {
-        Console.WriteLine(url+"--------------------");
+        string provincia = Request.Query["Provincia"];
+
+        if (provincia != null || provincia == "")
+        {
+            url += "?Provincia=" + provincia;
+        }
 
         var client = _httpClientFactory.CreateClient();
         var response = await client.GetAsync(url);
@@ -27,5 +30,4 @@ public class ProxyController : ControllerBase
         }
         return StatusCode((int)response.StatusCode);
     }
-
 }

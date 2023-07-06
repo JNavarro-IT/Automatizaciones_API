@@ -49,7 +49,7 @@ namespace backend_API.Models
         [Column(TypeName = "int")]
         public int Azimut { get; set; }
 
-        public Contrato Contrato { get; set; }
+        public Proyecto Contrato { get; set; }
 
         public Ubicacion(string ref_catastral, string? cups, double superficie, string? coordX_UTM, string? coordY_UTM, string? coordX, string? coordY, string latitud, string longitud, int inclinacion, int azimut)
         {

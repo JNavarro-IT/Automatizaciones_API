@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend_API.Services
 {
-    public class ModuloService
+    public class ModulosService
     {
         private readonly IModuloService _moduloService;
         
-        public ModuloService(IModuloService moduloService)
+        public ModulosService(IModuloService moduloService)
         {
             _moduloService = moduloService;
         }

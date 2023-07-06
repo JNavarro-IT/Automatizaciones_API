@@ -28,7 +28,7 @@ namespace backend_API.Models
         [Column(TypeName = "varchar(100)")]
         public string? CoordY_conexion { get; set; }
 
-        public Contrato Contrato { get; set; }
+        public Proyecto Contrato { get; set; }
 
         public Instalacion(int potencia_pico, int potencia_nominal, string tipo, string? coordX_conexion, string? coordY_conexion)
         {

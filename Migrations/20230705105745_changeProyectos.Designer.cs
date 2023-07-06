@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend_API.Context;
 
@@ -11,9 +12,10 @@ using backend_API.Context;
 namespace backend_API.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20230705105745_changeProyectos")]
+    partial class changeProyectos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,10 +167,6 @@ namespace backend_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProyecto"), 1L, 1);
 
-                    b.Property<string>("Cups")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("Fecha")
                         .IsRequired()
                         .HasColumnType("varchar(20)");
@@ -179,16 +177,12 @@ namespace backend_API.Migrations
                     b.Property<int?>("IdInstalacion")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUbicacion")
+                    b.Property<int?>("IdUbicacion")
                         .HasColumnType("int");
 
                     b.Property<string>("Referencia")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
 
                     b.HasKey("IdProyecto");
 
@@ -200,7 +194,8 @@ namespace backend_API.Migrations
                         .HasFilter("[IdInstalacion] IS NOT NULL");
 
                     b.HasIndex("IdUbicacion")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IdUbicacion] IS NOT NULL");
 
                     b.ToTable("Proyectos");
                 });
@@ -268,9 +263,7 @@ namespace backend_API.Migrations
 
                     b.HasOne("backend_API.Models.Ubicacion", "Ubicacion")
                         .WithOne("Contrato")
-                        .HasForeignKey("backend_API.Models.Proyecto", "IdUbicacion")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("backend_API.Models.Proyecto", "IdUbicacion");
 
                     b.Navigation("Cliente");
 

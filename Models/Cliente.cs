@@ -15,7 +15,6 @@ namespace backend_API.Models
         public string Nombre { get; set; }
 
         [Required]
-        [Index(IsUnique = true)]
         [Column(TypeName = "varchar(15)")]
         public string Dni { get; set; }
 
@@ -45,7 +44,7 @@ namespace backend_API.Models
         [Column(TypeName = "varchar(100)")]
         public string? Observaciones { get; set; }
 
-        public Contrato Contrato { get; set; }
+        public Proyecto Contrato { get; set; }
 
         public Cliente(string nombre, string dni, string direccion, string cp, string provincia, string municipio, string? telefono, string url, string? observaciones)
         {

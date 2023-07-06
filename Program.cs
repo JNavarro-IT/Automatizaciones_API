@@ -2,12 +2,15 @@
 
 using backend_API.Context;
 using backend_API.Controllers;
+using backend_API.Interfaces;
+using backend_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped <ModulosController>();
-
+builder.Services.AddScoped<ProyectosController>();
+builder.Services.AddScoped<IProyectosService, ProyectosService>();
 builder.Services.AddDbContext<DBContext>(options =>
 {
     var connection = builder.Configuration.GetConnectionString("DevConnection");
@@ -15,7 +18,6 @@ builder.Services.AddDbContext<DBContext>(options =>
 });
 
 builder.Services.AddHttpClient();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers().AddNewtonsoftJson();
 
@@ -36,6 +38,5 @@ app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();
 app.UseCors();
-app.MapGet("/", () => "Hello World!");
 // Ejecutar aplicación
 app.Run();
