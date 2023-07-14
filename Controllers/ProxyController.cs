@@ -1,33 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("[controller]")]
-public class ProxyController : ControllerBase
+namespace backend_API.Controllers
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public ProxyController(IHttpClientFactory httpClientFactory)
+    //CONTROLADOR DE LAS PETICIONES HTTP A APIS EXTERNAS COMO PROXY
+    [ApiController]
+    [Route("[controller]")]
+    public class ProxyController : ControllerBase
     {
-        _httpClientFactory = httpClientFactory;
-    }
-    // proxy/URLPublica
-    [HttpGet("{*url}")]
-    public async Task<IActionResult> Get(string url)
-    {
-        string provincia = Request.Query["Provincia"];
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<ProxyController> _logger;
 
-        if (provincia != null || provincia == "")
+        //CONSTRUCTOR PROXY CON UN CLIENTE HTTP PARA LAS PETICIONES EXTERNAS
+        public ProxyController(IHttpClientFactory httpClientFactory, ILogger<ProxyController> logger)
         {
-            url += "?Provincia=" + provincia;
+            _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
+       
+        //CONSULTAR API PUBLICA DEL CATASTRO SEGÚN EL PARAMETRO QUE SE OBTENGA
+        [HttpGet("{*url}")] // proxy/URLPublica
+        public async Task<IActionResult> Get(string url)
+        {
+            _logger.LogInformation("Accediendo a API externa del Catastro...");
 
-        var client = _httpClientFactory.CreateClient();
-        var response = await client.GetAsync(url);
-        if (response.IsSuccessStatusCode)
-        {
-            var content = await response.Content.ReadAsStringAsync();
-            return Content(content, "application/json");
+            string provincia = Request.Query["Provincia"];
+            string coordX = Request.Query["CoorX"];
+            string coordY = Request.Query["CoorY"];
+            string SRS = Request.Query["SRS"];
+            string refCatastral = Request.Query["RefCat"];
+
+            if (provincia != null)
+            {
+                url += "?Provincia=" + provincia;
+            }
+
+            if (coordX != null && coordX != null && SRS != null)
+            {
+                url += "?CoorX=" + coordX + "&CoorY=" + coordY + "&SRS=" + SRS;
+            }
+
+            if (refCatastral != null)
+            {
+                url += "?RefCat=" + refCatastral;
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return Content(content, "application/json");
+            }
+            return StatusCode((int)response.StatusCode);
         }
-        return StatusCode((int)response.StatusCode);
     }
 }

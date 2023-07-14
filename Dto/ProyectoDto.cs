@@ -11,9 +11,9 @@ namespace backend_API.Dto
         public string Version { get; set; }
 
         [Required]
-        public string Fecha { get; set; }
+        public DateTime Fecha { get; set; }
 
-        public string Cups { get; set; }
+        public string? Cups { get; set; }
 
         [Required]
         public ClienteDto Cliente { get; set; }
@@ -23,7 +23,7 @@ namespace backend_API.Dto
 
         public InstalacionDto? Instalacion { get; set; }
 
-        public ProyectoDto(string referencia, string version, string fecha, string? cups, ClienteDto cliente, UbicacionDto ubicacion, InstalacionDto? instalacion)
+        public ProyectoDto(string referencia, string version, DateTime fecha, string? cups, ClienteDto cliente, UbicacionDto ubicacion, InstalacionDto? instalacion)
         {
             Referencia = referencia;
             Version = version;

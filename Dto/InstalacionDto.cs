@@ -15,16 +15,8 @@ namespace backend_API.Dto
         [Required]
         public string Tipo { get; set; }
 
-        public string? CoordX_conexion { get; set; }
-        public string? CoordY_conexion { get; set; }
+        public string? Coordenadas_conexion { get; set; }
 
-        public InstalacionDto(int potencia_pico, int potencia_nominal, string tipo, string? coordX_conexion, string? coordY_conexion)
-        {
-            Potencia_pico = potencia_pico;
-            Potencia_nominal = potencia_nominal;
-            Tipo = tipo;
-            CoordX_conexion = coordX_conexion;
-            CoordY_conexion = coordY_conexion;
-        }
+   
     }
 }

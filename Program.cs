@@ -1,16 +1,15 @@
-
-
-using backend_API.Context;
 using backend_API.Controllers;
-using backend_API.Interfaces;
+using backend_API.Models.Data;
 using backend_API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped <ModulosController>();
-builder.Services.AddScoped<ProyectosController>();
-builder.Services.AddScoped<IProyectosService, ProyectosService>();
+builder.Services.AddScoped<IClienteService, ClienteRepository>();
+builder.Services.AddScoped<IProyectoService, ProyectoService>();
+builder.Services.AddScoped<IUbicacionService, UbicacionRepository>();
+builder.Services.AddScoped<IModuloService, ModuloRepository>();
+
 builder.Services.AddDbContext<DBContext>(options =>
 {
     var connection = builder.Configuration.GetConnectionString("DevConnection");
@@ -19,8 +18,15 @@ builder.Services.AddDbContext<DBContext>(options =>
 
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers().AddNewtonsoftJson();
-
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+        options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
+        options.UseCamelCasing(false);
+    });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Politica Acceso API", app =>
@@ -35,8 +41,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors("Politica Acceso API");
 app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 app.UseRouting();
-app.UseCors();
-// Ejecutar aplicación
 app.Run();

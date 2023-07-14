@@ -19,43 +19,24 @@ namespace backend_API.Models
         public string Dni { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string Direccion { get; set; }
-
-        [Required]
-        [Column(TypeName = "varchar(10)")]
-        public string Cp { get; set; }
-
-        [Required]
-        [Column(TypeName = "varchar(50)")]
-        public string Provincia { get; set; }
-
-        [Required]
-        [Column(TypeName = "varchar(50)")]
-        public string Municipio { get; set; }
-
         [Column(TypeName = "varchar(15)")]
-        public string? Telefono { get; set; }
-
-        [Required]
-        [Column(TypeName = "varchar(500)")]
-        public string Url { get; set; }
+        public string Telefono { get; set; }
 
         [Column(TypeName = "varchar(100)")]
+        public string Email { get; set; }
+
+        [Column(TypeName = "varchar(300)")]
         public string? Observaciones { get; set; }
 
-        public Proyecto Contrato { get; set; }
+        public List<Ubicacion> Ubicaciones { get; set; }
+        public List<Proyecto> Proyectos { get; set; }
 
-        public Cliente(string nombre, string dni, string direccion, string cp, string provincia, string municipio, string? telefono, string url, string? observaciones)
+        public Cliente(string nombre, string dni, string? telefono, string? email, string? observaciones)
         {
             Nombre = nombre;
             Dni = dni;
-            Direccion = direccion;
-            Cp = cp;
-            Provincia = provincia;
-            Municipio = municipio;
             Telefono = telefono;
-            Url = url;
+            Email = email;
             Observaciones = observaciones;
         }
     }

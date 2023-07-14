@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using backend_API.Models;
 
 namespace backend_API.Dto
 {
     public class ClienteDto
     {
+        public int IdCliente { get; set; }
+
         [Required]
         public string Nombre { get; set; }
 
@@ -13,36 +16,20 @@ namespace backend_API.Dto
         public string Dni { get; set; }
 
         [Required]
-        public string Direccion { get; set; }
-
-        [Required]
-        public string Cp { get; set; }
-
-        [Required]
-        public string Provincia { get; set; }
-
-        [Required]
-        public string Municipio { get; set; }
-
-        public string? Telefono { get; set; }
-
-        [Required]
-        public string Url { get; set; }
+        public string Telefono { get; set; }
+        public string? Email { get; set; }
 
         public string? Observaciones { get; set; }
 
+        public int IdContrato { get; set; }
+        public int IdProyecto { get; set; }
 
-
-        public ClienteDto(string nombre, string dni, string direccion, string cp, string provincia, string municipio, string? telefono, string url, string? observaciones)
+        public ClienteDto(string nombre, string dni, string? telefono, string? email, string? observaciones)
         {
             Nombre = nombre;
             Dni = dni;
-            Direccion = direccion;
-            Cp = cp;
-            Provincia = provincia;
-            Municipio = municipio;
             Telefono = telefono;
-            Url = url;
+            Email = email;
             Observaciones = observaciones;
         }
     }

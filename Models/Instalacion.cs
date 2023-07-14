@@ -12,31 +12,58 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "float")]
-        public int Potencia_pico { get; set; }
+        public double Inclinacion { get; set; }
 
         [Required]
-        [Column(TypeName = "int")]
-        public int Potencia_nominal { get; set; }
+        [Column(TypeName = "varchar(50)")]
+        public string Azimut { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "float")]
+        public double Potencia_pico { get; set; }
+
+        [Required]
+        [Column(TypeName = "float")]
+        public double Potencia_nominal { get; set; }
+
+        [Required]
+        [Column(TypeName = "varchar(50)")]
         public string Tipo { get; set; }
 
-        [Column(TypeName = "varchar(100)")]
-        public string? CoordX_conexion { get; set; }
+        [Column(TypeName = "varchar(max)")]
+        public string? Coordenadas_conexion { get; set; }
 
-        [Column(TypeName = "varchar(100)")]
-        public string? CoordY_conexion { get; set; }
+        [ForeignKey("IdModulo")]
+        public Modulo Modulo { get; set; }
+
+        [ForeignKey("IdInversor")]
+        public Inversor Inversor { get; set; }
+
+        [Column(TypeName = "varchar(max)")]
+        public string Estructura { get; set; }
+
+        public string Justificacion { get; set; }
+
+        [ForeignKey("IdCubierta")]
+        public Cubierta Cubierta { get; set; }
 
         public Proyecto Contrato { get; set; }
 
-        public Instalacion(int potencia_pico, int potencia_nominal, string tipo, string? coordX_conexion, string? coordY_conexion)
+        public Instalacion(double inclinacion, string azimut, string tipo, string? coordenadas_conexion, int idModulo, int idInversor, string estructura, string justificacion, int idCubierta)
         {
-            Potencia_pico = potencia_pico;
-            Potencia_nominal = potencia_nominal;
+            Inclinacion = inclinacion;
+            Azimut = azimut;
+            Potencia_pico =
+            Potencia_nominal = Inversor?.Potencia ?? 0;
             Tipo = tipo;
-            CoordX_conexion = coordX_conexion;
-            CoordY_conexion = coordY_conexion;
+            Coordenadas_conexion = coordenadas_conexion;
+            Estructura = estructura;
+            Justificacion = justificacion;
+        }
+
+        private double CalcularPotenciaPico()
+        {
+            return Modulo?.Potencia * Inversor?.Potencia ?? 0;
         }
     }
 }

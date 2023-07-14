@@ -19,29 +19,37 @@ namespace backend_API.Models
         public string Version { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(20)")]
-        public string Fecha { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime Fecha { get; set; }
 
         [Column(TypeName = "varchar(100)")]
-        public string Cups { get; set; }
+        public string? Cups { get; set; }
 
         [Required]
-        [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
         public Cliente Cliente { get; set; }
 
         [Required]
-        [ForeignKey("Ubicacion")]
         public int IdUbicacion { get; set; }
         public Ubicacion Ubicacion { get; set; }
 
-        [ForeignKey("Instalacion")]
         public int? IdInstalacion { get; set; }
-        public Instalacion? Instalacion { get; set; }
+        public Instalacion? Instalacion { get; set; } = null;
 
+        [Column(TypeName = "float")]
+        public double? Presupuesto { get; set; }
 
-        public Proyecto(string referencia, string version, string fecha, string cups, int idCliente, int idUbicacion, int? idInstalacion)
+        [Column(TypeName = "float")]
+        public double? PresupuestoSyS { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime PlazoEjecucion { get; set; }
+
+        public Proyecto() { }
+
+        public Proyecto(int idProyecto, string referencia, string version, DateTime fecha, string cups, int idCliente, int idUbicacion, int? idInstalacion, double presupuesto, double presupuestoSyS, DateTime plazoEjecucion)
         {
+            IdProyecto = idProyecto;
             Referencia = referencia;
             Version = version;
             Fecha = fecha;
@@ -49,7 +57,9 @@ namespace backend_API.Models
             IdCliente = idCliente;
             IdUbicacion = idUbicacion;
             IdInstalacion = idInstalacion;
+            Presupuesto = presupuesto;
+            PresupuestoSyS = presupuestoSyS;
+            PlazoEjecucion = plazoEjecucion;
         }
-
     }
 }

@@ -15,6 +15,10 @@ namespace backend_API.Models
         [Column(TypeName = "varchar(100)")]
         public string? Nombre { get; set; }
 
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string? Fabricante { get; set; }
+
         [Column(TypeName = "float")]
         public double? Potencia { get; set; }
 
@@ -57,10 +61,8 @@ namespace backend_API.Models
         [Column(TypeName = "float")]
         public double? Tolerancia { get; set; }
 
-        public Modulo(int id, string? nombre, double? potencia, double? vmp, double? imp, double? icc, double? vca, double? eficiencia, string? dimensiones, double? peso, int? num_Celulas,
-                     string? tipo, string? ta_TONC, double? salida_Potencia, double? tension_Vacio, double? tolerancia)
+        public Modulo(string? nombre, string fabricante, double? potencia, double? vmp, double? imp, double? icc, double? vca, double? eficiencia, string? dimensiones, double? peso, int? num_Celulas, string? tipo, string? ta_TONC, double? salida_Potencia, double? tension_Vacio, double? tolerancia)
         {
-            Id = id;
             Nombre = nombre;
             Potencia = potencia;
             Vmp = vmp;

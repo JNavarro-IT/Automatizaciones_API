@@ -1,124 +1,125 @@
-
+using AutoMapper;
 using backend_API.Dto;
-using backend_API.Stores;
+using backend_API.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace backend_API.Controllers
 {
+    //CONTROLADOR PARA LAS PETICIONES RELACIONADAS CON LA ENTIDAD MÓDULO
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/modulos")]
     public class ModulosController : ControllerBase
     {
-        private readonly ILogger<ModulosController> _logger;
-        public ModulosController(ILogger<ModulosController> logger)
+       private readonly IModuloRepository _moduloRepository;
+       private readonly ILogger<ModulosController> _logger;
+
+        //CONSTRUCTOR QUE ACCEDE AL REPOSITORIO CRUD
+        public ModulosController(IModuloRepository moduloRepository, ILogger<ModulosController> logger)
         {
+            _moduloRepository = moduloRepository;
             _logger = logger;
         }
 
-        // GET: Modulos/modulosList
+        // GET: OBTERNER LISTA DE MODULOS
         [HttpGet("modulosList")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ModuloDto>> GetModulosList()
+        public async Task<ActionResult<IEnumerable<ModuloDto>>> GetModulosListAsync()
         {
-            //var usersList = await _context.Users.ToListAsync();
-
-            _logger.LogInformation("Obtener los Modulos");
-            return Ok(ModuloStore.modulosList);
+            _logger.LogInformation("Obteniendo lista de módulos");
+            var modulosList = await _moduloRepository.GetModulosListAsync();
+            if(modulosList == null)
+            {
+                return NoContent();
+            }
+            return Ok(modulosList);
         }
 
-        // GET: Modulos/id
-        [HttpGet("{id:int}", Name ="GetModulo")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        // GET: OBTENER UN MODULO POR SU ID
+        [HttpGet("byId/{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<ModuloDto> GetModulo(int id)
         {
-            //var userDto = await _context.FindAsync(id);
-            if(id==0)
-            {
-                _logger.LogError("Error al recuperar el Modulo con Id: " + id);
+            _logger.LogInformation("Obteniendo modulo por su ID...");
+            if(id == 0) 
                 return BadRequest();
-            }
-
-            var modulo = ModuloStore.modulosList.FirstOrDefault(m => m.Id == id);
-
-            if(modulo==null)
-            {
+            
+            var modulo = _moduloRepository.GetModulo(id);
+            if(modulo == null)
                 return NotFound();
-            }
+
             return Ok(modulo);
         }
-
-        // POST: Modulos/createModulo
-        [HttpPost("createModulo")]
+        
+        // POST: CREAR UN NUEVO MODULO
+        [HttpPost("createModulo/{modulo:Modulo}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<ModuloDto> CreateModulo([FromBody] ModuloDto moduloDto)
+        [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+        public async Task<ActionResult<ModuloDto>> CreateModulo([FromBody] ModuloDto moduloDto)
         {
-            if(ModuloStore.modulosList.FirstOrDefault(m => m.Nombre.ToUpper() == moduloDto.Nombre.ToUpper()) != null)
-            {
-                ModelState.AddModelError("NombreExiste", "El modelo con ese nombre ya existe");
-            }
             if(moduloDto == null)
-            {
                 return BadRequest(moduloDto);
-            }
-            if(moduloDto.Id>0) {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            moduloDto.Id = ModuloStore.modulosList.OrderByDescending(m => m.Id).FirstOrDefault().Id+1;
-            ModuloStore.modulosList.Add(moduloDto);
+                  
+            if(moduloDto.Id>0) 
+                return StatusCode(StatusCodes.Status406NotAcceptable);
 
-            return CreatedAtRoute("GetModulo", new {id = moduloDto.Id}, moduloDto);
-
+            try
+            {
+                await _moduloRepository.CreateModuloAsync(moduloDto);
+                return CreatedAtRoute("GetModulo", new { id = moduloDto.Id }, moduloDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
         }
 
-        // PUT: Modulos/updateModulo/{id}
+        // PUT: ACTUALIZAR UN MODELO
         [HttpPut("updateModulo/{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateModulo(int id, [FromBody] ModuloDto moduloDto)
+        public async Task<ActionResult<ModuloDto>> UpdateModulo(int id, [FromBody] ModuloDto moduloDto)
         {
-
+            
             if(moduloDto==null || id != moduloDto.Id)
             {
                 return BadRequest();
             }
 
-            var modulo = ModuloStore.modulosList.FirstOrDefault(m => m.Id == id);
-
-            modulo.Nombre = moduloDto.Nombre;
-            modulo.Potencia = moduloDto.Potencia;
-            modulo.Icc = moduloDto.Icc;
-
-            return NoContent();
+            try
+            {
+                await _moduloRepository.UpdateModuloAsync(moduloDto);
+                return Ok(moduloDto);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }          
         }
 
-        // DELETE: ModulosI/deleteModulo/{id}
+        // DELETE: BORRAR UN MODELO
         [HttpDelete("deleteModuo/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteModulo(int id)
+        public async Task<ActionResult<ModuloDto>> DeleteModulo(int id, [FromBody] ModuloDto moduloDto)
         {
             if(id==0)
             {
                 return BadRequest();
             }
 
-            var modelo = ModuloStore.modulosList.FirstOrDefault(m => m.Id == id);
+            var isDelete = await _moduloRepository.DeleteModuloAsync(moduloDto);
 
-            if (modelo == null)
+            if (!isDelete)
             {
                 return NotFound();
             }
-
-            ModuloStore.modulosList.Remove(modelo);
-
-            return NoContent();
+            return Ok();
         }
 
         // PATCH: Modulos/patchModulo/{id}
@@ -133,17 +134,25 @@ namespace backend_API.Controllers
                 return BadRequest();
             }
 
-            var modulo = ModuloStore.modulosList.FirstOrDefault(m => m.Id == id);
+            var moduloDto = _moduloRepository.GetModulo(id);
 
-            patchDto.ApplyTo(modulo, ModelState);
+            if (moduloDto == null)
+                return NotFound();
+
+            patchDto.ApplyTo(moduloDto, ModelState);
 
             if(!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            return NoContent();
+            try
+            {
+                _moduloRepository.UpdateModuloAsync(moduloDto);
+                return Ok(moduloDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
         }
     }
-
 }
