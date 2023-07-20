@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using backend_API.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
     [Table("Instalaciones")]
-    public class Instalacion
+    public class Instalacion : ModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,58 +13,58 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "float")]
-        public double Inclinacion { get; set; }
+        public double Inclinacion { get; set; } = 0;
 
         [Required]
         [Column(TypeName = "varchar(50)")]
-        public string Azimut { get; set; }
+        public string Azimut { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "float")]
-        public double Potencia_pico { get; set; }
+        public double TotalPico { get; set; } = 0;
 
         [Required]
         [Column(TypeName = "float")]
-        public double Potencia_nominal { get; set; }
+        public double TotalNominal { get; set; } = 0;
 
         [Required]
         [Column(TypeName = "varchar(50)")]
-        public string Tipo { get; set; }
+        public string Tipo { get; set; } = string.Empty;
 
-        [Column(TypeName = "varchar(max)")]
-        public string? Coordenadas_conexion { get; set; }
+        [Required]
+        [Column(TypeName = "float")]
+        public double CoordXConexion { get; set; } = 0;
 
-        [ForeignKey("IdModulo")]
-        public Modulo Modulo { get; set; }
+        [Required]
+        [Column(TypeName = "float")]
+        public double CoordYConexion { get; set; } = 0;
 
-        [ForeignKey("IdInversor")]
-        public Inversor Inversor { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(50)")]
+        public string Fusible { get; set; } = string.Empty;
 
-        [Column(TypeName = "varchar(max)")]
-        public string Estructura { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(50)")]
+        public string IDiferencial { get; set; } = string.Empty;
 
-        public string Justificacion { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(50)")]
+        public string IMagenetico { get; set; } = string.Empty;
 
-        [ForeignKey("IdCubierta")]
-        public Cubierta Cubierta { get; set; }
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Estructura { get; set; } = string.Empty;
 
-        public Proyecto Contrato { get; set; }
+        //RELATIONS
+        [ForeignKey("IdProyecto")]
+        public Proyecto Proyecto { get; set; }
 
-        public Instalacion(double inclinacion, string azimut, string tipo, string? coordenadas_conexion, int idModulo, int idInversor, string estructura, string justificacion, int idCubierta)
-        {
-            Inclinacion = inclinacion;
-            Azimut = azimut;
-            Potencia_pico =
-            Potencia_nominal = Inversor?.Potencia ?? 0;
-            Tipo = tipo;
-            Coordenadas_conexion = coordenadas_conexion;
-            Estructura = estructura;
-            Justificacion = justificacion;
-        }
+        public List<Cubierta> Cubiertas { get; set; }
 
-        private double CalcularPotenciaPico()
-        {
-            return Modulo?.Potencia * Inversor?.Potencia ?? 0;
-        }
+        public List<Inversor> Inversores { get; set; } = new();
+       
+        public List<Cadena> Cadenas { get; set; } = new();
+
+        public Instalacion() { }
     }
 }

@@ -1,37 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using backend_API.Utilities;
 
 namespace backend_API.Dto
 {
-    public class ProyectoDto
+    public class ProyectoDto : DtoBase
     {
-        [Required]
-        public string Referencia { get; set; }
-
-        [Required]
-        public string Version { get; set; }
-
-        [Required]
-        public DateTime Fecha { get; set; }
-
+        public int IdProyecto { get; set; }
+        public string Referencia { get; set; } = string.Empty;
+        public string Version { get; set; } = "1.0";
+        public DateTime Fecha { get; set; } = DateTime.Now;
         public string? Cups { get; set; }
 
-        [Required]
-        public ClienteDto Cliente { get; set; }
+        public string? Justificacion { get; set; }
+        public double? Presupuesto { get; set; }
+        public double? PresupuestoSyS { get; set; }
+        public DateTime? PlazoEjecucion { get; set; }
+        public ClienteDto Cliente { get; set; } = new();
+        public InstalacionDto Instalacion { get; set; } = new();
+        public List<LugarDto>? Lugares { get; set; } = new();
 
-        [Required]
-        public UbicacionDto Ubicacion { get; set; }
-
-        public InstalacionDto? Instalacion { get; set; }
-
-        public ProyectoDto(string referencia, string version, DateTime fecha, string? cups, ClienteDto cliente, UbicacionDto ubicacion, InstalacionDto? instalacion)
-        {
-            Referencia = referencia;
-            Version = version;
-            Fecha = fecha;
-            Cups = cups;
-            Cliente = cliente;
-            Ubicacion = ubicacion;
-            Instalacion = instalacion;
-        }
+        public ProyectoDto() { }
     }
 }

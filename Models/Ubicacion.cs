@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using backend_API.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
     [Table("Ubicaciones")]
-    public class Ubicacion
+    public class Ubicacion : ModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,37 +13,48 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Ref_catastral { get; set; }
+        public string Ref_catastral { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(max)")]
-        public string Direccion { get; set; }
+        public string Direccion { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "int")]
+        public int CP { get; set; } = 0;
+
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Municipio { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "varchar(50)")]
+        public string Provincia { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "float")]
-        public double Superficie { get; set; }
+        public double Superficie { get; set; } = 0;
+
+        [Column(TypeName = "float")]
+        public double? CoordXUTM { get; set; }
+
+        [Column(TypeName = "float")]
+        public double? CoordYUTM { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(max)")]
-        public string Coordenadas_UTM { get; set; }
+        [Column(TypeName = "float")]
+        public double Latitud { get; set; } = 0;
 
         [Required]
-        [Column(TypeName = "varchar(max)")] 
-        public string LatLng { get; set; }
+        [Column(TypeName = "float")]
+        public double Longitud { get; set; } = 0;
 
-        public Proyecto Proyecto { get; set; }
+        //RELATIONS
+        public int IdCliente { get; set; }
+        public Cliente Cliente { get; set; } = new();
 
-        public Ubicacion()
-        {
-        }
+        public List<Cubierta> Cubiertas { get; set; } = new();
 
-        public Ubicacion(string ref_catastral, string direccion, double superficie, string coordenadas_UTM, string latLng)
-        {
-            Ref_catastral = ref_catastral;
-            Direccion = direccion;
-            Superficie = superficie;
-            Coordenadas_UTM = coordenadas_UTM;
-            LatLng = latLng;
-        }
+        public Ubicacion() { }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using backend_API.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
     [Table("Proyectos")]
-    public class Proyecto
+    public class Proyecto : ModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,29 +13,21 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Referencia { get; set; }
+        public string Referencia { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(50)")]
-        public string Version { get; set; }
+        public string Version { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "date")]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = new();
 
         [Column(TypeName = "varchar(100)")]
         public string? Cups { get; set; }
 
-        [Required]
-        public int IdCliente { get; set; }
-        public Cliente Cliente { get; set; }
-
-        [Required]
-        public int IdUbicacion { get; set; }
-        public Ubicacion Ubicacion { get; set; }
-
-        public int? IdInstalacion { get; set; }
-        public Instalacion? Instalacion { get; set; } = null;
+        [Column(TypeName = "varchar(500)")]
+        public string? Justificacion { get; set; } = null;
 
         [Column(TypeName = "float")]
         public double? Presupuesto { get; set; }
@@ -43,23 +36,16 @@ namespace backend_API.Models
         public double? PresupuestoSyS { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime PlazoEjecucion { get; set; }
+        public DateTime? PlazoEjecucion { get; set; }
+
+        //RELATIONS
+        public int IdCliente { get; set; }
+        public Cliente Cliente { get; set; } = new();
+
+        public Instalacion? Instalacion { get; set; } = new();
+
+        public List<Lugar>? Lugares { get; set; } = new();
 
         public Proyecto() { }
-
-        public Proyecto(int idProyecto, string referencia, string version, DateTime fecha, string cups, int idCliente, int idUbicacion, int? idInstalacion, double presupuesto, double presupuestoSyS, DateTime plazoEjecucion)
-        {
-            IdProyecto = idProyecto;
-            Referencia = referencia;
-            Version = version;
-            Fecha = fecha;
-            Cups = cups;
-            IdCliente = idCliente;
-            IdUbicacion = idUbicacion;
-            IdInstalacion = idInstalacion;
-            Presupuesto = presupuesto;
-            PresupuestoSyS = presupuestoSyS;
-            PlazoEjecucion = plazoEjecucion;
-        }
     }
 }

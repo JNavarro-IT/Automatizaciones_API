@@ -1,37 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿
+using backend_API.Utilities;
 
 namespace backend_API.Dto
 {
-    public class UbicacionDto
+    public class UbicacionDto : DtoBase
     {
-        [Required]
-        public string Ref_catastral { get; set; }
-        
-        [Required]
-        public double Superficie { get; set; }
+        public int IdUbicacion { get; set; }
+        public string Ref_catastral { get; set; } = string.Empty;
+        public string Direccion { get; set; } = string.Empty;
+        public int CP { get; set; } = 0;
+        public string Municipio { get; set; } = string.Empty;
+        public string Provincia { get; set; } = string.Empty;
+        public double Superficie { get; set; } = 0;
+        public double Latitud { get; set; } = 0;
+        public double Longitud { get; set; } = 0;
 
-        [Required]
-        public double Latitud { get; set; }
+        public int IdCliente { get; set; } = new();
+        public List<CubiertaDto> Cubiertas { get; set; } = new();
 
-        [Required]
-        public double Longitud { get; set; }
-
-        [Required]
-        public int Inclinacion { get; set; }
-
-        [Required]
-        public int Azimut { get; set; }
-
-        public UbicacionDto(string ref_catastral, double superficie, double latitud, double longitud, int inclinacion, int azimut)
-        {
-            Ref_catastral = ref_catastral;
-            Superficie = superficie;
-            Latitud = latitud;
-            Longitud = longitud;
-            Inclinacion = inclinacion;
-            Azimut = azimut;
-        }
+        public UbicacionDto() { }
     }
 }

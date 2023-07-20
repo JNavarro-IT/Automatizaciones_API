@@ -1,42 +1,48 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using backend_API.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace backend_API.Models
 {
     [Table("Modulos")]
-    public class Modulo
+    public class Modulo : ModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int IdModulo { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string? Nombre { get; set; }
+        public string Fabricante { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string? Fabricante { get; set; }
+        public string Modelo { get; set; } = string.Empty;
 
+        [Required]
         [Column(TypeName = "float")]
-        public double? Potencia { get; set; }
+        public double Potencia { get; set; } = 0;
 
+        [Required]
         [Column(TypeName = "float")]
-        public double? Vmp { get; set; }
+        public double Vmp { get; set; } = 0;
 
+        [Required]
         [Column(TypeName = "float")]
-        public double? Imp { get; set; }
+        public double Imp { get; set; } = 0;
 
+        [Required]
         [Column(TypeName = "float")]
-        public double? Icc { get; set; }
+        public double Isc { get; set; } = 0;
 
+        [Required]
         [Column(TypeName = "float")]
-        public double? Vca { get; set; }
+        public double Vca { get; set; } = 0;
 
         [Column(TypeName = "float")]
         public double? Eficiencia { get; set; }
-        
+
         [Column(TypeName = "varchar(25)")]
         public string? Dimensiones { get; set; }
 
@@ -44,41 +50,23 @@ namespace backend_API.Models
         public double? Peso { get; set; }
 
         [Column(TypeName = "int")]
-        public int? Num_Celulas { get; set; }
+        public int? NumCelulas { get; set; }
 
         [Column(TypeName = "varchar(15)")]
-        public string? Tipo { get; set; }
+        public string Tipo { get; set; } = string.Empty;
        
         [Column(TypeName = "varchar(15)")]
-        public string? Ta_TONC { get; set; }
+        public string? TaTONC { get; set; }
 
         [Column(TypeName = "float")]
-        public double? Salida_Potencia { get; set; }
+        public double? SalidaPotencia { get; set; }
 
         [Column(TypeName = "float")]
-        public double? Tension_Vacio { get; set; }
+        public double? TensionVacio { get; set; }
 
         [Column(TypeName = "float")]
         public double? Tolerancia { get; set; }
 
-        public Modulo(string? nombre, string fabricante, double? potencia, double? vmp, double? imp, double? icc, double? vca, double? eficiencia, string? dimensiones, double? peso, int? num_Celulas, string? tipo, string? ta_TONC, double? salida_Potencia, double? tension_Vacio, double? tolerancia)
-        {
-            Nombre = nombre;
-            Potencia = potencia;
-            Vmp = vmp;
-            Imp = imp;
-            Icc = icc;
-            Vca = vca;
-            Eficiencia = eficiencia;
-            Dimensiones = dimensiones;
-            Peso = peso;
-            Num_Celulas = num_Celulas;
-            Tipo = tipo;
-            Ta_TONC = ta_TONC;
-            Salida_Potencia = salida_Potencia;
-            Tension_Vacio = tension_Vacio;
-            Tolerancia = tolerancia;
-        }
-
+        public Modulo() { }
     }
 }

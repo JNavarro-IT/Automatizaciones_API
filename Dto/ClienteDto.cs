@@ -1,36 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using backend_API.Models;
+﻿using backend_API.Utilities;
 
-namespace backend_API.Dto
+namespace backend_API.Dto 
 {
-    public class ClienteDto
+    //CLASE DTO PARA TRANSPORTAR LA INFORMACION DE LA ENTIDAD CLIENTE
+    public class ClienteDto : DtoBase
     {
         public int IdCliente { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Dni { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
+        public string? Observaciones { get; set; } = string.Empty;
+        public List<ProyectoDto>? Proyectos { get; set; }
 
-        [Required]
-        public string Nombre { get; set; }
-
-        [Required]
-        public string Dni { get; set; }
-
-        [Required]
-        public string Telefono { get; set; }
-        public string? Email { get; set; }
-
-        public string? Observaciones { get; set; }
-
-        public int IdContrato { get; set; }
-        public int IdProyecto { get; set; }
-
-        public ClienteDto(string nombre, string dni, string? telefono, string? email, string? observaciones)
-        {
-            Nombre = nombre;
-            Dni = dni;
-            Telefono = telefono;
-            Email = email;
-            Observaciones = observaciones;
-        }
+        //CONSTRUCTOR POR DEFECTO
+        public ClienteDto() { }
     }
 }

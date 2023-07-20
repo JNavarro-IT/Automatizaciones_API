@@ -1,42 +1,29 @@
 ﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using backend_API.Utilities;
 
 namespace backend_API.Dto
 {
-    public class ModuloDto
+    public class ModuloDto : DtoBase
     {
-
-        public int Id { get; set; }
-
-        [Required]
-        public string? Nombre { get; set; }
-        public double? Potencia { get; set; }
-        public double? Vmp { get; set; }
-        public double? Imp { get; set; }
-        public double? Icc { get; set; }
-        public double? Vca { get; set; }
+        public int IdModulo { get; set; }
+        public string Fabricante { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
+        public double Potencia { get; set; } = 0;
+        public double Vmp { get; set; } = 0;
+        public double Imp { get; set; } = 0;
+        public double Isc { get; set; } = 0;
+        public double Vca { get; set; } = 0;
         public double? Eficiencia { get; set; }
         public string? Dimensiones { get; set; }
         public double? Peso { get; set; }
-        public int? Num_Celulas { get; set; }
-        public string? Tipo { get; set; }
-        public string? Ta_TONC { get; set; }
-        public double? Salida_Potencia { get; set; }
-        public double? Tension_Vacio { get; set; }
+        public int? NumCelulas { get; set; }
+        public string Tipo { get; set; } = string.Empty;
+        public string? TaTONC { get; set; }
+        public double? SalidaPotencia { get; set; }
+        public double? TensionVacio { get; set; }
         public double? Tolerancia { get; set; }
 
-        public ModuloDto(string? nombre, double? potencia, double? icc)
-        {
-            Nombre = nombre;
-            Potencia = potencia;
-            Icc = icc;
-        }
-
+        public ModuloDto() { }
     }
-
-
-
 }
 
