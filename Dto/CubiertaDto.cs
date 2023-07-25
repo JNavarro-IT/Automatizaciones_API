@@ -9,8 +9,12 @@ namespace backend_API.Dto
         public string MedidasColectivas { get; set; } = string.Empty;
         public string Accesibilidad { get; set; } = string.Empty;
         public string Material { get; set; } = string.Empty;
+
+        //RELATIONS
         public int Ubicacion { get; set; } = new();
         public int Instalacion { get; set; } = new();
+
+        //CONSTRUCTOR POR DEFECTO
         public CubiertaDto() { }
     }
 }

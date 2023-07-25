@@ -8,7 +8,7 @@ namespace backend_API.Dto
         public int IdProyecto { get; set; }
         public string Referencia { get; set; } = string.Empty;
         public string Version { get; set; } = "1.0";
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; } = new();
         public string? Cups { get; set; }
 
         public string? Justificacion { get; set; }
@@ -17,7 +17,7 @@ namespace backend_API.Dto
         public DateTime? PlazoEjecucion { get; set; }
         public ClienteDto Cliente { get; set; } = new();
         public InstalacionDto Instalacion { get; set; } = new();
-        public List<LugarDto>? Lugares { get; set; } = new();
+        public List<LugarPRLDto>? Lugares { get; set; } = new();
 
         public ProyectoDto() { }
     }

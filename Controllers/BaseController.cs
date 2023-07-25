@@ -1,4 +1,5 @@
 ﻿using backend_API.Repository;
+using backend_API.Utilities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,8 +7,8 @@ namespace backend_API.Controllers
 {
     //INTERFAZ PRINCIPAL QUE IMPLENTA UN CRUD BASICO DE LOS CONTROLADORES
     public interface IBaseController<T, TDto>
-        where T : class
-        where TDto : class
+        where T : ModelBase
+        where TDto : DtoBase
     {
         public Task<ActionResult<IEnumerable<TDto>>> GetListAsync();
         public ActionResult<TDto> GetByIdentity(object identity);
@@ -17,17 +18,17 @@ namespace backend_API.Controllers
         public Task<ActionResult> UpdatePartialEntity(object identity, JsonPatchDocument<TDto> patchDto);
     }
 
-     /* 
-     * CLASE ABSTRACTA PARA REPRESENTAR UN CONTROLADOR CRUD ECAPSULADO PARA LA BASE DE DATOS
-     * LOS MODELOS QUEDAN AISLADOS DEL FRONTENT Y LA INFORMACIÓN SE TRANSPORTA EN CLASES DTO  
-     */
+    /* 
+    * CLASE ABSTRACTA PARA REPRESENTAR UN CONTROLADOR CRUD ECAPSULADO PARA LA BASE DE DATOS
+    * LOS MODELOS QUEDAN AISLADOS DEL FRONTENT Y LA INFORMACIÓN SE TRANSPORTA EN CLASES DTO  
+    */
     [ApiController]
     [Route("api")]
     public class BaseController<T, TDto> : ControllerBase
-        where T : class
-        where TDto : class
+        where T : ModelBase
+        where TDto : DtoBase
     {
-        private readonly IBaseRepository<T,TDto> _repository;
+        private readonly IBaseRepository<T, TDto> _repository;
 
         //CONSTRUCTOR CON INYECCION DE DEPENDENCIA
         public BaseController(IBaseRepository<T, TDto> repository)
@@ -43,8 +44,8 @@ namespace backend_API.Controllers
         {
             var entitiesList = await _repository.GetEntitiesListAsync();
             if (entitiesList == null)
-                 return NoContent();
-            
+                return NoContent();
+
             return Ok(entitiesList);
         }
 
@@ -55,7 +56,7 @@ namespace backend_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<TDto> GetByIdentity(object identity)
         {
-            if(identity == null)
+            if (identity == null)
                 return BadRequest("El identificador enviado es nulo");
 
             var entity = _repository.GetEntity(identity);
@@ -76,7 +77,7 @@ namespace backend_API.Controllers
                 return BadRequest("No se ha enviado ningún dato");
 
             try
-            {    
+            {
                 var created = await _repository.CreateEntityAsync(dto);
                 if (created)
                     return Ok(dto);
@@ -155,9 +156,9 @@ namespace backend_API.Controllers
 
             try
             {
-                int updated = await _repository.UpdateEntityAsync(entityDto);               
-                if(updated <= 0)
-                    return BadRequest("No se ha actualizado ningún objeto de forma parcial");
+                int updated = await _repository.UpdateEntityAsync(entityDto);
+                if (updated <= 0)
+                    return BadRequest("No se ha actualizado ningún objeto");
 
                 return Ok(entityDto);
             }

@@ -22,18 +22,17 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(15)")]
-        public string Telefono { get; set; }  = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(100)")]
         public string? Email { get; set; } = null;
 
         [Column(TypeName = "varchar(300)")]
         public string? Observaciones { get; set; } = string.Empty;
-       
+
         //RELATIONS
         public List<Proyecto>? Proyectos { get; set; }
-       
-        public List<Ubicacion> Ubicaciones { get; set; } = new();
+        public List<Ubicacion> Ubicaciones { get; set; }
 
         //CONSTRUCTOR POR DEFECTO
         public Cliente() { }

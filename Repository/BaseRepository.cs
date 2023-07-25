@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using backend_API.Models.Data;
+using backend_API.Utilities;
 using Microsoft.EntityFrameworkCore;
 namespace backend_API.Repository
 {
     //INTERFAZ PRINCIPAL QUE IMPLEMENTA UN CRUD BASICO A LOS CONTROLADORES
     public interface IBaseRepository<T, TDto>
-        where T : class
-        where TDto : class
+        where T : ModelBase
+        where TDto : DtoBase
     {
         public Task<IEnumerable<TDto>> GetEntitiesListAsync();
         public Task<TDto> GetEntity(object identity);
@@ -19,11 +20,13 @@ namespace backend_API.Repository
 
     //CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
     public class BaseRepository<T, TDto> : IBaseRepository<T, TDto>
-        where T : class
-        where TDto : class
+        where T : ModelBase
+        where TDto : DtoBase
     {
         private readonly DBContext _dbContext;
         private readonly IMapper _mapper;
+
+        public BaseRepository() { }
 
         //CONSTRUCTOR PARA LA INYECCION DE DEPENDENCIAS DE DBCONTEXT Y AUTOMAPPER
         public BaseRepository(DBContext dbContext, IMapper mapper)

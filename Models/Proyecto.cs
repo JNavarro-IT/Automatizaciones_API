@@ -16,8 +16,8 @@ namespace backend_API.Models
         public string Referencia { get; set; } = string.Empty;
 
         [Required]
-        [Column(TypeName = "varchar(50)")]
-        public string Version { get; set; } = string.Empty;
+        [Column(TypeName = "float")]
+        public double Version { get; set; } = 1.0;
 
         [Required]
         [Column(TypeName = "date")]
@@ -39,13 +39,18 @@ namespace backend_API.Models
         public DateTime? PlazoEjecucion { get; set; }
 
         //RELATIONS
-        public int IdCliente { get; set; }
-        public Cliente Cliente { get; set; } = new();
+        [ForeignKey("IdCliente")]
+        public Cliente Cliente { get; set; }
 
-        public Instalacion? Instalacion { get; set; } = new();
+        [ForeignKey("IdInstalacion")]
+        public Instalacion Instalacion { get; set; }
 
-        public List<Lugar>? Lugares { get; set; } = new();
+        [ForeignKey("IdUbicacion")]
+        public Ubicacion Ubicacion { get; set; }
 
+        public List<LugarPRL> LugaresPRL { get; set; }
+
+        // CONSTRUCTOR POR DEFECTO
         public Proyecto() { }
     }
 }

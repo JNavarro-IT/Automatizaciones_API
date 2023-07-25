@@ -12,17 +12,33 @@ using backend_API.Models.Data;
 namespace backend_API.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230720174301_NewStructure")]
-    partial class NewStructure
+    [Migration("20230723224328_Init")]
+    partial class Init
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.19")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LugaresConProyectos", b =>
+                {
+                    b.Property<int>("IdLugarPRL")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdProyecto")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdLugarPRL", "IdProyecto");
+
+                    b.HasIndex("IdProyecto");
+
+                    b.ToTable("LugaresConProyectos");
+                });
 
             modelBuilder.Entity("backend_API.Models.Cadena", b =>
                 {
@@ -30,10 +46,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCadena"), 1L, 1);
-
-                    b.Property<int>("IdInstalacion")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCadena"));
 
                     b.Property<int>("IdInversor")
                         .HasColumnType("int");
@@ -44,16 +57,10 @@ namespace backend_API.Migrations
                     b.Property<int?>("InstalacionIdInstalacion")
                         .HasColumnType("int");
 
-                    b.Property<int>("InversorIdInversor")
-                        .HasColumnType("int");
-
                     b.Property<int>("MaxModulos")
                         .HasColumnType("int");
 
                     b.Property<int>("MinModulos")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ModuloIdModulo")
                         .HasColumnType("int");
 
                     b.Property<int>("NumModulos")
@@ -64,11 +71,11 @@ namespace backend_API.Migrations
 
                     b.HasKey("IdCadena");
 
+                    b.HasIndex("IdInversor");
+
+                    b.HasIndex("IdModulo");
+
                     b.HasIndex("InstalacionIdInstalacion");
-
-                    b.HasIndex("InversorIdInversor");
-
-                    b.HasIndex("ModuloIdModulo");
 
                     b.ToTable("Cadenas");
                 });
@@ -79,7 +86,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"));
 
                     b.Property<string>("Dni")
                         .IsRequired()
@@ -110,17 +117,11 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCubierta"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCubierta"));
 
                     b.Property<string>("Accesibilidad")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
-
-                    b.Property<int>("IdInstalacion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUbicacion")
-                        .HasColumnType("int");
 
                     b.Property<int?>("InstalacionIdInstalacion")
                         .HasColumnType("int");
@@ -133,7 +134,7 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int?>("UbicacionIdUbicacion")
+                    b.Property<int>("UbicacionIdUbicacion")
                         .HasColumnType("int");
 
                     b.HasKey("IdCubierta");
@@ -151,7 +152,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdInstalacion"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdInstalacion"));
 
                     b.Property<string>("Azimut")
                         .IsRequired()
@@ -179,9 +180,6 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("IdProyecto")
-                        .HasColumnType("int");
-
                     b.Property<double>("Inclinacion")
                         .HasColumnType("float");
 
@@ -195,10 +193,11 @@ namespace backend_API.Migrations
                     b.Property<double>("TotalPico")
                         .HasColumnType("float");
 
-                    b.HasKey("IdInstalacion");
+                    b.Property<string>("Vatimetro")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)");
 
-                    b.HasIndex("IdProyecto")
-                        .IsUnique();
+                    b.HasKey("IdInstalacion");
 
                     b.ToTable("Instalaciones");
                 });
@@ -209,7 +208,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdInversor"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdInversor"));
 
                     b.Property<double>("CorrienteMaxString")
                         .HasColumnType("float");
@@ -220,9 +219,6 @@ namespace backend_API.Migrations
 
                     b.Property<double>("IO")
                         .HasColumnType("float");
-
-                    b.Property<int?>("InstalacionIdInstalacion")
-                        .HasColumnType("int");
 
                     b.Property<double?>("IntensidadMaxMPPT")
                         .HasColumnType("float");
@@ -240,10 +236,6 @@ namespace backend_API.Migrations
                     b.Property<int>("VO")
                         .HasColumnType("int");
 
-                    b.Property<string>("Vatimetro")
-                        .IsRequired()
-                        .HasColumnType("varchar(250)");
-
                     b.Property<int>("Vmax")
                         .HasColumnType("int");
 
@@ -258,18 +250,16 @@ namespace backend_API.Migrations
 
                     b.HasKey("IdInversor");
 
-                    b.HasIndex("InstalacionIdInstalacion");
-
                     b.ToTable("Inversores");
                 });
 
-            modelBuilder.Entity("backend_API.Models.Lugar", b =>
+            modelBuilder.Entity("backend_API.Models.LugarPRL", b =>
                 {
                     b.Property<int>("IdLugar")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLugar"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLugar"));
 
                     b.Property<string>("Autorizacion")
                         .HasColumnType("varchar(100)");
@@ -315,7 +305,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModulo"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModulo"));
 
                     b.Property<string>("Dimensiones")
                         .HasColumnType("varchar(25)");
@@ -356,7 +346,6 @@ namespace backend_API.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Tipo")
-                        .IsRequired()
                         .HasColumnType("varchar(15)");
 
                     b.Property<double?>("Tolerancia")
@@ -379,7 +368,7 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProyecto"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProyecto"));
 
                     b.Property<int>("ClienteIdCliente")
                         .HasColumnType("int");
@@ -390,7 +379,10 @@ namespace backend_API.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("date");
 
-                    b.Property<int>("IdCliente")
+                    b.Property<int>("IdInstalacion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUbicacion")
                         .HasColumnType("int");
 
                     b.Property<string>("Justificacion")
@@ -409,13 +401,18 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<double>("Version")
+                        .HasColumnType("float");
 
                     b.HasKey("IdProyecto");
 
                     b.HasIndex("ClienteIdCliente");
+
+                    b.HasIndex("IdInstalacion")
+                        .IsUnique();
+
+                    b.HasIndex("IdUbicacion")
+                        .IsUnique();
 
                     b.ToTable("Proyectos");
                 });
@@ -426,9 +423,12 @@ namespace backend_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUbicacion"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUbicacion"));
 
                     b.Property<int>("CP")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteIdCliente")
                         .HasColumnType("int");
 
                     b.Property<double?>("CoordXUTM")
@@ -441,7 +441,7 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(max)");
 
-                    b.Property<int>("IdCliente")
+                    b.Property<int?>("IdInstalacion")
                         .HasColumnType("int");
 
                     b.Property<double>("Latitud")
@@ -458,7 +458,7 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("Ref_catastral")
+                    b.Property<string>("RefCatastral")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
@@ -467,43 +467,47 @@ namespace backend_API.Migrations
 
                     b.HasKey("IdUbicacion");
 
-                    b.HasIndex("IdCliente");
+                    b.HasIndex("ClienteIdCliente");
+
+                    b.HasIndex("IdInstalacion")
+                        .IsUnique()
+                        .HasFilter("[IdInstalacion] IS NOT NULL");
 
                     b.ToTable("Ubicaciones");
                 });
 
-            modelBuilder.Entity("LugarProyecto", b =>
+            modelBuilder.Entity("LugaresConProyectos", b =>
                 {
-                    b.Property<int>("LugaresIdLugar")
-                        .HasColumnType("int");
+                    b.HasOne("backend_API.Models.LugarPRL", null)
+                        .WithMany()
+                        .HasForeignKey("IdLugarPRL")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("ProyectoIdProyecto")
-                        .HasColumnType("int");
-
-                    b.HasKey("LugaresIdLugar", "ProyectoIdProyecto");
-
-                    b.HasIndex("ProyectoIdProyecto");
-
-                    b.ToTable("LugarProyecto");
+                    b.HasOne("backend_API.Models.Proyecto", null)
+                        .WithMany()
+                        .HasForeignKey("IdProyecto")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("backend_API.Models.Cadena", b =>
                 {
-                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
-                        .WithMany("Cadenas")
-                        .HasForeignKey("InstalacionIdInstalacion");
-
                     b.HasOne("backend_API.Models.Inversor", "Inversor")
                         .WithMany()
-                        .HasForeignKey("InversorIdInversor")
+                        .HasForeignKey("IdInversor")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("backend_API.Models.Modulo", "Modulo")
                         .WithMany()
-                        .HasForeignKey("ModuloIdModulo")
+                        .HasForeignKey("IdModulo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
+                        .WithMany("Cadenas")
+                        .HasForeignKey("InstalacionIdInstalacion");
 
                     b.Navigation("Instalacion");
 
@@ -520,29 +524,13 @@ namespace backend_API.Migrations
 
                     b.HasOne("backend_API.Models.Ubicacion", "Ubicacion")
                         .WithMany("Cubiertas")
-                        .HasForeignKey("UbicacionIdUbicacion");
+                        .HasForeignKey("UbicacionIdUbicacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Instalacion");
 
                     b.Navigation("Ubicacion");
-                });
-
-            modelBuilder.Entity("backend_API.Models.Instalacion", b =>
-                {
-                    b.HasOne("backend_API.Models.Proyecto", "Proyecto")
-                        .WithOne("Instalacion")
-                        .HasForeignKey("backend_API.Models.Instalacion", "IdProyecto")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Proyecto");
-                });
-
-            modelBuilder.Entity("backend_API.Models.Inversor", b =>
-                {
-                    b.HasOne("backend_API.Models.Instalacion", null)
-                        .WithMany("Inversores")
-                        .HasForeignKey("InstalacionIdInstalacion");
                 });
 
             modelBuilder.Entity("backend_API.Models.Proyecto", b =>
@@ -553,33 +541,40 @@ namespace backend_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
+                        .WithOne("Proyecto")
+                        .HasForeignKey("backend_API.Models.Proyecto", "IdInstalacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend_API.Models.Ubicacion", "Ubicacion")
+                        .WithOne("Proyecto")
+                        .HasForeignKey("backend_API.Models.Proyecto", "IdUbicacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Instalacion");
+
+                    b.Navigation("Ubicacion");
                 });
 
             modelBuilder.Entity("backend_API.Models.Ubicacion", b =>
                 {
                     b.HasOne("backend_API.Models.Cliente", "Cliente")
                         .WithMany("Ubicaciones")
-                        .HasForeignKey("IdCliente")
+                        .HasForeignKey("ClienteIdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
+                        .WithOne("Ubicacion")
+                        .HasForeignKey("backend_API.Models.Ubicacion", "IdInstalacion");
 
                     b.Navigation("Cliente");
-                });
 
-            modelBuilder.Entity("LugarProyecto", b =>
-                {
-                    b.HasOne("backend_API.Models.Lugar", null)
-                        .WithMany()
-                        .HasForeignKey("LugaresIdLugar")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("backend_API.Models.Proyecto", null)
-                        .WithMany()
-                        .HasForeignKey("ProyectoIdProyecto")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Instalacion");
                 });
 
             modelBuilder.Entity("backend_API.Models.Cliente", b =>
@@ -595,17 +590,17 @@ namespace backend_API.Migrations
 
                     b.Navigation("Cubiertas");
 
-                    b.Navigation("Inversores");
-                });
+                    b.Navigation("Proyecto");
 
-            modelBuilder.Entity("backend_API.Models.Proyecto", b =>
-                {
-                    b.Navigation("Instalacion");
+                    b.Navigation("Ubicacion")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("backend_API.Models.Ubicacion", b =>
                 {
                     b.Navigation("Cubiertas");
+
+                    b.Navigation("Proyecto");
                 });
 #pragma warning restore 612, 618
         }

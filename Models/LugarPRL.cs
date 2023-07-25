@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace backend_API.Models
 {
     [Table("Lugares")]
-    public class Lugar : ModelBase
+    public class LugarPRL : ModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -46,6 +46,7 @@ namespace backend_API.Models
         //RELATION
         public List<Proyecto>? Proyectos { get; set; }
 
-        public Lugar() { }
+        //CONSTRUCTOR POR DEFECTO
+        public LugarPRL() { }
     }
 }

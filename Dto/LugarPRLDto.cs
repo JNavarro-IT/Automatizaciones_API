@@ -3,7 +3,8 @@ using backend_API.Utilities;
 
 namespace backend_API.Dto
 {
-    public class LugarDto : DtoBase
+    //CLASE QUE REPRESENTA UN LUGAR IMPRESCINDIBLE PARA PROTOCOLOS DE PRL
+    public class LugarPRLDto : DtoBase
     {
         public int IdLugar { get; set; }
         public string Nombre { get; set; } = string.Empty;
@@ -16,6 +17,6 @@ namespace backend_API.Dto
         public string? NIMA { get; set; } = string.Empty;
         public string? Autorizacion { get; set; } = string.Empty;
 
-        public LugarDto() { }
+        public LugarPRLDto() { }
     }
 }

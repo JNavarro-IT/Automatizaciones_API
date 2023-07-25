@@ -14,11 +14,11 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Fabricante { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Modelo { get; set; } = string.Empty;
+        public string Fabricante { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "float")]
@@ -53,8 +53,8 @@ namespace backend_API.Models
         public int? NumCelulas { get; set; }
 
         [Column(TypeName = "varchar(15)")]
-        public string Tipo { get; set; } = string.Empty;
-       
+        public string? Tipo { get; set; }
+
         [Column(TypeName = "varchar(15)")]
         public string? TaTONC { get; set; }
 

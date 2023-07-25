@@ -25,12 +25,11 @@ namespace backend_API.Models
         public string Material { get; set; } = string.Empty;
 
         //RELATIONS
-        public int IdUbicacion { get; set; }
-        public Ubicacion? Ubicacion { get; set; } = new();
+        public Ubicacion Ubicacion { get; set; }
 
-        public int IdInstalacion { get; set; }
         public Instalacion? Instalacion { get; set; }
 
-        public Cubierta() {}
+        //CONSTRUCTOR POR DEFECTO
+        public Cubierta() { }
     }
 }

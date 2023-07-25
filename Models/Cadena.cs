@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
-     /*
-     * CLASE QUE REPRESENTA UN CONJUNTO DE MODULOS IGUALES QUE SE 
-     *   CONECTAN ENTRE ELLOS Y A UN ÚNICO INVERSOR
-     */   
+    /*
+    * CLASE QUE REPRESENTA UN CONJUNTO DE MODULOS IGUALES QUE SE 
+    *   CONECTAN ENTRE ELLOS Y A UN ÚNICO INVERSOR
+    */
     [Table("Cadenas")]
     public class Cadena : ModelBase
     {
@@ -32,14 +32,14 @@ namespace backend_API.Models
         public double PotenciaPico { get; set; } = 0;
 
         //RELATIONS
-        public int IdInversor { get; set; } 
+        [ForeignKey("IdInversor")]
         public Inversor Inversor { get; set; }
 
-        public int IdModulo { get; set; }
+        [ForeignKey("IdModulo")]
         public Modulo Modulo { get; set; }
 
-        public int IdInstalacion { get; set; }   
-        public Instalacion? Instalacion { get; set;}
+        [ForeignKey("IdInstalacion")]
+        public Instalacion? Instalacion { get; set; }
 
         //CONSTRUCTOR POR DEFECTO
         public Cadena() { }

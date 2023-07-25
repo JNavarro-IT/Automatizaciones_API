@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
+    // CLASE QUE REPRESENTA UN INVERSOR EN UNA INSTALACIÓN
     [Table("Inversores")]
     public class Inversor : ModelBase
     {
@@ -13,11 +14,11 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Fabricante { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Modelo { get; set; } = string.Empty;
+        public string Fabricante { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "float")]
@@ -55,11 +56,7 @@ namespace backend_API.Models
         [Column(TypeName = "float")]
         public double? Rendimiento { get; set; } = 0;
 
-        [Required]
-        [Column(TypeName = "varchar(250)")]
-        public string Vatimetro { get; set; } = string.Empty;
-
         //CONSTRUCTOR POR DEFECTO
-        public Inversor() { }   
+        public Inversor() { }
     }
 }

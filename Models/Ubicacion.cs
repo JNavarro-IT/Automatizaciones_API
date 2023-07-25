@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
+    // CLASE QUE REPRESENTA LA UBICACION DEL PROYECTO
     [Table("Ubicaciones")]
     public class Ubicacion : ModelBase
     {
@@ -13,7 +14,7 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Ref_catastral { get; set; } = string.Empty;
+        public string RefCatastral { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(max)")]
@@ -50,11 +51,16 @@ namespace backend_API.Models
         public double Longitud { get; set; } = 0;
 
         //RELATIONS
-        public int IdCliente { get; set; }
-        public Cliente Cliente { get; set; } = new();
+        [ForeignKey("IdCliente")]
+        public Cliente Cliente { get; set; }
 
-        public List<Cubierta> Cubiertas { get; set; } = new();
+        public Instalacion? Instalacion { get; set; }
 
+        public Proyecto? Proyecto { get; set; }
+
+        public List<Cubierta> Cubiertas { get; set; }
+
+        //CONSTRUCTOR POR DEFECTO
         public Ubicacion() { }
     }
 }

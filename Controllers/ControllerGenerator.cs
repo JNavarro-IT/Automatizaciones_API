@@ -1,35 +1,32 @@
 ﻿using backend_API.Dto;
 using backend_API.Models;
-using backend_API.Repository;
+using backend_API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_API.Controllers
 {
     //
     [ApiController]
-    [Route("api/[controller]")]
-    public class ControllerGenerator<T, TDto> : BaseController<T, TDto>
-      where T : class
-      where TDto : class
+    [Route("generator")]
+    public class ControllerGenerator : ControllerBase
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IBaseRepository<T, TDto> _repository;
-        public ControllerGenerator(IServiceProvider serviceProvider, IBaseRepository<T, TDto> repository)  
-            : base(repository)
+        public ControllerGenerator(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _repository = repository;   
+
         }
 
-        private IBaseController<T, TDto>? GetController()
-            => _serviceProvider.GetService<IBaseController<T, TDto>>();         
+        private IBaseController<T, TDto>? GetController<T, TDto>()
+        where T : ModelBase
+        where TDto : DtoBase
+            => _serviceProvider.GetService<IBaseController<T, TDto>>();
+
 
         [HttpGet("referencia")]
         public ActionResult<string> CrearReferencia()
         {
-            IBaseController<Proyecto, ProyectoDto>? proyectoController = GetController() as IBaseController<Proyecto, ProyectoDto>;
-
-            if (proyectoController == null)
+            if (GetController<ModelBase, DtoBase>() is not IBaseController<Proyecto, ProyectoDto> proyectoController)
                 return NotFound("El controlador de proyecto no se encontró");
 
             var proyectosList = proyectoController.GetListAsync().Result.Value;

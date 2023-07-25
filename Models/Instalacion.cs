@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend_API.Models
 {
+    //CLASE QUE REPRESENTA LA INSTALACION DE UN PROYECTO
     [Table("Instalaciones")]
     public class Instalacion : ModelBase
     {
@@ -55,16 +56,21 @@ namespace backend_API.Models
         [Column(TypeName = "varchar(100)")]
         public string Estructura { get; set; } = string.Empty;
 
+        [Required]
+        [Column(TypeName = "varchar(250)")]
+        public string Vatimetro { get; set; } = string.Empty;
+
         //RELATIONS
-        [ForeignKey("IdProyecto")]
-        public Proyecto Proyecto { get; set; }
+        [ForeignKey("IdUbicacion")]
+        public Ubicacion Ubicacion { get; set; }
+
+        public Proyecto? Proyecto { get; set; }
 
         public List<Cubierta> Cubiertas { get; set; }
 
-        public List<Inversor> Inversores { get; set; } = new();
-       
-        public List<Cadena> Cadenas { get; set; } = new();
+        public List<Cadena> Cadenas { get; set; }
 
+        // CONSTRUCTOR POR DEFECTO
         public Instalacion() { }
     }
 }
