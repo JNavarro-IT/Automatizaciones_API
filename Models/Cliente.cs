@@ -31,8 +31,8 @@ namespace backend_API.Models
         public string? Observaciones { get; set; } = string.Empty;
 
         //RELATIONS
-        public List<Proyecto>? Proyectos { get; set; }
-        public List<Ubicacion> Ubicaciones { get; set; }
+        public List<Proyecto>? Proyectos { get; set; } = new();
+        public List<Ubicacion> Ubicaciones { get; set; } = new();
 
         //CONSTRUCTOR POR DEFECTO
         public Cliente() { }

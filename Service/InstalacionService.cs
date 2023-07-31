@@ -1,4 +1,6 @@
 ﻿using backend_API.Dto;
+using backend_API.Models;
+using backend_API.Repository;
 
 namespace backend_API.Service
 {
@@ -8,35 +10,37 @@ namespace backend_API.Service
     */
     public interface IInstalacionService
     {
-        public InstalacionDto InstalacionCalculated(InstalacionDto instalacion);
+        public Task<InstalacionDto> InstalacionCalculated(InstalacionDto instalacion);
     }
 
     public class InstalacionService : IInstalacionService
     {
-        public InstalacionDto InstalacionCalculated(InstalacionDto instalacion)
+        private readonly IBaseRepository<Instalacion, InstalacionDto> _instalacionRepository;
+        private readonly IBaseRepository<Inversor, InversorDto> _inversorRepository;
+        private readonly IBaseRepository<Modulo, ModuloDto> _moduloRepository;
+        public InstalacionService(IBaseRepository<Instalacion, InstalacionDto> instalacionRepository, IBaseRepository<Inversor, InversorDto> inversorRepository,
+            IBaseRepository<Modulo, ModuloDto> moduloRepository) {
+
+            _instalacionRepository = instalacionRepository;
+            _inversorRepository = inversorRepository;
+            _moduloRepository = moduloRepository;
+        }
+      
+        public async Task<InstalacionDto> InstalacionCalculated(InstalacionDto instalacion)
         {
             var cadenas = instalacion.Cadenas;
-            List<InversorDto> inversoresTipo = new();
 
             foreach (CadenaDto cadenaDto in cadenas)
             {
-                cadenaDto.MinModulos = (int)(Math.Ceiling(cadenaDto.Inversor.Vmin / cadenaDto.Modulo.Vmp));
+                var Inversor = await _inversorRepository.GetEntity(cadenaDto.IdInversor);
+                var Modulo = await _moduloRepository.GetEntity(cadenaDto.IdModulo);
 
-                cadenaDto.MaxModulos = (int)(Math.Ceiling(cadenaDto.Inversor.Vmax / cadenaDto.Modulo.Vca));
-
-                cadenaDto.PotenciaPico = cadenaDto.NumModulos * cadenaDto.Modulo.Potencia / 1000;
+                cadenaDto.MinModulos = (int)(Math.Ceiling(Inversor.Vmin / Modulo.Vmp));
+                cadenaDto.MaxModulos = (int)(Math.Ceiling(Inversor.Vmax / Modulo.Vca));
+                cadenaDto.PotenciaPico = cadenaDto.NumModulos * Modulo.Potencia / 1000;
 
                 instalacion.TotalPico += cadenaDto.PotenciaPico;
-
-                if (!inversoresTipo.Contains(cadenaDto.Inversor))
-                {
-                    inversoresTipo.Add(cadenaDto.Inversor);
-                }
-            }
-
-            foreach (InversorDto inversor in inversoresTipo)
-            {
-                instalacion.TotalNominal += inversor.PotenciaNominal;
+                instalacion.TotalNominal += Inversor.PotenciaNominal;            
             }
             return instalacion;
         }

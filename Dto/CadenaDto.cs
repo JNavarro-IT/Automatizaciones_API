@@ -10,11 +10,14 @@ namespace backend_API.Dto
         public int MinModulos { get; set; } = 0;
         public int MaxModulos { get; set; } = 0;
         public int NumModulos { get; set; } = 0;
+        public int? NumCadenas { get; set; } 
+        public int? NumInversores { get; set; }
         public double PotenciaPico { get; set; } = 0;
+        public double PotenciaNominal { get; set; } = 0;
 
         //RELATIONS
-        public InversorDto Inversor { get; set; } = new();
-        public ModuloDto Modulo { get; set; } = new();
+        public int IdInversor { get; set; } = new();
+        public int IdModulo { get; set; } = new();
 
         //CONSTRUCTOR POR PARÁMETROS
         public CadenaDto() { }

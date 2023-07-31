@@ -60,17 +60,27 @@ namespace backend_API.Models
         [Column(TypeName = "varchar(250)")]
         public string Vatimetro { get; set; } = string.Empty;
 
+        [Column(TypeName = "int")]
+        public int? TnumInversores { get; set; }
+
+        [Required]
+        [Column(TypeName = "int")]
+        public int TnumModulos { get; set; } = 0;
+        
+        [Column(TypeName = "int")]
+        public int? TnumeroCadenas { get; set; }
+
         //RELATIONS
         [ForeignKey("IdUbicacion")]
-        public Ubicacion Ubicacion { get; set; }
+        public Ubicacion Ubicacion { get; set; } = new();
 
         public Proyecto? Proyecto { get; set; }
 
-        public List<Cubierta> Cubiertas { get; set; }
+        public List<Cubierta> Cubiertas { get; set; } = new();
 
-        public List<Cadena> Cadenas { get; set; }
+        public List<Cadena> Cadenas { get; set; } = new();
 
         // CONSTRUCTOR POR DEFECTO
-        public Instalacion() { }
+        public Instalacion() { } 
     }
 }

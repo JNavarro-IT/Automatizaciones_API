@@ -3,6 +3,7 @@ using backend_API.Models.Data;
 using backend_API.Repository;
 using backend_API.Service;
 using backend_API.Utilities;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -22,9 +23,7 @@ for (int i = 0; i < entityTypes.Count; i++)
     var entityType = entityTypes[i];
     var dtoType = dtoTypes[i];
 
-#pragma warning disable CS8602 // Desreferencia de una referencia posiblemente NULL.
     if (dtoType == null) { throw new ArgumentNullException(paramName: dtoType.Name); }
-#pragma warning restore CS8602 // Desreferencia de una referencia posiblemente NULL.
 
     var repositoryInterface = typeof(IBaseRepository<,>).MakeGenericType(entityType, dtoType);
     var repository = typeof(BaseRepository<,>).MakeGenericType(entityType, dtoType);
@@ -35,7 +34,8 @@ for (int i = 0; i < entityTypes.Count; i++)
         .AddScoped(repositoryInterface, repository)
         .AddScoped(controller);
 }
-// Registra el controlador genérico
+
+// AUTOMAPPER PARA RELACION MODELO-DTO
 var mapper = AutoMapperConfig.Initialize();
 builder.Services
     .AddScoped<IInstalacionService, InstalacionService>()
@@ -48,6 +48,7 @@ builder.Services
         options.UseSqlServer(connection, sqlOptions =>
             sqlOptions.EnableRetryOnFailure());
     })
+
     .AddCors(options =>
     {
         options.AddPolicy("Politica Acceso API", app =>
@@ -58,6 +59,14 @@ builder.Services
             .AllowAnyHeader();
         });
     })
+
+    .Configure<CookiePolicyOptions>(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.None;
+        options.HttpOnly = HttpOnlyPolicy.None;
+        options.Secure = CookieSecurePolicy.None;
+    })
+
     .AddControllers()
         .AddControllersAsServices()
         .AddNewtonsoftJson(options =>

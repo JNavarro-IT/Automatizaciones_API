@@ -40,15 +40,15 @@ namespace backend_API.Models
 
         //RELATIONS
         [ForeignKey("IdCliente")]
-        public Cliente Cliente { get; set; }
+        public Cliente Cliente { get; set; } = new();
 
         [ForeignKey("IdInstalacion")]
-        public Instalacion Instalacion { get; set; }
+        public Instalacion Instalacion { get; set; } = new();
 
         [ForeignKey("IdUbicacion")]
-        public Ubicacion Ubicacion { get; set; }
+        public Ubicacion Ubicacion { get; set; } = new();
 
-        public List<LugarPRL> LugaresPRL { get; set; }
+        public List<LugarPRL> LugaresPRL { get; set; } = new();
 
         // CONSTRUCTOR POR DEFECTO
         public Proyecto() { }

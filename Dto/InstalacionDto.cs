@@ -1,4 +1,5 @@
 ﻿
+using backend_API.Models;
 using backend_API.Utilities;
 
 namespace backend_API.Dto
@@ -19,11 +20,15 @@ namespace backend_API.Dto
         public string IMagenetico { get; set; } = string.Empty;
         public string Estructura { get; set; } = string.Empty;
         public string Vatimetro { get; set; } = string.Empty;
+        public int? TnumInversores { get; set; }
+        public int TnumModulos { get; set; } = 0;
+        public int? TnumCadenas { get; set; }
 
         //RELATIONS
+        public List<Cubierta> Cubiertas { get; set; } = new();
         public List<CadenaDto> Cadenas { get; set; } = new();
         public UbicacionDto Ubicacion { get; set; } = new();
-        public ProyectoDto? Proyecto { get; set; } = new();
+        public ProyectoDto? Proyecto { get; set; } 
 
         //CONSTRUCTOR POR DEFECTO
         public InstalacionDto() { }

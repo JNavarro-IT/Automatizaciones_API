@@ -1,6 +1,7 @@
 ﻿using backend_API.Dto;
 using backend_API.Models;
 using backend_API.Repository;
+using backend_API.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_API.Controllers
@@ -8,26 +9,33 @@ namespace backend_API.Controllers
     //CONTROLADOR DE LAS PETICIONES HTTP, TAMBIEN A APIS EXTERNAS COMO PROXY
     [ApiController]
     [Route("[controller]")]
-    public class ProxyController : ControllerBase
+    public class ApiController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IBaseRepository<Proyecto, ProyectoDto> _projectController;
+        private readonly IBaseRepository<Proyecto, ProyectoDto> _proyectoRepository;
+        private readonly IBaseRepository<Instalacion, InstalacionDto> _instalacionRepository;
         private readonly IBaseRepository<Inversor, InversorDto> _inversorRepository;
         private readonly IBaseRepository<Modulo, ModuloDto> _moduloRepository;
+        private readonly IInstalacionService _instalacionService;
 
         //CONSTRUCTOR PROXY CON UN CLIENTE HTTP PARA LAS PETICIONES EXTERNAS
-        public ProxyController(IHttpClientFactory httpClientFactory, IBaseRepository<Proyecto, ProyectoDto> projectController, IBaseRepository<Inversor, InversorDto> inversorRepository, IBaseRepository<Modulo, ModuloDto> moduloRepository)
+        public ApiController(IHttpClientFactory httpClientFactory, IBaseRepository<Proyecto, ProyectoDto> projectController, IBaseRepository<Inversor, InversorDto> inversorRepository, IBaseRepository<Modulo, ModuloDto> moduloRepository, IInstalacionService instalacionService, IBaseRepository<Instalacion, InstalacionDto> instalacionRepository)
         {
             _httpClientFactory = httpClientFactory;
-            _projectController = projectController;
+            _proyectoRepository = projectController;
             _inversorRepository = inversorRepository;
             _moduloRepository = moduloRepository;
+            _instalacionService = instalacionService;
+            _instalacionRepository = instalacionRepository;
         }
 
         //CONSULTAR API PUBLICA DEL CATASTRO SEGÚN EL PARAMETRO QUE SE OBTENGA
-        [HttpGet("{*url}")] // proxy/URLPublica
+        [HttpGet("proxy/{*url}")] // proxy/URLPublica
         public async Task<IActionResult> Get(string url)
         {
+            if (url == null)
+                return BadRequest("Error en la url enviada");
+
             string? provincia = Request.Query["Provincia"];
             string? coordX = Request.Query["CoorX"];
             string? coordY = Request.Query["CoorY"];
@@ -64,7 +72,7 @@ namespace backend_API.Controllers
         public async Task<ActionResult<string>> CrearReferenciaAsync()
         {
 
-            var proyectosList = await _projectController.GetEntitiesListAsync();
+            var proyectosList = await _proyectoRepository.GetEntitiesListAsync();
         
             if (proyectosList == null)
                 return NotFound("Lista de proyectos no encontrada");
@@ -83,7 +91,7 @@ namespace backend_API.Controllers
         }
 
         [HttpGet("inversores")]
-        public ActionResult<IEnumerable<Inversor>> GetInversoresList()
+        public ActionResult<IEnumerable<InversorDto>> GetInversoresList()
         {
             var inversoresList = _inversorRepository.GetEntitiesListAsync().Result.ToList();
             if (inversoresList == null)
@@ -93,13 +101,27 @@ namespace backend_API.Controllers
         }
 
         [HttpGet("modulos")]
-        public ActionResult<IEnumerable<Modulo>> GetModulosList()
+        public ActionResult<IEnumerable<ModuloDto>> GetModulosList()
         {
             var modulosList = _moduloRepository.GetEntitiesListAsync().Result;
             if (modulosList == null)
                 return NotFound("No se ha encontrado ninguna lista de módulos");
 
             return Ok(modulosList);
+        }
+
+        [HttpGet("instalacionCalculada")]
+        public async Task<ActionResult<InstalacionDto>> GetInstalacionCalculatedAsync(InstalacionDto Instalacion)
+        {
+            if (Instalacion == null)
+                return BadRequest("La Instalacion enviada no es válida");
+            
+            InstalacionDto InstalacionCalculada = await _instalacionService.InstalacionCalculated(Instalacion);
+
+            if(InstalacionCalculada == null)
+                return NoContent();
+            
+            return Ok(InstalacionCalculada);
         }
     }
 }
