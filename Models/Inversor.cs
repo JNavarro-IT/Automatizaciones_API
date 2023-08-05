@@ -14,11 +14,11 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Modelo { get; set; } = string.Empty;
+        public string Fabricante { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
-        public string Fabricante { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "float")]

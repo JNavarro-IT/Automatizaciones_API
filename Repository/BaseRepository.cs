@@ -26,8 +26,6 @@ namespace backend_API.Repository
         private readonly DBContext _dbContext;
         private readonly IMapper _mapper;
 
-        public BaseRepository() { }
-
         //CONSTRUCTOR PARA LA INYECCION DE DEPENDENCIAS DE DBCONTEXT Y AUTOMAPPER
         public BaseRepository(DBContext dbContext, IMapper mapper)
         {

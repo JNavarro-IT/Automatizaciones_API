@@ -5,7 +5,7 @@ namespace backend_API.Models.Data
     //CLASE QUE GENERA UN CONTEXTO CON LA BD Y MAPEA LAS TABLAS
     public class DBContext : DbContext
     {
-        public DbSet<Cliente> Cadenas { get; set; }
+        public DbSet<Cadena> Cadenas { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Cubierta> Cubiertas { get; set; }
         public DbSet<Instalacion> Instalaciones { get; set; }

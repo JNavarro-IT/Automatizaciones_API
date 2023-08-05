@@ -52,13 +52,13 @@ namespace backend_API.Models
 
         //RELATIONS
         [ForeignKey("IdCliente")]
-        public Cliente Cliente { get; set; }
+        public Cliente Cliente { get; set; } = new();
 
         public Instalacion? Instalacion { get; set; }
 
         public Proyecto? Proyecto { get; set; }
 
-        public List<Cubierta> Cubiertas { get; set; }
+        public List<Cubierta> Cubiertas { get; set; } = new();
 
         //CONSTRUCTOR POR DEFECTO
         public Ubicacion() { }

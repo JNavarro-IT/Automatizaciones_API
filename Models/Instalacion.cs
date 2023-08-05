@@ -50,7 +50,7 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "varchar(50)")]
-        public string IMagenetico { get; set; } = string.Empty;
+        public string IAutomatico { get; set; } = string.Empty;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
@@ -61,24 +61,24 @@ namespace backend_API.Models
         public string Vatimetro { get; set; } = string.Empty;
 
         [Column(TypeName = "int")]
-        public int? TnumInversores { get; set; }
+        public int? TotalInversores { get; set; }
 
         [Required]
         [Column(TypeName = "int")]
-        public int TnumModulos { get; set; } = 0;
+        public int TotalModulos { get; set; } = 0;
         
         [Column(TypeName = "int")]
-        public int? TnumeroCadenas { get; set; }
+        public int? TotalCadenas { get; set; }
 
         //RELATIONS
         [ForeignKey("IdUbicacion")]
-        public Ubicacion Ubicacion { get; set; } = new();
+        public Ubicacion? Ubicacion { get; set; } = new();
 
         public Proyecto? Proyecto { get; set; }
 
-        public List<Cubierta> Cubiertas { get; set; } = new();
+        public IList<Cubierta>? Cubiertas { get; set; } = new List<Cubierta>();
 
-        public List<Cadena> Cadenas { get; set; } = new();
+        public IList<Cadena> Cadenas { get; set; } = new List<Cadena>();
 
         // CONSTRUCTOR POR DEFECTO
         public Instalacion() { } 

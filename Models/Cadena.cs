@@ -43,6 +43,15 @@ namespace backend_API.Models
         [Column(TypeName = "float")]
         public double PotenciaNominal { get; set; } = 0;
 
+        [Column(TypeName = "float")]
+        public double CMaxString { get; set; } = 0;
+
+        [Column(TypeName = "float")]
+        public double PotenciaString { get; set; } = 0;
+
+        [Column(TypeName = "float")]
+        public double TensiónString { get; set; } = 0;
+
         //RELATIONS
         [ForeignKey("IdInversor")]
         public Inversor Inversor { get; set; } = new();

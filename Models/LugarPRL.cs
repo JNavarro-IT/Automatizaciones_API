@@ -38,10 +38,27 @@ namespace backend_API.Models
         public string Telefono { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(100)")]
+        public string Email { get; set; } = string.Empty;
+
+        [Column(TypeName = "varchar(100)")]
         public string? NIMA { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar(100)")]
         public string? Autorizacion { get; set; } = string.Empty;
+
+        [Required]
+        [Column(TypeName = "float")]
+        public double Latitud { get; set; } = 0;
+
+        [Required]
+        [Column(TypeName = "float")]
+        public double Longitud { get; set; } = 0;
+
+        [Column(TypeName = "varchar(100)")]
+        public string? RutaImg { get; set; } = string.Empty;
+
+
+
 
         //RELATION
         public List<Proyecto>? Proyectos { get; set; }

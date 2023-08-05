@@ -41,6 +41,7 @@ namespace backend_API.Controllers
             string? coordY = Request.Query["CoorY"];
             string? SRS = Request.Query["SRS"];
             string? refCatastral = Request.Query["RefCat"];
+           
 
             if (provincia != null)
                 url += "?Provincia=" + provincia;
@@ -110,18 +111,19 @@ namespace backend_API.Controllers
             return Ok(modulosList);
         }
 
-        [HttpGet("instalacionCalculada")]
-        public async Task<ActionResult<InstalacionDto>> GetInstalacionCalculatedAsync(InstalacionDto Instalacion)
+        [HttpPost("instalacion/calcular")]
+        public ActionResult<InstalacionDto> GetInstalacionCalculated(InstalacionDto Instalacion)
         {
             if (Instalacion == null)
-                return BadRequest("La Instalacion enviada no es válida");
+                return BadRequest("La instalacion enviada no es válida");
             
-            InstalacionDto InstalacionCalculada = await _instalacionService.InstalacionCalculated(Instalacion);
+            
+            Instalacion = _instalacionService.CalcularInstalacion(Instalacion);
 
-            if(InstalacionCalculada == null)
+            if(Instalacion == null)
                 return NoContent();
             
-            return Ok(InstalacionCalculada);
+            return Ok(Instalacion);
         }
     }
 }
