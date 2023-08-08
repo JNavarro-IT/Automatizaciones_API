@@ -27,7 +27,7 @@ namespace backend_API.Service
             _inversorRepository = inversorRepository;
             _moduloRepository = moduloRepository;
         }
-      
+
         public InstalacionDto CalcularInstalacion(InstalacionDto Instalacion)
         {
             var Cadenas = Instalacion.Cadenas;
@@ -36,18 +36,21 @@ namespace backend_API.Service
             {
                 c.MinModulos = (int)(Math.Ceiling(c.Inversor.Vmin / c.Modulo.Vmp));
                 c.MaxModulos = (int)(Math.Ceiling(c.Inversor.Vmax / c.Modulo.Vca));
-                if(c.NumModulos == 0)
+                if (c.NumModulos == 0)
                     c.NumModulos = c.MinModulos;
 
                 c.PotenciaString = c.NumModulos * c.Modulo.Potencia;
-                c.PotenciaPico = c.PotenciaString / 1000;
-                c.TensiónString = c.NumModulos * c.Modulo.Vca;
+                c.PotenciaPico = Math.Round((c.PotenciaString / 1000), 2);
+                c.TensionString = Math.Round((c.NumModulos * c.Modulo.Vca), 2);
 
+                // Valores reiniciados en cada iteración
                 Instalacion.TotalModulos += c.NumModulos;
-                Instalacion.TotalPico += c.PotenciaPico;
-                Instalacion.TotalNominal += c.Inversor.PotenciaNominal;           
+                Instalacion.TotalCadenas += c.NumCadenas;
+                Instalacion.TotalPico += Math.Round(c.PotenciaPico, 2);
+                Instalacion.TotalNominal += c.Inversor.PotenciaNominal;
             }
             return Instalacion;
         }
+
     }
 }

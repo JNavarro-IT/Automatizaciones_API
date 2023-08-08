@@ -15,7 +15,7 @@ namespace backend_API.Dto
         public double PotenciaPico { get; set; } = 0;
         public double PotenciaNominal { get; set; } = 0;
         public double PotenciaString { get; set; } = 0;
-        public double TensiónString { get; set; } = 0;
+        public double TensionString { get; set; } = 0;
 
         //RELATIONS
         public InversorDto Inversor { get; set; } = new();

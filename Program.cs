@@ -67,56 +67,52 @@ internal class Program
          var connection = builder.Configuration.GetConnectionString("DevConnection");
 
          options.UseSqlServer(connection, sqlOptions => sqlOptions.EnableRetryOnFailure());
-
-       /*  var scvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
+/*
+         var scvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
          {
-             Encoding = Encoding.UTF8,
-             IgnoreBlankLines = true,
-             HeaderValidated = null,
-             HasHeaderRecord = true,
-             MissingFieldFound = null,
-             Delimiter = "|",
+             BadDataFound = null
+            
          };
 
          using var dbContext = new DBContext((DbContextOptions<DBContext>)options.Options);
          using var reader = new StreamReader("SeedData/aa.csv");
          using var csv = new CsvReader(reader, scvConfig);
+         csv.Read();
 
          var modulos = csv.GetRecords<Modulo>();
          mapper.Map<Modulo>(modulos.ToList());
-         Console.WriteLine("------------" + modulos.First());
          dbContext.Modulos.AddRange(modulos);
          dbContext.SaveChanges();*/
      })
 
 
-            .AddCors(options =>
-            {
-                options.AddPolicy("Politica Acceso API", app =>
-                {
-                    app.AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-                });
-            })
+    .AddCors(options =>
+    {
+        options.AddPolicy("Politica Acceso API", app =>
+        {
+            app.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+    })
 
-            .Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                options.HttpOnly = HttpOnlyPolicy.None;
-                options.Secure = CookieSecurePolicy.None;
-            })
+    .Configure<CookiePolicyOptions>(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.None;
+        options.HttpOnly = HttpOnlyPolicy.None;
+        options.Secure = CookieSecurePolicy.None;
+    })
 
-            .AddControllers()
-                .AddControllersAsServices()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                    options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
-                    options.UseCamelCasing(false);
-                });
+    .AddControllers()
+        .AddControllersAsServices()
+        .AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
+            options.UseCamelCasing(false);
+        });
 
         var app = builder.Build();
         app.UseCors("Politica Acceso API");

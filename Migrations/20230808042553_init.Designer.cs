@@ -12,8 +12,8 @@ using backend_API.Models.Data;
 namespace backend_API.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230723224328_Init")]
-    partial class Init
+    [Migration("20230808042553_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,13 +48,16 @@ namespace backend_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCadena"));
 
+                    b.Property<double>("CMaxString")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("IdInstalacion")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdInversor")
                         .HasColumnType("int");
 
                     b.Property<int>("IdModulo")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("InstalacionIdInstalacion")
                         .HasColumnType("int");
 
                     b.Property<int>("MaxModulos")
@@ -63,19 +66,34 @@ namespace backend_API.Migrations
                     b.Property<int>("MinModulos")
                         .HasColumnType("int");
 
+                    b.Property<int>("NumCadenas")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumInversores")
+                        .HasColumnType("int");
+
                     b.Property<int>("NumModulos")
                         .HasColumnType("int");
+
+                    b.Property<double>("PotenciaNominal")
+                        .HasColumnType("float");
 
                     b.Property<double>("PotenciaPico")
                         .HasColumnType("float");
 
+                    b.Property<double>("PotenciaString")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TensionString")
+                        .HasColumnType("float");
+
                     b.HasKey("IdCadena");
+
+                    b.HasIndex("IdInstalacion");
 
                     b.HasIndex("IdInversor");
 
                     b.HasIndex("IdModulo");
-
-                    b.HasIndex("InstalacionIdInstalacion");
 
                     b.ToTable("Cadenas");
                 });
@@ -172,13 +190,16 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("IAutomatico")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("IDiferencial")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("IMagenetico")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
+                    b.Property<int?>("IdUbicacion")
+                        .HasColumnType("int");
 
                     b.Property<double>("Inclinacion")
                         .HasColumnType("float");
@@ -186,6 +207,15 @@ namespace backend_API.Migrations
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("TotalCadenas")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalInversores")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalModulos")
+                        .HasColumnType("int");
 
                     b.Property<double>("TotalNominal")
                         .HasColumnType("float");
@@ -198,6 +228,10 @@ namespace backend_API.Migrations
                         .HasColumnType("varchar(250)");
 
                     b.HasKey("IdInstalacion");
+
+                    b.HasIndex("IdUbicacion")
+                        .IsUnique()
+                        .HasFilter("[IdUbicacion] IS NOT NULL");
 
                     b.ToTable("Instalaciones");
                 });
@@ -271,6 +305,16 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<double>("Latitud")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitud")
+                        .HasColumnType("float");
+
                     b.Property<string>("Municipio")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
@@ -285,6 +329,9 @@ namespace backend_API.Migrations
                     b.Property<string>("Provincia")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
+
+                    b.Property<string>("RutaImg")
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
@@ -370,14 +417,14 @@ namespace backend_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProyecto"));
 
-                    b.Property<int>("ClienteIdCliente")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cups")
                         .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("date");
+
+                    b.Property<int>("IdCliente")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdInstalacion")
                         .HasColumnType("int");
@@ -406,7 +453,7 @@ namespace backend_API.Migrations
 
                     b.HasKey("IdProyecto");
 
-                    b.HasIndex("ClienteIdCliente");
+                    b.HasIndex("IdCliente");
 
                     b.HasIndex("IdInstalacion")
                         .IsUnique();
@@ -428,9 +475,6 @@ namespace backend_API.Migrations
                     b.Property<int>("CP")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClienteIdCliente")
-                        .HasColumnType("int");
-
                     b.Property<double?>("CoordXUTM")
                         .HasColumnType("float");
 
@@ -441,7 +485,7 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(max)");
 
-                    b.Property<int?>("IdInstalacion")
+                    b.Property<int>("IdCliente")
                         .HasColumnType("int");
 
                     b.Property<double>("Latitud")
@@ -467,11 +511,7 @@ namespace backend_API.Migrations
 
                     b.HasKey("IdUbicacion");
 
-                    b.HasIndex("ClienteIdCliente");
-
-                    b.HasIndex("IdInstalacion")
-                        .IsUnique()
-                        .HasFilter("[IdInstalacion] IS NOT NULL");
+                    b.HasIndex("IdCliente");
 
                     b.ToTable("Ubicaciones");
                 });
@@ -493,6 +533,10 @@ namespace backend_API.Migrations
 
             modelBuilder.Entity("backend_API.Models.Cadena", b =>
                 {
+                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
+                        .WithMany("Cadenas")
+                        .HasForeignKey("IdInstalacion");
+
                     b.HasOne("backend_API.Models.Inversor", "Inversor")
                         .WithMany()
                         .HasForeignKey("IdInversor")
@@ -504,10 +548,6 @@ namespace backend_API.Migrations
                         .HasForeignKey("IdModulo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
-                        .WithMany("Cadenas")
-                        .HasForeignKey("InstalacionIdInstalacion");
 
                     b.Navigation("Instalacion");
 
@@ -533,11 +573,20 @@ namespace backend_API.Migrations
                     b.Navigation("Ubicacion");
                 });
 
+            modelBuilder.Entity("backend_API.Models.Instalacion", b =>
+                {
+                    b.HasOne("backend_API.Models.Ubicacion", "Ubicacion")
+                        .WithOne("Instalacion")
+                        .HasForeignKey("backend_API.Models.Instalacion", "IdUbicacion");
+
+                    b.Navigation("Ubicacion");
+                });
+
             modelBuilder.Entity("backend_API.Models.Proyecto", b =>
                 {
                     b.HasOne("backend_API.Models.Cliente", "Cliente")
                         .WithMany("Proyectos")
-                        .HasForeignKey("ClienteIdCliente")
+                        .HasForeignKey("IdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -564,17 +613,11 @@ namespace backend_API.Migrations
                 {
                     b.HasOne("backend_API.Models.Cliente", "Cliente")
                         .WithMany("Ubicaciones")
-                        .HasForeignKey("ClienteIdCliente")
+                        .HasForeignKey("IdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend_API.Models.Instalacion", "Instalacion")
-                        .WithOne("Ubicacion")
-                        .HasForeignKey("backend_API.Models.Ubicacion", "IdInstalacion");
-
                     b.Navigation("Cliente");
-
-                    b.Navigation("Instalacion");
                 });
 
             modelBuilder.Entity("backend_API.Models.Cliente", b =>
@@ -591,14 +634,13 @@ namespace backend_API.Migrations
                     b.Navigation("Cubiertas");
 
                     b.Navigation("Proyecto");
-
-                    b.Navigation("Ubicacion")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("backend_API.Models.Ubicacion", b =>
                 {
                     b.Navigation("Cubiertas");
+
+                    b.Navigation("Instalacion");
 
                     b.Navigation("Proyecto");
                 });

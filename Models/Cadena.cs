@@ -50,7 +50,7 @@ namespace backend_API.Models
         public double PotenciaString { get; set; } = 0;
 
         [Column(TypeName = "float")]
-        public double TensiónString { get; set; } = 0;
+        public double TensionString { get; set; } = 0;
 
         //RELATIONS
         [ForeignKey("IdInversor")]

@@ -9,11 +9,11 @@ namespace backend_API.Repository
         where T : ModelBase
         where TDto : DtoBase
     {
-        public Task<IEnumerable<TDto>> GetEntitiesListAsync();
+        public Task<IEnumerable<TDto>> GetEntitiesList();
         public Task<TDto> GetEntity(object identity);
-        public Task<bool> CreateEntityAsync(TDto tDto);
-        public Task<int> UpdateEntityAsync(TDto entityDto);
-        public Task<int> DeleteEntityAsync(TDto entityDto);
+        public Task<bool> CreateEntity(TDto tDto);
+        public Task<int> UpdateEntity(TDto entityDto);
+        public Task<int> DeleteEntity(TDto entityDto);
         public Task<bool> EntityExists(TDto entityDto);
 
     }
@@ -34,7 +34,7 @@ namespace backend_API.Repository
         }
 
         //OBTENER LA LISTA DE LA ENTIDAD
-        public async Task<IEnumerable<TDto>> GetEntitiesListAsync()
+        public async Task<IEnumerable<TDto>> GetEntitiesList()
         {
             var entities = await _dbContext.Set<T>().ToListAsync();
             var entitiesDto = _mapper.Map<IEnumerable<TDto>>(entities);
@@ -51,7 +51,7 @@ namespace backend_API.Repository
         }
 
         //CREAR UNA ENTIDAD 
-        public async Task<bool> CreateEntityAsync(TDto entityDto)
+        public async Task<bool> CreateEntity(TDto entityDto)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace backend_API.Repository
         }
 
         //ACTUALIZAR UNA ENTIDAD
-        public async Task<int> UpdateEntityAsync(TDto entityDto)
+        public async Task<int> UpdateEntity(TDto entityDto)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace backend_API.Repository
         }
 
         //BORRAR UNA ENTIDAD
-        public async Task<int> DeleteEntityAsync(TDto entityDto)
+        public async Task<int> DeleteEntity(TDto entityDto)
         {
             try
             {

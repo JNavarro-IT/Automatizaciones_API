@@ -13,11 +13,9 @@ namespace backend_API.Utilities
         {
             var entityTypes = new List<Type> { typeof(Cadena), typeof(Cliente), typeof(Cubierta), typeof(Instalacion), typeof(Inversor), typeof(Modulo), typeof(Proyecto), typeof(Ubicacion) };
             var dtoTypes = new List<Type> { typeof(CadenaDto), typeof(ClienteDto), typeof(CubiertaDto), typeof(InstalacionDto), typeof(InversorDto), typeof(ModuloDto), typeof(ProyectoDto), typeof(UbicacionDto) };
-            
+
             for (int i = 0; i < entityTypes.Count; i++)
                 CreateMap(entityTypes[i], dtoTypes[i]).ReverseMap();
-            
-            CreateMap<Modulo, ModuloDto>().ReverseMap();
         }
     }
 

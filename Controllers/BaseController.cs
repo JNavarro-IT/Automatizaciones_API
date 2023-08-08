@@ -42,7 +42,7 @@ namespace backend_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TDto>>> GetListAsync()
         {
-            var entitiesList = await _repository.GetEntitiesListAsync();
+            var entitiesList = await _repository.GetEntitiesList();
             if (entitiesList == null)
                 return NoContent();
 
@@ -78,7 +78,7 @@ namespace backend_API.Controllers
 
             try
             {
-                var created = await _repository.CreateEntityAsync(dto);
+                var created = await _repository.CreateEntity(dto);
                 if (created)
                     return Ok(dto);
                 else
@@ -106,7 +106,7 @@ namespace backend_API.Controllers
 
             try
             {
-                int updated = await _repository.UpdateEntityAsync(dto);
+                int updated = await _repository.UpdateEntity(dto);
                 if (updated > 0)
                     return Ok(dto);
                 else
@@ -128,7 +128,7 @@ namespace backend_API.Controllers
             if (identity == null)
                 return BadRequest("No se ha pasado ningún identificador");
 
-            var deleted = await _repository.DeleteEntityAsync(dto);
+            var deleted = await _repository.DeleteEntity(dto);
             if (deleted <= 0)
                 return NotFound("No se ha eliminado ningún objeto");
 
@@ -156,7 +156,7 @@ namespace backend_API.Controllers
 
             try
             {
-                int updated = await _repository.UpdateEntityAsync(entityDto);
+                int updated = await _repository.UpdateEntity(entityDto);
                 if (updated <= 0)
                     return BadRequest("No se ha actualizado ningún objeto");
 

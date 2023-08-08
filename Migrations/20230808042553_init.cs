@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace backend_API.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,30 +29,6 @@ namespace backend_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Instalaciones",
-                columns: table => new
-                {
-                    IdInstalacion = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Inclinacion = table.Column<double>(type: "float", nullable: false),
-                    Azimut = table.Column<string>(type: "varchar(50)", nullable: false),
-                    TotalPico = table.Column<double>(type: "float", nullable: false),
-                    TotalNominal = table.Column<double>(type: "float", nullable: false),
-                    Tipo = table.Column<string>(type: "varchar(50)", nullable: false),
-                    CoordXConexion = table.Column<double>(type: "float", nullable: false),
-                    CoordYConexion = table.Column<double>(type: "float", nullable: false),
-                    Fusible = table.Column<string>(type: "varchar(50)", nullable: false),
-                    IDiferencial = table.Column<string>(type: "varchar(50)", nullable: false),
-                    IMagenetico = table.Column<string>(type: "varchar(50)", nullable: false),
-                    Estructura = table.Column<string>(type: "varchar(100)", nullable: false),
-                    Vatimetro = table.Column<string>(type: "varchar(250)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Instalaciones", x => x.IdInstalacion);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Lugares",
                 columns: table => new
                 {
@@ -64,8 +41,12 @@ namespace backend_API.Migrations
                     Municipio = table.Column<string>(type: "varchar(100)", nullable: false),
                     Provincia = table.Column<string>(type: "varchar(50)", nullable: false),
                     Telefono = table.Column<string>(type: "varchar(30)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(100)", nullable: false),
                     NIMA = table.Column<string>(type: "varchar(100)", nullable: true),
-                    Autorizacion = table.Column<string>(type: "varchar(100)", nullable: true)
+                    Autorizacion = table.Column<string>(type: "varchar(100)", nullable: true),
+                    Latitud = table.Column<double>(type: "float", nullable: false),
+                    Longitud = table.Column<double>(type: "float", nullable: false),
+                    RutaImg = table.Column<string>(type: "varchar(100)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,23 +69,50 @@ namespace backend_API.Migrations
                     CoordYUTM = table.Column<double>(type: "float", nullable: true),
                     Latitud = table.Column<double>(type: "float", nullable: false),
                     Longitud = table.Column<double>(type: "float", nullable: false),
-                    IdCliente = table.Column<int>(type: "int", nullable: false),
-                    IdInstalacion = table.Column<int>(type: "int", nullable: true)
+                    IdCliente = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ubicaciones", x => x.IdUbicacion);
                     table.ForeignKey(
-                        name: "FK_UIdCliente",
+                        name: "FK_Ubicaciones_Clientes_IdCliente",
                         column: x => x.IdCliente,
                         principalTable: "Clientes",
                         principalColumn: "IdCliente",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Instalaciones",
+                columns: table => new
+                {
+                    IdInstalacion = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Inclinacion = table.Column<double>(type: "float", nullable: false),
+                    Azimut = table.Column<string>(type: "varchar(50)", nullable: false),
+                    TotalPico = table.Column<double>(type: "float", nullable: false),
+                    TotalNominal = table.Column<double>(type: "float", nullable: false),
+                    Tipo = table.Column<string>(type: "varchar(50)", nullable: false),
+                    CoordXConexion = table.Column<double>(type: "float", nullable: false),
+                    CoordYConexion = table.Column<double>(type: "float", nullable: false),
+                    Fusible = table.Column<string>(type: "varchar(50)", nullable: false),
+                    IDiferencial = table.Column<string>(type: "varchar(50)", nullable: false),
+                    IAutomatico = table.Column<string>(type: "varchar(50)", nullable: false),
+                    Estructura = table.Column<string>(type: "varchar(100)", nullable: false),
+                    Vatimetro = table.Column<string>(type: "varchar(250)", nullable: false),
+                    TotalInversores = table.Column<int>(type: "int", nullable: true),
+                    TotalModulos = table.Column<int>(type: "int", nullable: false),
+                    TotalCadenas = table.Column<int>(type: "int", nullable: true),
+                    IdUbicacion = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Instalaciones", x => x.IdInstalacion);
                     table.ForeignKey(
-                        name: "FK_UIdInstalacion",
-                        column: x => x.IdInstalacion,
-                        principalTable: "Instalaciones",
-                        principalColumn: "IdInstalacion");
+                        name: "FK_Instalaciones_Ubicaciones_IdUbicacion",
+                        column: x => x.IdUbicacion,
+                        principalTable: "Ubicaciones",
+                        principalColumn: "IdUbicacion");
                 });
 
             migrationBuilder.CreateTable(
@@ -116,7 +124,13 @@ namespace backend_API.Migrations
                     MinModulos = table.Column<int>(type: "int", nullable: false),
                     MaxModulos = table.Column<int>(type: "int", nullable: false),
                     NumModulos = table.Column<int>(type: "int", nullable: false),
+                    NumCadenas = table.Column<int>(type: "int", nullable: false),
+                    NumInversores = table.Column<int>(type: "int", nullable: false),
                     PotenciaPico = table.Column<double>(type: "float", nullable: false),
+                    PotenciaNominal = table.Column<double>(type: "float", nullable: false),
+                    CMaxString = table.Column<double>(type: "float", nullable: false),
+                    PotenciaString = table.Column<double>(type: "float", nullable: false),
+                    TensionString = table.Column<double>(type: "float", nullable: false),
                     IdInversor = table.Column<int>(type: "int", nullable: false),
                     IdModulo = table.Column<int>(type: "int", nullable: false),
                     IdInstalacion = table.Column<int>(type: "int", nullable: true)
@@ -125,22 +139,22 @@ namespace backend_API.Migrations
                 {
                     table.PrimaryKey("PK_Cadenas", x => x.IdCadena);
                     table.ForeignKey(
-                        name: "FK_CIdInstalacion",
+                        name: "FK_Cadenas_Instalaciones_IdInstalacion",
                         column: x => x.IdInstalacion,
                         principalTable: "Instalaciones",
                         principalColumn: "IdInstalacion");
                     table.ForeignKey(
-                        name: "FK_CIdInversor",
+                        name: "FK_Cadenas_Inversores_IdInversor",
                         column: x => x.IdInversor,
                         principalTable: "Inversores",
                         principalColumn: "IdInversor",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_CIdModulo",
+                        name: "FK_Cadenas_Modulos_IdModulo",
                         column: x => x.IdModulo,
                         principalTable: "Modulos",
                         principalColumn: "IdModulo",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,20 +166,20 @@ namespace backend_API.Migrations
                     MedidasColectivas = table.Column<string>(type: "varchar(50)", nullable: false),
                     Accesibilidad = table.Column<string>(type: "varchar(50)", nullable: false),
                     Material = table.Column<string>(type: "varchar(100)", nullable: false),
-                    IdUbicacion = table.Column<int>(type: "int", nullable: false),
-                    IdInstalacion = table.Column<int>(type: "int", nullable: true)
+                    UbicacionIdUbicacion = table.Column<int>(type: "int", nullable: false),
+                    InstalacionIdInstalacion = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cubiertas", x => x.IdCubierta);
                     table.ForeignKey(
-                        name: "FK_CuIdInstalacion",
-                        column: x => x.IdInstalacion,
+                        name: "FK_Cubiertas_Instalaciones_InstalacionIdInstalacion",
+                        column: x => x.InstalacionIdInstalacion,
                         principalTable: "Instalaciones",
                         principalColumn: "IdInstalacion");
                     table.ForeignKey(
-                        name: "FK_CunIdUbicacion",
-                        column: x => x.IdUbicacion,
+                        name: "FK_Cubiertas_Ubicaciones_UbicacionIdUbicacion",
+                        column: x => x.UbicacionIdUbicacion,
                         principalTable: "Ubicaciones",
                         principalColumn: "IdUbicacion",
                         onDelete: ReferentialAction.Cascade);
@@ -193,22 +207,23 @@ namespace backend_API.Migrations
                 {
                     table.PrimaryKey("PK_Proyectos", x => x.IdProyecto);
                     table.ForeignKey(
-                        name: "FK_PIdCliente",
+                        name: "FK_Proyectos_Clientes_IdCliente",
                         column: x => x.IdCliente,
                         principalTable: "Clientes",
                         principalColumn: "IdCliente",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PIdInstalacion",
+                        name: "FK_Proyectos_Instalaciones_IdInstalacion",
                         column: x => x.IdInstalacion,
                         principalTable: "Instalaciones",
                         principalColumn: "IdInstalacion",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PIdUbicacion",
+                        name: "FK_Proyectos_Ubicaciones_IdUbicacion",
                         column: x => x.IdUbicacion,
                         principalTable: "Ubicaciones",
-                        principalColumn: "IdUbicacion");
+                        principalColumn: "IdUbicacion",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,18 +237,23 @@ namespace backend_API.Migrations
                 {
                     table.PrimaryKey("PK_LugaresConProyectos", x => new { x.IdLugarPRL, x.IdProyecto });
                     table.ForeignKey(
-                        name: "FK_LIdLugarPRL",
+                        name: "FK_LugaresConProyectos_Lugares_IdLugarPRL",
                         column: x => x.IdLugarPRL,
                         principalTable: "Lugares",
                         principalColumn: "IdLugar",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LIdProyecto",
+                        name: "FK_LugaresConProyectos_Proyectos_IdProyecto",
                         column: x => x.IdProyecto,
                         principalTable: "Proyectos",
                         principalColumn: "IdProyecto",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cadenas_IdInstalacion",
+                table: "Cadenas",
+                column: "IdInstalacion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cadenas_IdInversor",
@@ -246,18 +266,18 @@ namespace backend_API.Migrations
                 column: "IdModulo");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cadenas_IdInstalacion",
-                table: "Cadenas",
-                column: "IdInstalacion");
+                name: "IX_Cubiertas_InstalacionIdInstalacion",
+                table: "Cubiertas",
+                column: "InstalacionIdInstalacion");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cubiertas_IdInstalacion",
+                name: "IX_Cubiertas_UbicacionIdUbicacion",
                 table: "Cubiertas",
-                column: "IdInstalacion");
+                column: "UbicacionIdUbicacion");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cubiertas_IdUbicacion",
-                table: "Cubiertas",
+                name: "IX_Instalaciones_IdUbicacion",
+                table: "Instalaciones",
                 column: "IdUbicacion");
 
             migrationBuilder.CreateIndex(
@@ -286,11 +306,6 @@ namespace backend_API.Migrations
                 name: "IX_Ubicaciones_IdCliente",
                 table: "Ubicaciones",
                 column: "IdCliente");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ubicaciones_IdInstalacion",
-                table: "Ubicaciones",
-                column: "IdInstalacion");
         }
 
         /// <inheritdoc />
@@ -312,13 +327,13 @@ namespace backend_API.Migrations
                 name: "Proyectos");
 
             migrationBuilder.DropTable(
+                name: "Instalaciones");
+
+            migrationBuilder.DropTable(
                 name: "Ubicaciones");
 
             migrationBuilder.DropTable(
                 name: "Clientes");
-
-            migrationBuilder.DropTable(
-                name: "Instalaciones");
         }
     }
 }

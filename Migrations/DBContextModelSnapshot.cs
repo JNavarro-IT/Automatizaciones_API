@@ -81,7 +81,7 @@ namespace backend_API.Migrations
                     b.Property<double>("PotenciaString")
                         .HasColumnType("float");
 
-                    b.Property<double>("TensiónString")
+                    b.Property<double>("TensionString")
                         .HasColumnType("float");
 
                     b.HasKey("IdCadena");

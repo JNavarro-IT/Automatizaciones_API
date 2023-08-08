@@ -73,7 +73,7 @@ namespace backend_API.Controllers
         public async Task<ActionResult<string>> CrearReferenciaAsync()
         {
 
-            var proyectosList = await _proyectoRepository.GetEntitiesListAsync();
+            var proyectosList = await _proyectoRepository.GetEntitiesList();
         
             if (proyectosList == null)
                 return NotFound("Lista de proyectos no encontrada");
@@ -94,21 +94,52 @@ namespace backend_API.Controllers
         [HttpGet("inversores")]
         public ActionResult<IEnumerable<InversorDto>> GetInversoresList()
         {
-            var inversoresList = _inversorRepository.GetEntitiesListAsync().Result.ToList();
+            var inversoresList = _inversorRepository.GetEntitiesList().Result.ToList();
             if (inversoresList == null)
                 return NotFound("No se ha encontrado ninguna lista de inversores");
 
             return Ok(inversoresList);
         }
 
+
+        [HttpPost("inversor/insert")]
+        public async Task<ActionResult<InversorDto>> InsertInversor(InversorDto Inversor)
+        {
+            if (Inversor == null)
+                return BadRequest("El inversor enviado no es válido");
+
+
+            bool created = await _inversorRepository.CreateEntity(Inversor);
+
+            if (!created)
+                return NotFound("Error al crear el inversor");
+
+            return Ok("Inversor creado: " + Inversor.IdInversor + ": " + Inversor.Modelo);
+        }
+
         [HttpGet("modulos")]
         public ActionResult<IEnumerable<ModuloDto>> GetModulosList()
         {
-            var modulosList = _moduloRepository.GetEntitiesListAsync().Result;
+            var modulosList = _moduloRepository.GetEntitiesList().Result;
             if (modulosList == null)
                 return NotFound("No se ha encontrado ninguna lista de módulos");
 
             return Ok(modulosList);
+        }
+
+        [HttpPost("modulo/insert")]
+        public async Task<ActionResult<ModuloDto>> InsertModulo(ModuloDto Modulo)
+        {
+            if (Modulo == null)
+                return BadRequest("El módulo enviado no es válido");
+
+
+            bool created = await _moduloRepository.CreateEntity(Modulo);
+
+            if (!created)
+                return NotFound("Error al crear el módulo");
+
+            return Ok("Modulo creado: " + Modulo.IdModulo + ": " + Modulo.Modelo);
         }
 
         [HttpPost("instalacion/calcular")]
@@ -125,5 +156,6 @@ namespace backend_API.Controllers
             
             return Ok(Instalacion);
         }
+
     }
 }
