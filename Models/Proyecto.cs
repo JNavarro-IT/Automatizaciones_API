@@ -23,9 +23,6 @@ namespace backend_API.Models
         [Column(TypeName = "date")]
         public DateTime Fecha { get; set; } = new();
 
-        [Column(TypeName = "varchar(100)")]
-        public string? Cups { get; set; }
-
         [Column(TypeName = "varchar(500)")]
         public string? Justificacion { get; set; } = null;
 

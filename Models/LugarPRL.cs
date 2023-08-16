@@ -9,7 +9,7 @@ namespace backend_API.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdLugar { get; set; }
+        public int IdLugarPRL { get; set; }
 
         [Required]
         public string Nombre { get; set; } = string.Empty;

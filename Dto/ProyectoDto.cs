@@ -9,8 +9,6 @@ namespace backend_API.Dto
         public string Referencia { get; set; } = string.Empty;
         public string Version { get; set; } = "1.0";
         public DateTime Fecha { get; set; } = new();
-        public string? Cups { get; set; }
-
         public string? Justificacion { get; set; }
         public double? Presupuesto { get; set; }
         public double? PresupuestoSyS { get; set; }

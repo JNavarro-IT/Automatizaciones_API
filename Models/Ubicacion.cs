@@ -50,6 +50,10 @@ namespace backend_API.Models
         [Column(TypeName = "float")]
         public double Longitud { get; set; } = 0;
 
+        [Required]
+        [Column(TypeName = "varchar(100)")]
+        public string Cups { get; set; } = string.Empty;
+
         //RELATIONS
         [ForeignKey("IdCliente")]
         public Cliente Cliente { get; set; } = new();

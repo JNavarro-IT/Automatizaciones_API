@@ -14,6 +14,7 @@ namespace backend_API.Dto
         public double Superficie { get; set; } = 0;
         public double Latitud { get; set; } = 0;
         public double Longitud { get; set; } = 0;
+        public string Cups { get; set; } = string.Empty;
         public int IdCliente { get; set; } = new();
         public int IdInstalacion { get; set; } = new();
         public int? IdProyecto { get; set; }

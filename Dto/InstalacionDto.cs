@@ -1,5 +1,4 @@
 ﻿
-using backend_API.Models;
 using backend_API.Utilities;
 
 namespace backend_API.Dto
@@ -25,7 +24,7 @@ namespace backend_API.Dto
         public int? TotalCadenas { get; set; }
 
         //RELATIONS
-        public IList<Cubierta> Cubiertas { get; set; } = new List<Cubierta>();
+        public IList<CubiertaDto> Cubiertas { get; set; } = new List<CubiertaDto>();
         public IList<CadenaDto> Cadenas { get; set; } = new List<CadenaDto>();
         public int IdUbicacion { get; set; } = 0;
         public int? IdProyecto { get; set; } = 0;
