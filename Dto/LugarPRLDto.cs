@@ -10,7 +10,7 @@ namespace backend_API.Dto
         public string Nombre { get; set; } = string.Empty;
         public string Tipo { get; set; } = string.Empty;
         public string Direccion { get; set; } = string.Empty;
-        public int CP { get; set; } = 0;
+        public int Cp { get; set; } = 0;
         public string Municipio { get; set; } = string.Empty;
         public string Provincia { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;

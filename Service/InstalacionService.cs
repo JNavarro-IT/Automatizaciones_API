@@ -46,6 +46,7 @@ namespace backend_API.Service
                 // Valores reiniciados en cada iteración
                 Instalacion.TotalModulos += c.NumModulos;
                 Instalacion.TotalCadenas += c.NumCadenas;
+                Instalacion.TotalInversores += c.NumInversores;
                 Instalacion.TotalPico += Math.Round(c.PotenciaPico, 2);
                 Instalacion.TotalNominal += c.Inversor.PotenciaNominal;
             }

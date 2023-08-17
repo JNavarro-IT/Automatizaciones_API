@@ -23,7 +23,7 @@ namespace backend_API.Models
 
         [Required]
         [Column(TypeName = "int")]
-        public int CP { get; set; } = 0;
+        public int Cp { get; set; } = 0;
 
         [Required]
         [Column(TypeName = "varchar(100)")]
