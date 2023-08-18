@@ -1,21 +1,11 @@
-using AutoMapper;
 using backend_API.Controllers;
-using backend_API.Dto;
-using backend_API.Models;
 using backend_API.Models.Data;
 using backend_API.Repository;
 using backend_API.Service;
 using backend_API.Utilities;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Formats.Asn1;
-using System.Globalization;
 using System.Reflection;
-using System.Text;
 
 internal class Program
 {
@@ -64,7 +54,7 @@ internal class Program
      .AddEndpointsApiExplorer()
      .AddDbContext<DBContext>(options =>
      {
-         var connection = builder.Configuration.GetConnectionString("DevConnection");
+         var connection = builder.Configuration.GetConnectionString("ProdConnection");
 
          options.UseSqlServer(connection, sqlOptions => sqlOptions.EnableRetryOnFailure());
 /*
