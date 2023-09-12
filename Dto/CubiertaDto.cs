@@ -2,19 +2,18 @@
 
 namespace backend_API.Dto
 {
-    //CLASE DTO QUE TRANSPORTA DATOS DE LA ENTIDAD CUBIERTA
-    public class CubiertaDto : DtoBase
-    {
-        public int? IdCubierta { get; set; }
-        public string? MedidasColectivas { get; set; } = string.Empty;
-        public string? Accesibilidad { get; set; } = string.Empty;
-        public string? Material { get; set; } = string.Empty;
+   //CLASE DTO QUE TRANSPORTA DATOS DE LA ENTIDAD CUBIERTA
+   public class CubiertaDto : DtoBase
+   {
+      public int? IdCubierta { get; set; }
+      public string MedidasColectivas { get; set; } = string.Empty;
+      public string Accesibilidad { get; set; } = string.Empty;
+      public string Material { get; set; } = string.Empty;
 
-        //RELATIONS
-        public int? Ubicacion { get; set; } = new();
-        public int? Instalacion { get; set; } = new();
+      //RELATIONS
+      public int? IdInstalacion { get; set; }
 
-        //CONSTRUCTOR POR DEFECTO
-        public CubiertaDto() { }
-    }
+      //CONSTRUCTOR POR DEFECTO
+      public CubiertaDto() { }
+   }
 }

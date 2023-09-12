@@ -1,30 +1,70 @@
 {
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:5273/UsersAPI/hi",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:5173;http://localhost:5273"
-    },
-    "backend_API": {
+    "Development": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:5173;http://localhost:5273"
+      "applicationUrl": "http://localhost:5173;https://localhost:5273",
+      "sqlDebugging": true,
+      "hotReloadEnabled": true,
+      "jsWebView2Debugging": true,
+      "nativeDebugging": true,
+      "publishAllPorts": true
+    },
+
+    "ISS Development": {
+      "commandName": "IISExpress",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "httpPort": 5173,
+      "sqlDebugging": true,
+      "hotReloadEnabled": true,
+      "jsWebView2Debugging": true,
+      "nativeDebugging": true,
+      "publishAllPorts": true,
+      "authenticationMode": "None"
+    },
+
+    "ISS Staging": {
+      "commandName": "IIS",
+      "workingDirectory": "C:/inetpub/wwwroot/",
+      "launchBrowser": true,
+      "launchUrl": "https://EWD5090LS.com:5174/",
+      "ancmHostingModel": "InProcess",
+      "authenticationMode": "Windows",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      },
+      "dotnetRunMessages": false,
+      "sqlDebugging": true,
+      "remoteDebugEnabled": false,
+      "hotReloadEnabled": true,
+      "applicationUrl": "http://EWD5090LS.com:5173/;https://EWD5090LS:5273/",
+      "sslPort": 7777
+
+    },
+
+    "ISS Production": {
+      "commandName": "IIS",
+      "workingDirectory": "ftp://192.168.2.250:23/",
+      "launchBrowser": true,
+      "launchUrl": "https://comparador.lideraenergia.com:722/api/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
-    "windowsAuthentication": false,
+    "windowsAuthentication": true,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "https://comparador.lideraenergia.com:722/api/",
+      "sslPort": 0
+    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:27443",
+      "applicationUrl": "http://EWD5090LS:5173/; https://EWD5090LS:5273/",
       "sslPort": 44379
     }
   }

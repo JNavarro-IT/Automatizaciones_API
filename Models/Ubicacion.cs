@@ -1,70 +1,96 @@
-﻿using backend_API.Utilities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend_API.Utilities;
 
 namespace backend_API.Models
 {
-    // CLASE QUE REPRESENTA LA UBICACION DEL PROYECTO
-    [Table("Ubicaciones")]
-    public class Ubicacion : ModelBase
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdUbicacion { get; set; }
+   // CLASE QUE REPRESENTA LA UBICACION DEL PROYECTO
+   [Table("Ubicaciones")]
+   public class Ubicacion : ModelBase
+   {
+      [Key]
+      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+      public int IdUbicacion { get; set; }
 
-        [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string RefCatastral { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(100)")]
+      public string RefCatastral { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "varchar(max)")]
-        public string Direccion { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(250)")]
+      public string Calle { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "int")]
-        public int CP { get; set; } = 0;
+      [Required]
+      [Column(TypeName = "varchar(15)")]
+      public string Numero { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string Municipio { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(15)")]
+      public string Bloque { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "varchar(50)")]
-        public string Provincia { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(15)")]
+      public string Portal { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "float")]
-        public double Superficie { get; set; } = 0;
+      [Required]
+      [Column(TypeName = "varchar(20)")]
+      public string Escalera { get; set; } = string.Empty;
 
-        [Column(TypeName = "float")]
-        public double? CoordXUTM { get; set; }
+      [Required]
+      [Column(TypeName = "varchar(20)")]
+      public string Piso { get; set; } = string.Empty;
 
-        [Column(TypeName = "float")]
-        public double? CoordYUTM { get; set; }
+      [Required]
+      [Column(TypeName = "varchar(15)")]
+      public string Puerta { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "float")]
-        public double Latitud { get; set; } = 0;
+      [Required]
+      [Column(TypeName = "int")]
+      public int Cp { get; set; } = 0;
 
-        [Required]
-        [Column(TypeName = "float")]
-        public double Longitud { get; set; } = 0;
+      [Required]
+      [Column(TypeName = "varchar(100)")]
+      public string Municipio { get; set; } = string.Empty;
 
-        [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string Cups { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(50)")]
+      public string Provincia { get; set; } = string.Empty;
 
-        //RELATIONS
-        [ForeignKey("IdCliente")]
-        public Cliente Cliente { get; set; } = new();
+      [Required]
+      [Column(TypeName = "float")]
+      public double Superficie { get; set; } = 0;
 
-        public Instalacion? Instalacion { get; set; }
+      [Column(TypeName = "float")]
+      public double? CoordXUTM { get; set; }
 
-        public Proyecto? Proyecto { get; set; }
+      [Column(TypeName = "float")]
+      public double? CoordYUTM { get; set; }
 
-        public List<Cubierta> Cubiertas { get; set; } = new();
+      [Required]
+      [Column(TypeName = "float")]
+      public double Latitud { get; set; } = 0;
 
-        //CONSTRUCTOR POR DEFECTO
-        public Ubicacion() { }
-    }
+      [Required]
+      [Column(TypeName = "float")]
+      public double Longitud { get; set; } = 0;
+
+      [Required]
+      [Column(TypeName = "varchar(100)")]
+      public string Cups { get; set; } = string.Empty;
+
+      [Required]
+      [Column(TypeName = "varchar(100)")]
+      public string Empresa { get; set; } = string.Empty;
+
+      [Required]
+      [Column(TypeName = "varchar(50)")]
+      public string Cif { get; set; } = string.Empty;
+
+      //RELATIONS
+      [ForeignKey("IdCliente")]
+      public Cliente Cliente { get; set; } = new();
+
+      //CONSTRUCTOR POR DEFECTO
+      public Ubicacion() { }
+   }
 }
