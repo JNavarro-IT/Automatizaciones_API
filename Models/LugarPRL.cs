@@ -19,7 +19,11 @@ namespace backend_API.Models
 
       [Required]
       [Column(TypeName = "varchar(100)")]
-      public string Direccion { get; set; } = string.Empty;
+      public string Calle { get; set; } = string.Empty;
+
+      [Required]
+      [Column(TypeName = "varchar(10)")]
+      public string Numero { get; set; } = string.Empty;
 
       [Required]
       [Column(TypeName = "int")]

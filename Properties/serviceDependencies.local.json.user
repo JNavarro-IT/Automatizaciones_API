@@ -4,9 +4,13 @@
       "restored": true,
       "restoreTime": "2023-09-01T13:53:54.288898Z"
     },
-    "mssql1": {
+    "secrets1": {
       "restored": true,
-      "restoreTime": "2023-09-04T02:35:53.5398501Z"
+      "restoreTime": "2023-09-27T21:44:51.3069295Z"
+    },
+    "appInsights1": {
+      "restored": true,
+      "restoreTime": "2023-10-02T16:59:04.0903248Z"
     }
   },
   "parameters": {}

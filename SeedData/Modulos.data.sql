@@ -1,5 +1,4 @@
 ﻿
-
 SET IDENTITY_INSERT [dbo].[Modulos] ON
 INSERT INTO [dbo].[Modulos] ([IdModulo], [Fabricante], [Modelo], [Potencia], [Vmp], [Imp], [Isc], [Vca], [Eficiencia], [Dimensiones], [Peso], [NumCelulas], [Tipo], [TaTONC], [SalidaPotencia], [TensionVacio], [Tolerancia]) VALUES (1, N'PHONOSOLAR', N'PS460M4-24/TH
 ', 460, 41.79, 11.01, 11.58, 49.52, 0, N'0', 0, 0, N'', N'', 0, 0, 0)

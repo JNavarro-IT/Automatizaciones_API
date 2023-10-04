@@ -11,6 +11,9 @@
     <AnalysisLevel>6.0</AnalysisLevel>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <LangVersion>preview</LangVersion>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,9 +27,17 @@
 
   <ItemGroup>
     <Compile Remove="Files\**" />
+    <Compile Remove="Resources\Subvenciones\NewFolder\**" />
     <Content Remove="Files\**" />
+    <Content Remove="Resources\Subvenciones\NewFolder\**" />
     <EmbeddedResource Remove="Files\**" />
+    <EmbeddedResource Remove="Resources\Subvenciones\NewFolder\**" />
     <None Remove="Files\**" />
+    <None Remove="Resources\Subvenciones\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="weplb.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,11 +50,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Properties\launchSettings.json" />
+    <Content Include="Properties\launchSettings.json">
+      <Generator>NSwagCodeGenerator</Generator>
+      <LastGenOutput>launchSettings.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="SeedData\SeedingScript.csv" />
+    <EmbeddedResource Include="SeedData\BaseDB.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,24 +66,27 @@
     <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="DocX" Version="2.5.0" />
     <PackageReference Include="itext7" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.20" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.22" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="MimeKit" Version="4.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="ProjNet" Version="2.0.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.12.2" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\launchSettings.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>launchSettings.json</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

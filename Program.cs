@@ -1,20 +1,25 @@
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using backend_API.Controllers;
 using backend_API.Models.Context;
 using backend_API.Repository;
 using backend_API.Service;
 using backend_API.Utilities;
-using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using DocumentFormat.OpenXml.Vml.Office;
+using ClosedXML;
+using System.Net.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
+using Microsoft.Identity.Client;
 
 internal class Program
 {
    private static void Main(string[] args)
    {
-      //CLASE DE ARRANQUE Y CONFIGURACIÓN DE LA API
+      // CLASE DE ARRANQUE Y CONFIGURACIÓN DE LA API
       var builder = WebApplication.CreateBuilder(args);
 
-      //MARCADORES DUMMYV PARA ENSAMBLADO DE TIPOS
+      // MARCADORES DUMMY PARA ENSAMBLADO DE TIPOS
       Type baseModelType = typeof(ModelBase);
       Type baseDtoType = typeof(DtoBase);
       var assembly = Assembly.GetExecutingAssembly();
@@ -27,15 +32,11 @@ internal class Program
          Type entityType = entityTypes[i];
          Type dtoType = dtoTypes[i];
 
-         if (dtoType == null || entityType == null)
-         {
-            Console.Error.WriteLine("ERROR EN LA ENTIDAD O DTO");
-            continue;
-         }
+         if (dtoType == null || entityType == null) continue;
 
          Type repositoryInterface = typeof(IBaseRepository<,>).MakeGenericType(entityType, dtoType);
-         Type repository = typeof(BaseRepository<,>).MakeGenericType(entityType, dtoType);
          Type controllerInterface = typeof(IBaseController<,>).MakeGenericType(entityType, dtoType);
+         Type repository = typeof(BaseRepository<,>).MakeGenericType(entityType, dtoType);
          Type controller = typeof(BaseController<,>).MakeGenericType(entityType, dtoType);
 
          builder.Services
@@ -43,111 +44,95 @@ internal class Program
              .AddScoped(controller);
       }
 
-      // AUTOMAPPER PARA RELACION MODELO-DTO Y SEED-DATA CON .CSV
+      // AUTOMAPPER PARA RELACIÓN MODELO-DTO Y SEED-DATA CON SQL
       var mapper = AutoMapperConfig.Initialize();
 
       builder.Services
-      .AddTransient<IInstalacionService, InstalacionService>()
-      .AddTransient<IExcelServices, EXCELService>()
-      .AddTransient<IWORDService, WORDService>()
-      .AddTransient<IPVGISService, PVGISService>()
-      .AddTransient<IPDFService, PDFService>()
-      .AddSingleton(mapper)
-      .AddHttpClient()
-      .AddEndpointsApiExplorer()
-
-      .AddDbContext<DBContext>(options =>
+         .AddSingleton(mapper)
+         .AddTransient<IProjectService, ProjectService>()
+         .AddTransient<IEXCELServices, EXCELService>()
+         .AddTransient<IWORDService, WORDService>()
+         .AddTransient<IPVGISService, PVGISService>()
+         .AddTransient<IPDFService, PDFService>()
+         .AddHttpClient();
+     
+      builder.Services.AddDbContext<DBContext>(options =>
       {
          var connection = "";
          if (builder.Environment.IsDevelopment())
-            connection = builder.Configuration.GetConnectionString("DevConnection");
-         else if(builder.Environment.IsStaging())
-            connection = builder.Configuration.GetConnectionString("DevConnection");
-         else
-            connection = builder.Configuration.GetConnectionString("MasterConnection");
-
-         options.UseSqlServer(connection, sqlOptions => sqlOptions.EnableRetryOnFailure());
-         /*
-         var scvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
          {
-               BadDataFound = null          
-         };
-
-         using var dbContext = new DBContext((DbContextOptions<DBContext>)options.Options);
-         using var reader = new StreamReader("SeedData/aa.csv");
-         using var csv = new CsvReader(reader, scvConfig);
-         csv.Read();
-
-         var modulos = csv.GetRecords<Modulo>();
-         mapper.Map<Modulo>(modulos.ToList());
-         dbContext.Modulos.AddRange(modulos);
-         dbContext.SaveChanges();*/
-      })
-
-     .AddCors(options =>
-     {
-        options.AddPolicy("Acceso API", app =>
-          {
-             app.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
-            .AllowAnyHeader()
-            .DisallowCredentials()
-            .Build(); ;
-          });
-     })
-
-     .Configure<CookiePolicyOptions>(options =>
-     {
-        options.MinimumSameSitePolicy = SameSiteMode.None;
-        options.HttpOnly = HttpOnlyPolicy.None;
-        options.Secure = CookieSecurePolicy.None;
-     })
-
-     .AddControllers()
-     .AddControllersAsServices()
-     .AddNewtonsoftJson(options =>
-     {
-        options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-        options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
-        options.UseCamelCasing(false);
-     });
+            connection = builder.Configuration.GetConnectionString("DevConnection"); 
+            builder.Services.Configure<KestrelServerOptions>(x => x.AllowSynchronousIO = true);
+         }
+         else if (builder.Environment.IsStaging())
+         {
+            connection = builder.Configuration.GetConnectionString("DevConnection");
+            builder.Services.Configure<KestrelServerOptions>(x => x.AllowSynchronousIO = true);
+         }
+         else
+         {
+            connection = builder.Configuration.GetConnectionString("MasterConnection");
+            builder.Services.Configure<IISServerOptions>(opt =>
+            {
+               opt.AllowSynchronousIO = true;
+               opt.MaxRequestBodyBufferSize = 10024;
+               opt.MaxRequestBodySize = 10024;
+            });
+         }
+      
+         options.UseSqlServer(connection, sqlOptions => sqlOptions.EnableRetryOnFailure());
+      });
+      
+      builder.Services.AddControllers();
+      builder.Services.AddEndpointsApiExplorer();
 
       var app = builder.Build();
-
       if (app.Environment.IsDevelopment())
       {
-         app.UseDeveloperExceptionPage();
-         app.UseStatusCodePages();
-         app.UseCors("Acceso API");
-
-         Console.WriteLine("Utilizando perfil de Desarrollo.");
-         builder.Configuration
-                  .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
-      } 
-      else if(app.Environment.IsStaging())
+         Console.WriteLine("Utilizando perfil de Desarrollo...");
+         builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
+         app.UseStatusCodePages().UseDeveloperExceptionPage();
+    
+      }
+      else if (app.Environment.IsStaging())
       {
-         Console.WriteLine("Utilizando perfil de Producción.");
-         builder.Configuration
-             .AddJsonFile("appsettings.Staging.json", optional: false, reloadOnChange: true);
-         app.UseDefaultFiles();
-         app.UseStaticFiles();
+         Console.WriteLine("Utilizando perfil de Staging...");
+         builder.Configuration.AddJsonFile("appsettings.Staging.json", optional: false, reloadOnChange: true);
+       
       }
       else
       {
-         Console.WriteLine("Utilizando perfil de Producción.");
-         builder.Configuration
-             .AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true);
-     
+         Console.WriteLine("Utilizando perfil de Producción...");
+         builder.Configuration.AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true);
+        
       }
-
-      app.UseHttpsRedirection()
-      .UseRouting()
-      .UseEndpoints(endpoints =>
+      
+      app.Use((context, next) =>
       {
-         endpoints.MapControllers();
-      })
-      .UseCookiePolicy();
+         if (context.Request.Method == "OPTIONS")
+         { 
+            context.Request.Headers.Clear(); 
+            context.Request.Headers.TryGetValue("Origin", out var origins);
+            context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
+            context.Response.Headers.Add("Access-Control-Allow-Origin", origins);
+            return Task.CompletedTask;
+         }
+
+         return next(context);
+      });
+      
+
+      app.UseStaticFiles()
+         .UseCors(opt =>
+         {
+            opt.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .WithExposedHeaders("*");
+         })
+         .UseRouting()
+         .UseEndpoints(endpoints => endpoints.MapControllers());
       app.Run();
    }
 }

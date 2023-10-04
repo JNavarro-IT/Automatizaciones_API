@@ -15,6 +15,8 @@ namespace backend_API.Models.Context
       public DbSet<Proyecto> Proyectos { get; set; }
       public DbSet<Ubicacion> Ubicaciones { get; set; }
 
+      public DbSet<Error> Errores { get; set; }
+
       public DBContext(DbContextOptions<DBContext> options) : base(options) { }
 
       //API FLUENTE => PARA INDICAR EXPLICITAMENTE LOS PK, FK, COSTRAINST

@@ -9,13 +9,13 @@ namespace backend_API.Controllers
    [Route("[controller]")]
    public class MicroservicesController : ControllerBase
    {
-      private readonly IExcelServices _excelServices;
+      private readonly IEXCELServices _excelServices;
       private readonly IWORDService _wordService;
       private readonly IPVGISService _pvgisService;
       private readonly IPDFService _pdfService;
 
       //CONSTRUCTOR POR PARÁMETROS
-      public MicroservicesController(IExcelServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService)
+      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService)
       {
          _excelServices = excelServices;
          _wordService = wordService;
@@ -23,7 +23,7 @@ namespace backend_API.Controllers
          _pdfService = pdfService;
       }
 
-      // PETICIÓN DE GENERAR ARCHIVO EXCEL
+      // PETICIÓN PARA GENERAR ARCHIVO EXCEL
       [HttpPost("crearExcel")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
       [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -35,23 +35,24 @@ namespace backend_API.Controllers
 
          var rutaNewExcel = _excelServices.CreateEXCEL(Proyecto);
 
-         if(rutaNewExcel == null)
+         if (rutaNewExcel == null)
             return NoContent();
 
          return Ok(rutaNewExcel);
       }
 
+      // PETICIÓN PARA CREAR MEMORIAS WORD
       [HttpPost("crearMemorias")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public async Task<ActionResult<string>> CrearMemorias(ProyectoDto Proyecto)
+      public ActionResult<string> CrearMemorias(ProyectoDto Proyecto)
       {
          if (Proyecto == null)
             return NotFound("El proyecto no está registrado en la base de datos");
 
-         var newRuta = await _wordService.CreateMemorias(Proyecto);
+         var newRuta = _wordService.InitServiceWORD(Proyecto);
 
          if (newRuta == null)
             return StatusCode(503, "Error al generar los archivos WORDs. ERROR: " + newRuta);
@@ -59,6 +60,7 @@ namespace backend_API.Controllers
          return Ok("Memorias creadas con éxito. RUTA: " + newRuta);
       }
 
+      // PETICIÓN PARA CREAR ARCHIVO PDF EN PVGIS
       [HttpPost("crearPVGIS")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
       [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,25 +73,26 @@ namespace backend_API.Controllers
 
          var newRuta = _pvgisService.CreatePVGIS(Proyecto);
 
-         if(newRuta == null)
+         if (newRuta == null)
             return StatusCode(503, "Error al generar el archivo del PVGIS. ERROR: " + newRuta);
 
          return Ok("Archivo PVGIS creado con éxito. RUTA: " + newRuta);
       }
 
-      [HttpPost("crearPDF")]
+      // PETICIÓN PARA OBTENER LOS DOUMENTOS DE LEGALIZACIONES
+      [HttpPost("crearLegalizaciones")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string> CrearPDFs(ProyectoDto Proyecto)
+      public ActionResult<string> CrearLegalizaciones(ProyectoDto Proyecto)
       {
          if (Proyecto == null)
             return NotFound("El proyecto no está registrado en la base de datos");
 
          var newRuta = _pdfService.InitFillPDF(Proyecto);
 
-         if (newRuta == null || !newRuta.Contains(".pdf"))
+         if (newRuta == null)
             return StatusCode(503, "Error al generar los archivos de subvenciones. ERROR: " + newRuta);
 
          return Ok("Archivos de subvenciones creados con éxito. RUTA: " + newRuta);

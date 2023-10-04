@@ -5,7 +5,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>Development</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\Properties\PublishProfiles\FolderProfile1.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\Properties\PublishProfiles\IISProfile.pubxml</NameOfLastUsedPublishProfile>
+    <_SelectedScaffolderID>ApiControllerEmptyScaffolder</_SelectedScaffolderID>
+    <_SelectedScaffolderCategoryPath>root/Common</_SelectedScaffolderCategoryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

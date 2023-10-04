@@ -20,6 +20,8 @@ namespace backend_API.Dto
       public double? SalidaPotencia { get; set; }
       public double? TensionVacio { get; set; }
       public double? Tolerancia { get; set; }
+      public string? Dimensiones { get; set; }
+      public double? Peso { get; set; }
 
       //CONSTRUCTOR POR DEFECTO
       public ModuloDto() { }

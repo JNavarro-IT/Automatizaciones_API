@@ -5,67 +5,42 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5173;https://localhost:5273",
+      "applicationUrl": "http://localhost:5173",
       "sqlDebugging": true,
       "hotReloadEnabled": true,
       "jsWebView2Debugging": true,
       "nativeDebugging": true,
       "publishAllPorts": true
     },
-
-    "ISS Development": {
-      "commandName": "IISExpress",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "httpPort": 5173,
-      "sqlDebugging": true,
-      "hotReloadEnabled": true,
-      "jsWebView2Debugging": true,
-      "nativeDebugging": true,
-      "publishAllPorts": true,
-      "authenticationMode": "None"
-    },
-
     "ISS Staging": {
-      "commandName": "IIS",
-      "workingDirectory": "C:/inetpub/wwwroot/",
-      "launchBrowser": true,
-      "launchUrl": "https://EWD5090LS.com:5174/",
-      "ancmHostingModel": "InProcess",
-      "authenticationMode": "Windows",
+      "commandName": "IISExpress",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "dotnetRunMessages": false,
-      "sqlDebugging": true,
-      "remoteDebugEnabled": false,
-      "hotReloadEnabled": true,
-      "applicationUrl": "http://EWD5090LS.com:5173/;https://EWD5090LS:5273/",
-      "sslPort": 7777
-
+      "nativeDebugging": true,
+      "sqlDebugging": true
     },
-
-    "ISS Production": {
+    "IIS Production": {
       "commandName": "IIS",
-      "workingDirectory": "ftp://192.168.2.250:23/",
       "launchBrowser": true,
-      "launchUrl": "https://comparador.lideraenergia.com:722/api/",
+      "launchUrl": "http://192.168.2.250:8087",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
-      }
+      },
+      "nativeDebugging": true,
+      "sqlDebugging": true
     }
   },
   "iisSettings": {
     "windowsAuthentication": true,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "https://comparador.lideraenergia.com:722/api/",
+      "applicationUrl": "http://192.168.2.250:8086",
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://EWD5090LS:5173/; https://EWD5090LS:5273/",
-      "sslPort": 44379
+      "applicationUrl": "http://EWD5090LS:5173/",
+      "sslPort": 0
     }
   }
 }

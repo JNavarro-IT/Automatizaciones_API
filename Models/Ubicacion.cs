@@ -17,31 +17,42 @@ namespace backend_API.Models
       public string RefCatastral { get; set; } = string.Empty;
 
       [Required]
+      [Column(TypeName = "varchar(20)")]
+      public string Antiguedad { get; set; } = string.Empty;
+
+      [Required]
+      [Column(TypeName = "varchar(50)")]
+      public string Via { get; set; } = string.Empty;
+
+      [Required]
       [Column(TypeName = "varchar(250)")]
       public string Calle { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(15)")]
+      [Column(TypeName = "varchar(10)")]
       public string Numero { get; set; } = string.Empty;
+      [Required]
+      [Column(TypeName = "varchar(10)")]
+      public string Km { get; set; } = string.Empty;
 
       [Required]
       [Column(TypeName = "varchar(15)")]
       public string Bloque { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(15)")]
+      [Column(TypeName = "varchar(10)")]
       public string Portal { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(20)")]
+      [Column(TypeName = "varchar(10)")]
       public string Escalera { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(20)")]
+      [Column(TypeName = "varchar(10)")]
       public string Piso { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(15)")]
+      [Column(TypeName = "varchar(10)")]
       public string Puerta { get; set; } = string.Empty;
 
       [Required]
@@ -53,8 +64,12 @@ namespace backend_API.Models
       public string Municipio { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(50)")]
+      [Column(TypeName = "varchar(100)")]
       public string Provincia { get; set; } = string.Empty;
+
+      [Required]
+      [Column(TypeName = "varchar(100)")]
+      public string CCAA { get; set; } = string.Empty;
 
       [Required]
       [Column(TypeName = "float")]
@@ -78,19 +93,21 @@ namespace backend_API.Models
       [Column(TypeName = "varchar(100)")]
       public string Cups { get; set; } = string.Empty;
 
-      [Required]
       [Column(TypeName = "varchar(100)")]
       public string Empresa { get; set; } = string.Empty;
 
-      [Required]
       [Column(TypeName = "varchar(50)")]
       public string Cif { get; set; } = string.Empty;
 
-      //RELATIONS
+      [Column(TypeName = "varchar(50)")]
+      public string Cau { get; set; } = string.Empty;
+
+
+      // RELATIONS
       [ForeignKey("IdCliente")]
       public Cliente Cliente { get; set; } = new();
 
-      //CONSTRUCTOR POR DEFECTO
+      // CONSTRUCTOR POR DEFECTO
       public Ubicacion() { }
    }
 }

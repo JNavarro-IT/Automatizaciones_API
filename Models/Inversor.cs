@@ -56,7 +56,7 @@ namespace backend_API.Models
       [Column(TypeName = "float")]
       public double? Rendimiento { get; set; } = 0;
 
-    
+
 
 
       //CONSTRUCTOR POR DEFECTO

@@ -1,279 +1,246 @@
-﻿using iText.Forms.Fields;
-using iText.Forms;
-using iText.Kernel.Pdf;
+﻿using System.Globalization;
 using backend_API.Dto;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Xceed.Words.NET;
-using Xceed.Document.NET;
+using iText.Forms;
+using iText.Forms.Fields;
+using iText.Kernel.Pdf;
 
 namespace backend_API.Service
 {
+   // INTERFAZ QUE FUNCIONA COMO SERVICIO PARA OTRAS CLASES MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IPDFService
    {
       public string InitFillPDF(ProyectoDto Proyecto);
-      public string FillAdecuacion(ProyectoDto Proyecto, string rutaDestino);
-      public string FillAnexo(ProyectoDto Proyecto, string rutaDestino);
-      public string FillCAU(ProyectoDto Proyecto, string rutaDestino);
-      public string FillCertificadoBT(ProyectoDto Proyecto, string rutaDestino);
-      public void FillOCA(ProyectoDto Proyecto, PdfAcroForm form);
-      public void FillDate(PdfAcroForm form);
-
+      public string FillPDFs(ProyectoDto Proyecto, string[] pathsOriginLegal, string[] pathsEndLegal);
+      public void FillUbicacion(UbicacionDto Ubicacion, IDictionary<string, PdfFormField> fieldsMap);
+      public void FillInstalacion(InstalacionDto Instalacion, IDictionary<string, PdfFormField> fieldsMap);
+      public void FillDate(IDictionary<string, PdfFormField> fieldsMap);
    }
-   public class PDFService : IPDFService
+
+   public class PDFService(IProjectService projectService, IWORDService wordService) : IPDFService
    {
-      public PDFService() { }
+      public readonly IProjectService _projectService = projectService;
+      public readonly IWORDService _wordService = wordService;
+      public Dictionary<string, PdfFormField> FieldsMap = new();
+      public string pathBase = "Resources\\Subvenciones\\";
 
       public string InitFillPDF(ProyectoDto Proyecto)
       {
-         string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-         string folder = "Legalizaciones_" + Proyecto.Cliente.Nombre;
-         string carpetaDestino = Path.Combine(downloads, folder);
-         Directory.CreateDirectory(carpetaDestino);
-         string carpetaOriginal = "Resources/Legalizaciones";
-         string[]? rutasOriginal = Directory.GetFiles(carpetaOriginal);
+         var downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+         var folderEnd = Path.Combine(downloads, ("Documentacion_" + Proyecto.Referencia));
+         Directory.CreateDirectory(folderEnd);
 
          try
          {
-            foreach (string ruta in rutasOriginal)
+            if (Proyecto != null)
             {
-               string nombreFile = Path.GetFileName(ruta) + "_" + Proyecto.Cliente.Nombre;
-               string rutaDestino = Path.Combine(carpetaDestino, nombreFile);
-               File.Copy(ruta, rutaDestino, true);
-            }
+               UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+               var Instalacion = Proyecto.Instalacion;
 
-            string[]? rutasDestino = Directory.GetFiles(carpetaDestino);
-            FillAdecuacion(Proyecto, rutasDestino[0] + ".docx");
-            FillAnexo(Proyecto, rutasDestino[1] + ".pdf");
-            FillCAU(Proyecto, rutasDestino[2] + ".pdf");
-            FillCertificadoBT(Proyecto, rutasDestino[3] + ".pdf");
-        
-            return carpetaDestino;
-         }
-         catch (Exception error)
-         {
-            return "No se han generado los archivos de Legalizaciones " + error.Message;
-         }
-      }
-
-      public string FillAdecuacion(ProyectoDto Proyecto, string rutaDestino)
-      {
-         var Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Today.Month);
-
-         Dictionary<string, string?> reemplazos = new()
-         {
-            { "#Nombre", Proyecto.Cliente.Nombre },
-            { "#Cups", Proyecto.Cliente.Ubicaciones[0].Cups },
-            { "#Dia", DateTime.Today.Day.ToString()},
-            { "#Mes", Mes },
-            { "#Año", DateTime.Today.Year.ToString() },
-         };
-
-         using (DocX doc = DocX.Load(rutaDestino))
-         {
-            foreach (Paragraph parrafo in doc.Paragraphs)
-            {
-               foreach (var kvp in reemplazos)
+               if (Ubicacion.CCAA != null || Ubicacion.CCAA != "")
                {
-                  if (parrafo.Text.Contains(kvp.Key))
-                     doc.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-               }
-            }    
-            doc.Save();
-            return (rutaDestino);
-         }
+                  var folderCCAA = pathBase + Ubicacion.CCAA;
+                  List<string> pathsOrigin = Directory.GetFiles(folderCCAA).ToList();
+                 
+                  if (Ubicacion.CCAA.Equals("Andalucia")) 
+                  { 
+                     var porcentaje = (Instalacion.ConsumoEstimado / Instalacion.GeneracionAnual) * 100;
+
+                     if (porcentaje >= 78) pathsOrigin.Remove(folderCCAA + "/2AND_NAME.docx");
+                        else pathsOrigin.Remove(folderCCAA + "/1AND_NAME.docx");
+
+                     var Provincia = _projectService.WithoutTildes(Ubicacion.Provincia);
+                     if (Provincia.Equals("Jaen")) 
+                     {
+                        bool eco3 = _projectService.CheckMunicipio(Ubicacion);
+                        
+                        if (eco3) pathsOrigin = new(){ folderCCAA + "/AND1_NAME.pdf" };
+                           else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
+                     
+                     } else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
+                  }
+                  _projectService.ClonarFiles(Proyecto, pathsOrigin.ToArray(), folderEnd);
+                  var pathsEndLegal = Directory.GetFiles(folderEnd);
+                  FillPDFs(Proyecto, pathsOrigin.ToArray(), pathsEndLegal);
+
+               } else return "ERROR => Se requiere de una CCAA para obtener el documento...";
+            } else return "ERROR => Proyecto erróneo: " + Proyecto;
+
+         } catch (Exception error) { return "ERROR => " + error.Message; }
+
+         if (folderEnd.Contains("ERROR")) return folderEnd;
+         else return "OK => Los archivos se crearon con éxito. RUTA: " + folderEnd;
       }
 
-      public string FillAnexo(ProyectoDto Proyecto, string rutaDestino)
+      public string FillPDFs(ProyectoDto Proyecto, string[] pathsOriginLegal, string[] pathsEndLegal)
       {
-         ClienteDto Cliente = Proyecto.Cliente;
-         UbicacionDto Ubicacion = Cliente.Ubicaciones[0];
-         var CpArray = Ubicacion.Cp.ToString().ToCharArray();
-         string fileAnexo = "Resources/Legalizaciones/Anexo_III.pdf";
-
-         using (PdfDocument pdfDoc = new(new PdfReader(fileAnexo), new PdfWriter(rutaDestino)))
+         if (Proyecto != null)
          {
-            PdfAcroForm form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-            FillCliente(Cliente, form);
-            FillUbicacion(Ubicacion, form);
-            var textField = (PdfTextFormField)form.GetField("denominacion");
-            var value = textField.GetValue() + Ubicacion.Municipio + ", " + Ubicacion.Provincia;
-            textField.SetValue(value);
-
-            for (int i = 0; i < 5; i++)
-            {
-               textField = (PdfTextFormField)form.GetField("cp" + i);
-               textField.SetValue(CpArray[i].ToString());
-               textField = (PdfTextFormField)form.GetField("cpBis" + i);
-               textField.SetValue(CpArray[i].ToString());
-            }
-            pdfDoc.Close();
-            return rutaDestino;
-         }
-         return rutaDestino;
-      }
-
-      public string FillCAU(ProyectoDto Proyecto, string rutaDestino)
-      {
-         string fileCAU = "Resources/Legalizaciones/CAU_RD244_2019.pdf";
-         using (PdfDocument pdfDoc = new(new PdfReader(fileCAU), new PdfWriter(rutaDestino)))
-         {
+            var Cliente = Proyecto.Cliente;
             var Ubicacion = Proyecto.Cliente.Ubicaciones[0];
-            var form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-            var textField = (PdfTextFormField)form.GetField("cups");
-            textField.SetValue(Ubicacion.Cups);
-            FillDate(form);
-            pdfDoc.Close();
-            return rutaDestino;
+            var Instalacion = Proyecto.Instalacion;
+            var Referencias = Proyecto.Referencia.Split("-");
+            var index = 0;
+
+            foreach (var path in pathsOriginLegal)
+            {
+               if (Path.GetExtension(path).Equals(".pdf"))
+               {
+                  using (PdfDocument pdfDoc = new(new PdfReader(path), new PdfWriter(pathsEndLegal[index])))
+                  {
+                     var acroForm = PdfAcroForm.GetAcroForm(pdfDoc, true);
+                     var fieldsMap = acroForm.GetAllFormFields();
+
+                     if (fieldsMap.ContainsKey("Referencia0"))
+                     {
+                        for (int i = 0; i < Referencias.Length; i++)
+                           ((PdfTextFormField)acroForm.GetField("Referencia" + i)).SetValue(Referencias[i]);
+
+                        var check = IsMonofasico(Instalacion.Vatimetro);
+                        if (check) ((PdfButtonFormField)acroForm.GetField("Monofasico")).SetRadio(true);
+                        else ((PdfButtonFormField)acroForm.GetField("Trifasico")).SetRadio(true);
+                     }
+
+                     FillCliente(Cliente, fieldsMap);
+                     FillUbicacion(Ubicacion, fieldsMap);
+                     FillInstalacion(Instalacion, fieldsMap);
+                     FillDate(fieldsMap);
+                     pdfDoc.Close();
+                  }
+               }
+               else if (Path.GetExtension(path).Equals(".docx"))
+               {
+                  string[] filesWord = [pathsEndLegal[0]];
+                  Dictionary<string, string?> MapWORD = _wordService.CreateMap(Proyecto);
+                  string result = _wordService.CreateMemorias(MapWORD, filesWord);
+               }
+               index++;
+            }
+            return "OK => Los archivos se han generado con éxito";
          }
+         else return "ERROR => el proyecto no es válido";
       }
 
-      public string FillCertificadoBT(ProyectoDto Proyecto, string rutaDestino)
+      // RELLENAR EL FORMULARIO CON LA FECHA ACTUAÑ
+      public void FillDate(IDictionary<string, PdfFormField> fieldsMap)
       {
-         string fileBT = "Resources/Legalizaciones/CertificadoBT.pdf";
-         var Cliente = Proyecto.Cliente;
-         var Ubicacion = Cliente.Ubicaciones[0];
-         var Instalacion = Proyecto.Instalacion;
+         var Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month).ToUpper();
 
-         using (PdfDocument pdfDoc = new(new PdfReader(fileBT), new PdfWriter(rutaDestino)))
+         if (fieldsMap.ContainsKey("Dia"))
          {
-            var form = PdfAcroForm.GetAcroForm(pdfDoc, true);
-            var textField = (PdfTextFormField)form.GetField("referencia0");
-            textField.SetValue(Proyecto.Referencia.Split("-")[0]);
-            textField = (PdfTextFormField)form.GetField("referencia1");
-            textField.SetValue(Proyecto.Referencia.Split("-")[1]);
-            textField = (PdfTextFormField)form.GetField("referencia2");
-            textField.SetValue(Proyecto.Referencia.Split("-")[2]);
-
-            FillCliente(Cliente, form);
-            FillUbicacion(Ubicacion, form);
-            FillInstalacion(Instalacion, form);
-            if (Instalacion.TotalNominal >= 25)
-               FillOCA(Proyecto, form);
-
-            FillDate(form);
-            pdfDoc.Close();
-            return rutaDestino;
+            ((PdfTextFormField)fieldsMap["Dia"]).SetValue(DateTime.Now.Day.ToString());
+            ((PdfTextFormField)fieldsMap["Mes"]).SetValue(Mes);
+            ((PdfTextFormField)fieldsMap["Año"]).SetValue(DateTime.Now.Year.ToString());
          }
       }
-     
-      public void FillOCA(ProyectoDto Proyecto,  PdfAcroForm form)
+
+      // RELLENA EL FORMULARIO CON LOS DATOS DE UN CLIENTE
+      public void FillCliente(ClienteDto? Cliente, IDictionary<string, PdfFormField> fieldsMap)
       {
-         var textField = (PdfTextFormField)form.GetField("OCA");
-         textField.SetValue(Proyecto.OCA);
-         textField = (PdfTextFormField)form.GetField("numOCA");
-         textField.SetValue(Proyecto.NumOCA);
-         textField = (PdfTextFormField)form.GetField("inspeccionOCA");
-         textField.SetValue(Proyecto.RefOCA); 
+         if (Cliente != null)
+         {
+            foreach (var fieldName in fieldsMap.Keys)
+            {
+               var propertyInfo = Cliente.GetType().GetProperty(fieldName);
+               if (propertyInfo != null)
+               {
+                  var value = propertyInfo.GetValue(Cliente);
+                  if (value != null)
+                     ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
+               }
+
+               if (fieldsMap.ContainsKey("Nombre2"))
+                  ((PdfTextFormField)fieldsMap["Nombre2"]).SetValue(Cliente.Nombre);
+
+               if (fieldsMap.ContainsKey("Dni2"))
+                  ((PdfTextFormField)fieldsMap["Dni2"]).SetValue(Cliente.Dni);
+            }
+         }
       }
 
-      public void FillDate(PdfAcroForm form)
+      // RELLENAR EL FORMULARIO CON LOS DATOS DE LA UBICAVION 
+      public void FillUbicacion(UbicacionDto Ubicacion, IDictionary<string, PdfFormField> fieldsMap)
       {
-         var textField = (PdfTextFormField)form.GetField("dia");
-         textField.SetValue(DateTime.Now.Day.ToString());
-         textField = (PdfTextFormField)form.GetField("mes");
-         textField.SetValue(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month).ToUpper());
-         textField = (PdfTextFormField)form.GetField("año");
-         textField.SetValue(DateTime.Now.Year.ToString());
+         if (Ubicacion != null)
+         {
+            var CpArray = Ubicacion.Cp.ToString().ToCharArray();
+
+            foreach (var fieldName in fieldsMap.Keys)
+            {
+               if (fieldName != null)
+               {
+                  var propertyInfo = Ubicacion.GetType().GetProperty(fieldName);
+
+                  if (propertyInfo != null)
+                  {
+                     var value = propertyInfo.GetValue(Ubicacion);
+                     if (value != null && fieldName != null)
+                        ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
+                  }
+               }
+            }
+
+            for (int i = 0; i < CpArray.Length; i++)
+            {
+               if (fieldsMap.ContainsKey("Cp" + i) || fieldsMap.ContainsKey("CpBis" + i))
+               {
+                  ((PdfTextFormField)fieldsMap["Cp" + i]).SetValue(CpArray[i].ToString());
+                  ((PdfTextFormField)fieldsMap["CpBis" + i]).SetValue(CpArray[i].ToString());
+               }
+
+               if ((i > 0 && i < 3) && fieldsMap.ContainsKey("Municipio" + i))
+               {
+                  ((PdfTextFormField)fieldsMap["Municipio" + i]).SetValue(Ubicacion.Municipio);
+                  ((PdfTextFormField)fieldsMap["Provincia" + i]).SetValue(Ubicacion.Provincia);
+               }
+            }
+            if (fieldsMap.ContainsKey("Direccion1"))
+               ((PdfTextFormField)fieldsMap["Direccion1"]).SetValue(Ubicacion.GetDireccion());
+
+            if (fieldsMap.ContainsKey("Provincia3"))
+               ((PdfTextFormField)fieldsMap["Provincia3"]).SetValue(Ubicacion.Provincia.ToUpper());
+
+            if (fieldsMap.ContainsKey("cbProvincia"))
+               ((PdfChoiceFormField)fieldsMap["cbProvincia"]).SetValue(Ubicacion.Provincia.ToUpper());
+
+            if (fieldsMap.ContainsKey("CpBis"))
+               ((PdfTextFormField)fieldsMap["CpBis"]).SetValue(Ubicacion.Cp.ToString());
+
+         }
       }
 
-      public void FillCliente(ClienteDto Cliente,  PdfAcroForm form)
+      // RELLENAR EL FORMULARIO CON LOS DATOS DE LA INSTALACIÓN
+      public void FillInstalacion(InstalacionDto Instalacion, IDictionary<string, PdfFormField> fieldsMap)
       {
-         var textField = (PdfTextFormField)form.GetField("nombre");
-         textField.SetValue(Cliente.Nombre);
-         textField = (PdfTextFormField)form.GetField("dni");
-         textField.SetValue(Cliente.Dni);
-         textField = (PdfTextFormField)form.GetField("email");
-         textField.SetValue(Cliente.Email);
-         textField = (PdfTextFormField)form.GetField("telefono");
-         textField.SetValue(Cliente.Telefono);
+         foreach (var fieldName in fieldsMap.Keys)
+         {
+            var propertyInfo = Instalacion.GetType().GetProperty(fieldName);
+            if (propertyInfo != null)
+            {
+               var value = propertyInfo.GetValue(Instalacion);
+               if (value != null)
+                  ((PdfFormField)fieldsMap[fieldName]).SetValue(value.ToString());
+            }
+
+            if (fieldsMap.ContainsKey("Fusible"))
+            {
+               ((PdfFormField)fieldsMap["Fusible"]).SetValue(Instalacion.Fusible.Split('A')[0]);
+               ((PdfFormField)fieldsMap["IAutomatico"]).SetValue(Instalacion.IAutomatico.Split('A')[0]);
+               ((PdfFormField)fieldsMap["IDiferencial"]).SetValue(Instalacion.IDiferencial.Split(' ')[2].Replace("mA", ""));
+               ((PdfFormField)fieldsMap["TotalNominal2"]).SetValue(Instalacion.TotalNominal.ToString());
+
+               var sf = Instalacion.SeccionFase.ToString();
+               var seccionFase = sf + "/" + sf + "/" + sf;
+               for (int i = 1; i < 3; i++)
+                  ((PdfFormField)fieldsMap["SeccionFase" + i]).SetValue(seccionFase);
+            }
+         }
       }
 
-      public void FillUbicacion(UbicacionDto Ubicacion,  PdfAcroForm form)
+      // DETERMINA SI EL VATIMETRO ES MONOFASICO O TRIFASICO
+      public bool IsMonofasico(string Vatimetro)
       {
-         var Direccion = Ubicacion.Calle + ", " + Ubicacion.Numero + ", "
-               + Ubicacion.Bloque + ", " + Ubicacion.Portal + ", " + Ubicacion.Escalera
-               + ", " + Ubicacion.Piso + ", " + Ubicacion.Puerta;
-
-         var textField = (PdfTextFormField)form.GetField("direccion");
-         textField.SetValue(Direccion);
-         textField = (PdfTextFormField)form.GetField("cp");
-         textField.SetValue(Ubicacion.Cp.ToString());
-         textField = (PdfTextFormField)form.GetField("municipio");
-         textField.SetValue(Ubicacion.Municipio);
-         textField = (PdfTextFormField)form.GetField("provincia");
-         textField.SetValue(Ubicacion.Provincia);
-         textField = (PdfTextFormField)form.GetField("calle");
-         textField.SetValue(Ubicacion.Calle);
-         textField = (PdfTextFormField)form.GetField("numero");
-         textField.SetValue(Ubicacion.Numero);
-         textField = (PdfTextFormField)form.GetField("bloque");
-         textField.SetValue(Ubicacion.Bloque);
-         textField = (PdfTextFormField)form.GetField("portal");
-         textField.SetValue(Ubicacion.Portal);
-         textField = (PdfTextFormField)form.GetField("escalera");
-         textField.SetValue(Ubicacion.Escalera);
-         textField = (PdfTextFormField)form.GetField("piso");
-         textField.SetValue(Ubicacion.Piso);
-         textField = (PdfTextFormField)form.GetField("puerta");
-         textField.SetValue(Ubicacion.Puerta);
-         textField = (PdfTextFormField)form.GetField("municipio2");
-         textField.SetValue(Ubicacion.Municipio);
-         PdfChoiceFormField choiceField = (PdfChoiceFormField)form.GetField("cbProvincia");
-         choiceField.SetValue(Ubicacion.Provincia);
-         textField = (PdfTextFormField)form.GetField("cp2");
-         textField.SetValue(Ubicacion.Cp.ToString());
-         textField = (PdfTextFormField)form.GetField("cups");
-         textField.SetValue(Ubicacion.Cups);
-         textField = (PdfTextFormField)form.GetField("superficie");
-         textField.SetValue(Ubicacion.Superficie.ToString());
-         textField = (PdfTextFormField)form.GetField("empresa");
-         textField.SetValue(Ubicacion.Empresa);
-         textField = (PdfTextFormField)form.GetField("cif");
-         textField.SetValue(Ubicacion.Cif);
+         if (Vatimetro.StartsWith("EMETER") || Vatimetro.StartsWith("SMART") || Vatimetro.StartsWith("EM11")) return true;
+         else return false;
       }
-
-      public void FillInstalacion(InstalacionDto Instalacion,  PdfAcroForm form)
-      {
-         var textField = (PdfTextFormField)form.GetField("fusible");
-         textField.SetValue(Instalacion.Fusible.Split('A')[0]);
-         textField = (PdfTextFormField)form.GetField("nivelAislamiento");
-         textField.SetValue("");
-         textField = (PdfTextFormField)form.GetField("materialAislamiento");
-         textField.SetValue(""); 
-         textField = (PdfTextFormField)form.GetField("materialConductor");
-         textField.SetValue("");
-         textField = (PdfTextFormField)form.GetField("seccionFase");
-         textField.SetValue("");
-         textField = (PdfTextFormField)form.GetField("totalPico");
-         textField.SetValue(Instalacion.TotalPico.ToString());
-         textField = (PdfTextFormField)form.GetField("totalPico2");
-         textField.SetValue(Instalacion.TotalPico.ToString());
-         textField = (PdfTextFormField)form.GetField("VO");
-         textField.SetValue(Instalacion.Cadenas[0].Inversor.VO.ToString());
-         textField = (PdfTextFormField)form.GetField("nivelAislamiento2");
-         textField.SetValue("");
-         textField = (PdfTextFormField)form.GetField("materialAislamiento2");
-         textField.SetValue("");
-         textField = (PdfTextFormField)form.GetField("materialConductor2");
-         textField.SetValue(Instalacion.TotalNominal + "");
-         textField = (PdfTextFormField)form.GetField("seccionFase2");
-         textField.SetValue("");
-     
-         textField = (PdfTextFormField)form.GetField("iAutomatico");
-         textField.SetValue(Instalacion.IAutomatico.Split("A")[0]);
-         textField = (PdfTextFormField)form.GetField("iDiferencial");
-         textField.SetValue(Instalacion.IDiferencial.Split("A")[0]);
-         textField = (PdfTextFormField)form.GetField("totalNominal");
-         textField.SetValue(Instalacion.TotalNominal.ToString());        
-         textField = (PdfTextFormField)form.GetField("iAutomatico");
-         textField.SetValue(Instalacion.Vatimetro);
-      }
-      /*
-      public bool isChecked(string Vatimetro)
-      {
-         if (Vatimetro.Contains("EMETER") || Vatimetro.Contains("SMART") || Vatimetro.Contains("EM11"))
-            return true;
-      }*/
    }
 }

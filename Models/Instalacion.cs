@@ -21,14 +21,6 @@ namespace backend_API.Models
       public string Azimut { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "float")]
-      public double TotalPico { get; set; } = 0;
-
-      [Required]
-      [Column(TypeName = "float")]
-      public double TotalNominal { get; set; } = 0;
-
-      [Required]
       [Column(TypeName = "varchar(50)")]
       public string Tipo { get; set; } = string.Empty;
 
@@ -39,6 +31,15 @@ namespace backend_API.Models
       [Required]
       [Column(TypeName = "float")]
       public double CoordYConexion { get; set; } = 0;
+
+      [Column(TypeName = "float")]
+      public double? PotenciaContratada { get; set; } = 0;
+
+      [Column(TypeName = "float")]
+      public double? ConsumoEstimado { get; set; } = 0;
+
+      [Column(TypeName = "float")]
+      public double? GeneracionAnual { get; set; } = 0;
 
       [Required]
       [Column(TypeName = "varchar(50)")]
@@ -57,26 +58,45 @@ namespace backend_API.Models
       public string Estructura { get; set; } = string.Empty;
 
       [Required]
-      [Column(TypeName = "varchar(300)")]
-      public string Definicion { get; set; } = string.Empty;
-
-      [Required]
       [Column(TypeName = "varchar(250)")]
       public string Vatimetro { get; set; } = string.Empty;
 
+      [Column(TypeName = "varchar(20)")]
+      public int SeccionFase { get; set; } = 0;
+
+      [Required]
+      [Column(TypeName = "float")]
+      public double TotalPico { get; set; } = 0;
+
+      [Required]
+      [Column(TypeName = "float")]
+      public double TotalNominal { get; set; } = 0;
+
+      [Required]
       [Column(TypeName = "int")]
-      public int? TotalInversores { get; set; }
+      public int TotalInversores { get; set; } = 0;
 
       [Required]
       [Column(TypeName = "int")]
       public int TotalModulos { get; set; } = 0;
 
+      [Required]
       [Column(TypeName = "int")]
-      public int? TotalCadenas { get; set; }
+      public int TotalCadenas { get; set; } = 0;
+
+      [Column(TypeName = "varchar(100)")]
+      public string DirectorObra { get; set; } = string.Empty;
+
+      [Column(TypeName = "varchar(100)")]
+      public string Titulacion { get; set; } = string.Empty;
+      [Column(TypeName = "varchar(100)")]
+      public string ColeOficial { get; set; } = string.Empty;
+      [Column(TypeName = "varchar(100)")]
+      public string NumColegiado { get; set; } = string.Empty;
+
 
       //RELATIONS
       public IList<Cubierta>? Cubiertas { get; set; } = new List<Cubierta>();
-
       public IList<Cadena> Cadenas { get; set; } = new List<Cadena>();
 
       // CONSTRUCTOR POR DEFECTO

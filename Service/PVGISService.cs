@@ -32,7 +32,7 @@ namespace backend_API.Service
                PDFGenerator();
                string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
                string[] rutas = Directory.GetFiles(downloads);
-               string nombreCliente = Proyecto.Cliente.Nombre;
+               string nombreCliente = Proyecto.Cliente.Nombre.Replace(" ", "_");
                string newFileName = "PVGIS-5_" + nombreCliente + ".pdf";
                string newFilePath = "";
                foreach (var ruta in rutas)
@@ -43,12 +43,11 @@ namespace backend_API.Service
                      newFilePath = Path.Combine(downloads, newFileName);
                      File.Move(ruta, newFilePath);
                      return "Fichero generado con éxito. RUTA: " + newFilePath;
-
-                  }   
+                  }
                }
                return "Fichero no encontrado";
             }
-            else 
+            else
                return "No se han obtenido datos del PVGIS-5";
          }
          catch (Exception ex) { return $"Error: {ex.Message}"; }
@@ -101,13 +100,12 @@ namespace backend_API.Service
          webElement.SendKeys(lat);
          webElement = automatic.FindElement(By.Id("inputLon"));
          webElement.SendKeys(lon);
-         Thread.Sleep(2000);
+         Thread.Sleep(1000);
 
          //Click en "GO" (Botón para que lea lat/lon)
          webElement = automatic.FindElement(By.Id("btninputLatLon"));
          webElement.Click();
          Thread.Sleep(2000);
-         Console.Error.WriteLine("holaaaa");
 
          //Introducir poteciaPico, inclinacion y azimuth
          webElement = automatic.FindElement(By.Id("peakpower2"));
@@ -118,7 +116,7 @@ namespace backend_API.Service
          webElement = automatic.FindElement(By.Id("angle"));
          webElement.Clear();
          webElement.SendKeys(inclinacion);
-         Thread.Sleep(2000);
+         Thread.Sleep(1000);
 
          webElement = automatic.FindElement(By.Id("aspect"));
          webElement.Clear();

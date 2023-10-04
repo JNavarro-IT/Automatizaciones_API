@@ -1,75 +1,76 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using backend_API.Dto;
-using backend_API.Models;
-using backend_API.Repository;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
 namespace backend_API.Service
 {
+   // Interfaz que funciona como servicio para otras clases mediante inyeccion de dependencias
    public interface IWORDService
    {
-      public Task<string[]> CreateMemorias(ProyectoDto Proyecto);
-      public string ClonarWORD(ProyectoDto Proyecto);
+      public string InitServiceWORD(ProyectoDto Proyecto);
+      public Dictionary<string, string?> CreateMap(ProyectoDto Proyecto);
+      public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD);
    }
+
+   // Clase que sirve de servicio para rellenar documentos WORD de un proyecto
    public class WORDService : IWORDService
    {
+      private readonly IProjectService _projectService;
 
-      private readonly IBaseRepository<Modulo, ModuloDto> _moduloRepository;
-
-      public WORDService(IBaseRepository<Modulo, ModuloDto> moduloRepository) 
-      { 
-         _moduloRepository = moduloRepository;
+      // Contructor por parámetros con inyeccion de dependencias del CRUD de Mod
+      public WORDService(IProjectService projectService)
+      {
+         _projectService = projectService;
       }
 
-      public async Task<string[]> CreateMemorias(ProyectoDto Proyecto)
+      public string InitServiceWORD(ProyectoDto Proyecto)
       {
-         string? rutaDestino = ClonarWORD(Proyecto);
-         string[]? rutasWORD = Directory.GetFiles(rutaDestino);
+         var folderDownloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+         var folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Cliente.Nombre);
+         Directory.CreateDirectory(folderEnd);
+
+         string[]? pathsOrigin = Directory.GetFiles("Resources/TemplatesWORD");
+         folderEnd = _projectService.ClonarFiles(Proyecto, pathsOrigin, folderEnd);
+         string[]? pathsWORD = Directory.GetFiles(folderEnd);
+
+         Dictionary<string, string?> MapWORD = CreateMap(Proyecto);
+         var result = CreateMemorias(MapWORD, pathsWORD);
+         if (result != null) return result;
+         return "No se ha generado el archivo";
+      }
+
+      // Crear las memorias justificativas de un proyecto
+      public Dictionary<string, string?> CreateMap(ProyectoDto Proyecto)
+      {
          var Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month);
-         ClienteDto Cliente = Proyecto.Cliente;
-         UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
-         InstalacionDto Instalacion = Proyecto.Instalacion;
-         CadenaDto Cadena = Instalacion.Cadenas[0];
-         ModuloDto Modulo = Cadena.Modulo;
-         Modulo? Entity = await _moduloRepository.GetEntity(Modulo.IdModulo);
-         InversorDto Inversor = Cadena.Inversor;
+         Mes = Mes.ToUpper().ToCharArray()[0] + Mes[1..];
 
-         var Direccion = Ubicacion.Calle + ", " + Ubicacion.Numero;
-         if (!Ubicacion.Bloque.Equals(""))
-            Direccion += ", " + Ubicacion.Bloque;
-         if (!Ubicacion.Portal.Equals(""))
-            Direccion += ", " + Ubicacion.Portal;
-         if (!Ubicacion.Escalera.Equals(""))
-            Direccion += ", " + Ubicacion.Escalera;
-         if (!Ubicacion.Piso.Equals(""))
-            Direccion += ", " + Ubicacion.Piso;
-         if (!Ubicacion.Puerta.Equals(""))
-            Direccion += ", " + Ubicacion.Puerta;
+         var Cliente = Proyecto.Cliente;
+         var Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+         var Instalacion = Proyecto.Instalacion;
+         var Cadena = Instalacion.Cadenas[0];
+         var Inversor = Cadena.Inversor;
+         var Modulo = Cadena.Modulo;
+         var Hospital = Proyecto.LugaresPRL[0];
+         var CSalud = Proyecto.LugaresPRL[1];
+         var Mutua = Proyecto.LugaresPRL[2];
+         var Planta = Proyecto.LugaresPRL[3];
 
-         LugarPRLDto Hospital = Proyecto.LugaresPRL[0];
-         LugarPRLDto CSalud = Proyecto.LugaresPRL[1];
-         LugarPRLDto Mutua = Proyecto.LugaresPRL[2];
-         LugarPRLDto Planta = Proyecto.LugaresPRL[3];
-         Hospital.Direccion = Hospital.Calle + ", " + Hospital.Numero;
-         CSalud.Direccion = CSalud.Calle + ", " + CSalud.Numero;
-         Mutua.Direccion = Mutua.Calle + ", " + Mutua.Numero;
-         Planta.Direccion = Planta.Calle + ", " + Planta.Numero;
-
-         Dictionary<string, string?> reemplazos = new()
+         Dictionary<string, string?> MapWORD = new()
          {
+            { "#Dia", Proyecto.Fecha.Day.ToString() },
             { "#Mes", Mes },
             { "#Año", Proyecto.Fecha.Year.ToString()},
             { "#Presupuesto", Proyecto.Presupuesto.ToString()},
-            { "#PresupuestoSyS", Proyecto.PresupuestoSyS.ToString()},
+            { "#PrespSyS", Proyecto.PresupuestoSyS.ToString()},
             { "#PlazoEjecucion", Proyecto.PlazoEjecucionStr },
 
             { "#Nombre", Cliente.Nombre },
             { "#Dni", Cliente.Dni },
 
-            { "#Direccion", Direccion },
+            { "#Direccion", Ubicacion.GetDireccion() },
             { "#Cp", Ubicacion.Cp.ToString() },
             { "#Municipio", Ubicacion.Municipio },
             { "#Provincia", Ubicacion.Provincia },
@@ -77,11 +78,15 @@ namespace backend_API.Service
             { "#Superficie", Ubicacion.Superficie.ToString() },
             { "#CoordXUTM", Ubicacion.CoordXUTM.ToString() },
             { "#CoordYUTM", Ubicacion.CoordYUTM.ToString() },
+            { "#Latitud", Ubicacion.Latitud.ToString() },
+            { "#Longitud", Ubicacion.Longitud.ToString() },
+            { "#Cups", Ubicacion.Cups },
 
+            { "#Inclinacion", Instalacion.Inclinacion.ToString() },
+            { "#Azimut", Instalacion.Azimut },
             { "#Tipo", Instalacion.Tipo },
             { "#CoordXConexion", Instalacion.CoordXConexion.ToString() },
             { "#CoordYConexion", Instalacion.CoordYConexion.ToString() },
-            { "#Inclinacion", Instalacion.Inclinacion.ToString() },
             { "#Estructura", Instalacion.Estructura },
             { "#Definicion", Instalacion.Definicion },
             { "#IAutomatico", Instalacion.IAutomatico },
@@ -94,7 +99,7 @@ namespace backend_API.Service
 
             { "#Cadena.NumModulos", Cadena.NumModulos.ToString() },
 
-            { "#Inversor.Modelo", Inversor.Modelo },
+            { "#Inversor.Modelo", Inversor.Modelo.TrimEnd() },
             { "#Inversor.PotenciaNominal", Inversor.PotenciaNominal.ToString() },
             { "#Inversor.VmnMPPT", Inversor.VminMPPT.ToString()  },
             { "#Inversor.VmxMPPT", Inversor.VmaxMPPT.ToString()},
@@ -104,7 +109,7 @@ namespace backend_API.Service
             { "#Inversor.VO", Inversor.VO.ToString() },
             { "#Inversor.Rendimiento", Inversor.Rendimiento.ToString() },
 
-            { "#Modulo.Modelo", Modulo.Modelo },
+            { "#Modulo.Modelo", Modulo.Modelo.TrimEnd()},
             { "#Modulo.Potencia", Modulo.Potencia.ToString() },
             { "#Modulo.Fabricante", Modulo.Fabricante },
             { "#Modulo.NumCelulas", Modulo.NumCelulas.ToString() },
@@ -114,11 +119,11 @@ namespace backend_API.Service
             { "#Modulo.Isc", Modulo.Isc.ToString() },
             { "#Modulo.Vca", Modulo.Vca.ToString() },
             { "#Modulo.Eficiencia", Modulo.Eficiencia.ToString() },
-            { "#Modulo.Dimensiones", Entity.Dimensiones },
-            { "#Modulo.Peso", Entity.Peso.ToString() },
+            { "#Modulo.Dimensiones", Modulo.Dimensiones },
+            { "#Modulo.Peso", Modulo.Peso.ToString() },
             { "#Modulo.SalidaPotencia", Modulo.SalidaPotencia.ToString() },
             { "#Modulo.TensionVacio", Modulo.TensionVacio.ToString() },
-            { "#Modulo.TaTONC", Modulo.TaTONC },
+            { "#Modulo.TaTONC", Modulo.TaTONC?.TrimEnd() },
             { "#Modulo.Tolerancia", Modulo.Tolerancia.ToString() },
 
             { "#Hospital.Nombre", Hospital.Nombre },
@@ -142,74 +147,41 @@ namespace backend_API.Service
             { "#Planta.NIMA", Planta.NIMA },
             { "#Planta.Autorizacion", Planta.Autorizacion },
          };
-         var index = 1;
-         foreach (string ruta in rutasWORD)
-         {
-            using (DocX doc = DocX.Load(ruta))
-            {
-               foreach (Paragraph parrafo in doc.Paragraphs)
-               {
-                  foreach (var kvp in reemplazos)
-                  {
-                     if (parrafo.Text.Contains(kvp.Key))
-                     {
-                        parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-                        Console.Error.WriteLine(kvp.Key);
-                     }
-                  }
-               }
-            
-               Console.Error.WriteLine("------------------------------");
-
-               int numSections = doc.Sections.Count;
-               for (int i = 0; i < numSections; i++)
-               {
-                  Headers headers = doc.Sections[i].Headers;
-                  foreach (Paragraph paragraph in headers.Odd.Paragraphs)
-                  {
-                     foreach (var kvp in reemplazos)
-                     {
-                        if (paragraph.Text.Contains(kvp.Key))
-                        {
-                           Console.WriteLine(kvp.Key);
-                           paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-                        }
-                     }
-                  }
-               }
-
-               Console.Error.WriteLine(index);
-               index++;
-               doc.Save();
-            } 
-         }
-         return rutasWORD;
+         return MapWORD;
       }
 
-      public string ClonarWORD(ProyectoDto Proyecto)
+      public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD)
       {
-         try
-         {
-            string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-            string folder = "MemoriasWORD_" + Proyecto.Cliente.Nombre;
-            string carpetaDestino = Path.Combine(downloads, folder);
-            Directory.CreateDirectory(carpetaDestino);
-            string carpetaOriginal = "Resources/templatesWORD";
-            string[]? rutasOriginal = Directory.GetFiles(carpetaOriginal);
+         if (MapWORD == null) return "ERROR => El diccionario está vacío o mal estructurado: " + MapWORD;
+         if (pathsWORD == null) return "ERROR => NO se han creado las rutas de destino:  " + pathsWORD;
 
-            foreach (string ruta in rutasOriginal)
+         foreach (string ruta in pathsWORD)
+         {
+            if (Path.GetExtension(ruta).Equals(".docx"))
             {
-               string nombreFile = Path.GetFileName(ruta);
-               nombreFile = nombreFile.Replace("NOMBRE PROYECTO", Proyecto.Cliente.Nombre);
-               string rutaDestino = Path.Combine(carpetaDestino, nombreFile);
-               File.Copy(ruta, rutaDestino, true);
+               using (DocX doc = DocX.Load(ruta))
+               {
+                  foreach (Paragraph parrafo in doc.Paragraphs)
+                     foreach (var kvp in MapWORD)
+                        if (parrafo.Text.Contains(kvp.Key))
+                           parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+
+                  int numSections = doc.Sections.Count;
+                  for (int i = 0; i < numSections; i++)
+                  {
+                     Headers headers = doc.Sections[i].Headers;
+                     foreach (Paragraph paragraph in headers.Odd.Paragraphs)
+                        foreach (var kvp in MapWORD)
+                           if (paragraph.Text.Contains(kvp.Key))
+                              paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                  }
+                  doc.Save();
+               }
             }
-            return carpetaDestino;
-         } 
-         catch (Exception error) 
-         { 
-            return  "No se han generado los archivos WORD. ERROR: " + error.Message;
          }
+
+         string? folderEnd = Path.GetPathRoot(pathsWORD[0]);
+         return "OK => Las memorias en formato WORD se han generado con éxito: " + folderEnd;
       }
    }
 }

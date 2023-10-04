@@ -149,6 +149,30 @@ namespace backend_API.Migrations
                     b.ToTable("Cubiertas");
                 });
 
+            modelBuilder.Entity("backend_API.Models.Error", b =>
+                {
+                    b.Property<int>("IdError")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdError"));
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<string>("StackTrace")
+                        .IsRequired()
+                        .HasColumnType("varchar(300)");
+
+                    b.HasKey("IdError");
+
+                    b.ToTable("Errores");
+                });
+
             modelBuilder.Entity("backend_API.Models.Instalacion", b =>
                 {
                     b.Property<int>("IdInstalacion")
@@ -161,15 +185,22 @@ namespace backend_API.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("ColeOficial")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<double?>("ConsumoEstimado")
+                        .HasColumnType("float");
+
                     b.Property<double>("CoordXConexion")
                         .HasColumnType("float");
 
                     b.Property<double>("CoordYConexion")
                         .HasColumnType("float");
 
-                    b.Property<string>("Definicion")
+                    b.Property<string>("DirectorObra")
                         .IsRequired()
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Estructura")
                         .IsRequired()
@@ -178,6 +209,9 @@ namespace backend_API.Migrations
                     b.Property<string>("Fusible")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
+
+                    b.Property<double?>("GeneracionAnual")
+                        .HasColumnType("float");
 
                     b.Property<string>("IAutomatico")
                         .IsRequired()
@@ -190,14 +224,29 @@ namespace backend_API.Migrations
                     b.Property<double>("Inclinacion")
                         .HasColumnType("float");
 
+                    b.Property<string>("NumColegiado")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<double?>("PotenciaContratada")
+                        .HasColumnType("float");
+
+                    b.Property<string>("SeccionFase")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int?>("TotalCadenas")
+                    b.Property<string>("Titulacion")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("TotalCadenas")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TotalInversores")
+                    b.Property<int>("TotalInversores")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalModulos")
@@ -280,12 +329,12 @@ namespace backend_API.Migrations
                     b.Property<string>("Autorizacion")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<int>("Cp")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Direccion")
+                    b.Property<string>("Calle")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
+
+                    b.Property<int>("Cp")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -307,6 +356,10 @@ namespace backend_API.Migrations
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Provincia")
                         .IsRequired()
@@ -408,6 +461,15 @@ namespace backend_API.Migrations
                     b.Property<int>("IdInstalacion")
                         .HasColumnType("int");
 
+                    b.Property<string>("InspeccionOCA")
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("NumOCA")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("OCA")
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime?>("PlazoEjecucion")
                         .HasColumnType("date");
 
@@ -441,13 +503,25 @@ namespace backend_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUbicacion"));
 
+                    b.Property<string>("Antiguedad")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<string>("Bloque")
                         .IsRequired()
                         .HasColumnType("varchar(15)");
 
+                    b.Property<string>("CCAA")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("Calle")
                         .IsRequired()
                         .HasColumnType("varchar(250)");
+
+                    b.Property<string>("Cau")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Cif")
                         .IsRequired()
@@ -472,7 +546,7 @@ namespace backend_API.Migrations
 
                     b.Property<string>("Escalera")
                         .IsRequired()
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int>("IdCliente")
                         .HasColumnType("int");
@@ -489,23 +563,23 @@ namespace backend_API.Migrations
 
                     b.Property<string>("Numero")
                         .IsRequired()
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Piso")
                         .IsRequired()
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Portal")
                         .IsRequired()
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Provincia")
                         .IsRequired()
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Puerta")
                         .IsRequired()
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("RefCatastral")
                         .IsRequired()

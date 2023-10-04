@@ -52,7 +52,7 @@ namespace backend_API.Repository
 
          if (filter != null)
             query = query.Where(filter);
-       
+
          if (includes != null)
             query = includes(query);
 
@@ -108,12 +108,13 @@ namespace backend_API.Repository
          {
             var entity = _mapper.Map<T>(entityDto);
             _dbContext.Set<T>().Update(entity);
+            int files = await _dbContext.SaveChangesAsync();
             return await _dbContext.SaveChangesAsync();
          }
          catch (Exception ex)
          {
             Console.WriteLine(ex);
-            return 0;
+            return -1;
          }
       }
 

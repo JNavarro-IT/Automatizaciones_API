@@ -32,6 +32,15 @@ namespace backend_API.Models
       [Column(TypeName = "date")]
       public DateTime? PlazoEjecucion { get; set; }
 
+      [Column(TypeName = "varchar(100)")]
+      public string? OCA { get; set; } = string.Empty;
+
+      [Column(TypeName = "varchar(100)")]
+      public string? NumOCA { get; set; } = string.Empty;
+
+      [Column(TypeName = "varchar(200)")]
+      public string? InspeccionOCA { get; set; } = string.Empty;
+
       //RELATIONS
       [ForeignKey("IdCliente")]
       public Cliente Cliente { get; set; } = new();

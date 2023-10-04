@@ -31,6 +31,7 @@ namespace backend_API.Controllers
       private readonly IBaseRepository<T, TDto> _repository;
 
       //CONSTRUCTOR CON INYECCION DE DEPENDENCIA
+
       public BaseController(IBaseRepository<T, TDto> repository)
       {
          _repository = repository;
