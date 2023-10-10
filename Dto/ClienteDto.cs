@@ -5,7 +5,7 @@ namespace backend_API.Dto
    //CLASE DTO PARA TRANSPORTAR LA INFORMACIÓN DE LA ENTIDAD CLIENTE
    public class ClienteDto : DtoBase
    {
-      public int IdCliente { get; set; }
+      public int? IdCliente { get; set; }
       public string Nombre { get; set; } = string.Empty;
       public string Dni { get; set; } = string.Empty;
       public string Telefono { get; set; } = string.Empty;

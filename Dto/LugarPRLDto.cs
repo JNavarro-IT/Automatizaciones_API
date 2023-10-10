@@ -6,7 +6,7 @@ namespace backend_API.Dto
    //CLASE QUE REPRESENTA UN LUGAR IMPRESCINDIBLE PARA PROTOCOLOS DE PRL
    public class LugarPRLDto : DtoBase
    {
-      public int IdLugarPRL { get; set; }
+      public int? IdLugarPRL { get; set; }
       public string Nombre { get; set; } = string.Empty;
       public string Tipo { get; set; } = string.Empty;
       public string Direccion { get; set; } = string.Empty;

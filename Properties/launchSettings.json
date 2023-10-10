@@ -26,14 +26,12 @@
       "launchUrl": "http://192.168.2.250:8087",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
-      },
-      "nativeDebugging": true,
-      "sqlDebugging": true
+      }
     }
   },
   "iisSettings": {
     "windowsAuthentication": true,
-    "anonymousAuthentication": true,
+    "anonymousAuthentication": false,
     "iis": {
       "applicationUrl": "http://192.168.2.250:8086",
       "sslPort": 0

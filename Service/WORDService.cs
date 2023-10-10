@@ -28,7 +28,7 @@ namespace backend_API.Service
       public string InitServiceWORD(ProyectoDto Proyecto)
       {
          var folderDownloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-         var folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Cliente.Nombre);
+         var folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Referencia);
          Directory.CreateDirectory(folderEnd);
 
          string[]? pathsOrigin = Directory.GetFiles("Resources/TemplatesWORD");

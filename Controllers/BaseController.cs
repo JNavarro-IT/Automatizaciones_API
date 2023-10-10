@@ -1,6 +1,7 @@
 ﻿using backend_API.Repository;
 using backend_API.Utilities;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Adapters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_API.Controllers
@@ -149,7 +150,7 @@ namespace backend_API.Controllers
          if (entityDto == null)
             return NotFound("No se ha encontrado ningún objeto con ese identificador");
 
-         patchDto.ApplyTo(entityDto, ModelState);
+         patchDto.ApplyTo(entityDto, (IObjectAdapter)ModelState);
 
          if (!ModelState.IsValid)
             return BadRequest("El modelo no es válido" + ModelState);

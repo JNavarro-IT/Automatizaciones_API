@@ -24,10 +24,10 @@ namespace backend_API.Models
       public DateTime Fecha { get; set; } = new();
 
       [Column(TypeName = "float")]
-      public double? Presupuesto { get; set; }
+      public double? Presupuesto { get; set; } = 0;
 
       [Column(TypeName = "float")]
-      public double? PresupuestoSyS { get; set; }
+      public double? PresupuestoSyS { get; set; } = 0;
 
       [Column(TypeName = "date")]
       public DateTime? PlazoEjecucion { get; set; }

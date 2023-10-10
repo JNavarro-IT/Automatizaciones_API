@@ -19,7 +19,7 @@ namespace backend_API.Service
          _projectServices = projectServices;
       }
 
-      public string CreateEXCEL(ProyectoDto? Proyecto)
+      public string CreateEXCEL(ProyectoDto Proyecto)
       {
          var rutaArchivo = "Resources/REFERENCIAS_MEMORIA.xlsx";
          var newRuta = "";
@@ -153,7 +153,7 @@ namespace backend_API.Service
             worksheet.Cell(row, column++).Value = Proyecto?.PresupuestoSyS;
 
             index = 0;
-            foreach (LugarPRLDto l in Proyecto?.LugaresPRL)
+            foreach (LugarPRLDto l in Proyecto.LugaresPRL)
             {
                column = 47;
                if (index == 3)

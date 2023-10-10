@@ -33,7 +33,7 @@ namespace backend_API.Service
          {
             if (Proyecto != null)
             {
-               UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+               UbicacionDto? Ubicacion = Proyecto.Cliente.Ubicaciones[0];
                var Instalacion = Proyecto.Instalacion;
 
                if (Ubicacion.CCAA != null || Ubicacion.CCAA != "")
@@ -48,15 +48,9 @@ namespace backend_API.Service
                      if (porcentaje >= 78) pathsOrigin.Remove(folderCCAA + "/2AND_NAME.docx");
                         else pathsOrigin.Remove(folderCCAA + "/1AND_NAME.docx");
 
-                     var Provincia = _projectService.WithoutTildes(Ubicacion.Provincia);
-                     if (Provincia.Equals("Jaen")) 
-                     {
-                        bool eco3 = _projectService.CheckMunicipio(Ubicacion);
-                        
-                        if (eco3) pathsOrigin = new(){ folderCCAA + "/AND1_NAME.pdf" };
-                           else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
-                     
-                     } else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
+                     var eco3 = _projectService.CheckMunicipio(Ubicacion);                    
+                     if (eco3) pathsOrigin = new(){ folderCCAA + "/AND1_NAME.pdf" };
+                        else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");                    
                   }
                   _projectService.ClonarFiles(Proyecto, pathsOrigin.ToArray(), folderEnd);
                   var pathsEndLegal = Directory.GetFiles(folderEnd);
@@ -68,7 +62,7 @@ namespace backend_API.Service
          } catch (Exception error) { return "ERROR => " + error.Message; }
 
          if (folderEnd.Contains("ERROR")) return folderEnd;
-         else return "OK => Los archivos se crearon con éxito. RUTA: " + folderEnd;
+            else return "OK => Los archivos se crearon con éxito. RUTA: " + folderEnd;
       }
 
       public string FillPDFs(ProyectoDto Proyecto, string[] pathsOriginLegal, string[] pathsEndLegal)

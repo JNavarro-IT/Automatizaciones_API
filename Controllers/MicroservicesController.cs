@@ -30,8 +30,7 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<string> CrearExcel(ProyectoDto Proyecto)
       {
-         if (Proyecto == null)
-            return BadRequest("El proyecto no existe");
+         if (Proyecto == null) return BadRequest("El proyecto no existe");
 
          var rutaNewExcel = _excelServices.CreateEXCEL(Proyecto);
 

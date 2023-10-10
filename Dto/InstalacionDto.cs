@@ -6,7 +6,7 @@ namespace backend_API.Dto
    public class InstalacionDto : DtoBase
    {
       // CLASE DTO QUE TRANSPORTA LA INFORMACIÓN DE LA ENTIDAD INSTALACIÓN
-      public int IdInstalacion { get; set; }
+      public int? IdInstalacion { get; set; }
       public double Inclinacion { get; set; } = 0;
       public string Azimut { get; set; } = string.Empty;
       public string Tipo { get; set; } = string.Empty;

@@ -9,8 +9,8 @@ namespace backend_API.Repository
 {
    //INTERFAZ PRINCIPAL QUE IMPLEMENTA UN CRUD BASICO A LOS CONTROLADORES
    public interface IBaseRepository<T, TDto>
-        where T : ModelBase
-        where TDto : DtoBase
+      where T : ModelBase
+      where TDto : DtoBase
    {
       public Task<IEnumerable<TDto>> GetEntitiesList();
       public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
@@ -96,7 +96,7 @@ namespace backend_API.Repository
          }
          catch (Exception ex)
          {
-            Console.Error.WriteLine("Error al crear la entidad. ERROR: " + ex);
+            Console.Error.WriteLine("ERROR al crear la entidad. ERROR: " + ex);
             throw new InvalidOperationException();
          }
       }

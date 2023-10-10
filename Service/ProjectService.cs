@@ -8,9 +8,9 @@ using ProjNet.CoordinateSystems.Transformations;
 namespace backend_API.Service
 {
    // INTERFAZ QUE FUNCIONA COMO SERVICIO DEL PROYECTO PARA OTRAS CLASES, MEDIANTE INYECCION DE DEPENDENCIAS
-   public interface IProjectService
+   public interface IProjectService 
    {
-      public InstalacionDto CalcularInstalacion(InstalacionDto Instalacion);
+      public InstalacionDto? CalcularInstalacion(InstalacionDto Instalacion);
       public double[] GetUTM(InstalacionDto Instalacion);
       public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string folderEnd);
       public string GetCIF(string empresa);
@@ -19,18 +19,18 @@ namespace backend_API.Service
       public StringBuilder WithoutTildes(string item);
    }
 
-   /*
-   * CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
-   */
+   //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
+    
    public class ProjectService : IProjectService
    {
       // CONSTRUCTOR POR DEFECTO
       public ProjectService() { }
 
       // CALCULAR LOS PARÁMETROS TÉCNICOS DE UNA INSTALACIÓN A TRAVES DE LA COMBINACIÓN DE CADENAS
-      public InstalacionDto CalcularInstalacion(InstalacionDto Instalacion)
+      public InstalacionDto? CalcularInstalacion(InstalacionDto Instalacion)
       {
          var Cadenas = Instalacion.Cadenas;
+         if (Cadenas.Count == 0) return null;
 
          foreach (CadenaDto c in Cadenas)
          {
@@ -83,28 +83,27 @@ namespace backend_API.Service
       }
 
       // OBTENER EL CIF DE UNA EMPRESA DISTRIBUIDORA DESDE UN ARCHIVO JSON 
-      public string GetCIF(string? Empresa)
+      public string GetCIF(string Empresa)
       {
          try
          {
             string? filePath = "SeedData/CIFs.json";
             string? jsonContent = File.ReadAllText(filePath);
             JObject? jsonObj = JObject.Parse(jsonContent);
-            JArray? body = jsonObj["body"] as JArray;
+            JArray? body = (JArray?)jsonObj["body"];
 
-            foreach (string? row in body)
+            foreach (JToken? row in body)
             {
                string? CIF = row[8].ToString().ToUpper();
-               string? fEmpresaDB = row[1].ToString().Split(",")[0];
+               string fEmpresaDB = row[1].ToString().Split(",")[0];
                string? empresaDB = WithoutTildes(fEmpresaDB).ToString();
-               Empresa = WithoutTildes(Empresa).ToString().ToLower().Replace("_"," ");
+               Empresa = WithoutTildes(Empresa).ToString().Replace("_"," ");
+               Console.WriteLine(Empresa + "--------- " + empresaDB);
+               if (Empresa.Contains(empresaDB)) return CIF;
 
-               if (empresaDB.Contains(Empresa)) return CIF;
-               else return "ERROR => No se encontró ninguna empresa con ese nombre";
+            } return "ERROR => No se encontró ninguna empresa con ese nombre";
 
-            } return "ERROR al procesar el archivo JSON: ";
-
-         }     catch (Exception ex) { return "ERROR: " + ex.Message; }
+         } catch (Exception ex) { return "ERROR: " + ex.Message; }
       }
 
       // OBTENER LOS DATOS PARA LEGALIZACIONES SOBRE EL DIRECTOR DE OBRA Y LA INSPECCIÓN SEGÚN LA POTENCIA NOMINAL DEL PROYECTO
@@ -158,7 +157,3 @@ namespace backend_API.Service
       }
    }
 }
-           
-   
-
-     
