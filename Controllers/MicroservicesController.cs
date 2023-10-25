@@ -1,4 +1,4 @@
-﻿using backend_API.Dto;
+﻿using backend_API.Models.Dto;
 using backend_API.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,14 +30,14 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<string> CrearExcel(ProyectoDto Proyecto)
       {
-         if (Proyecto == null) return BadRequest("El proyecto no existe");
+         if (Proyecto == null)
+         {
+            return BadRequest("El proyecto no existe");
+         }
 
-         var rutaNewExcel = _excelServices.CreateEXCEL(Proyecto);
+         string rutaNewExcel = _excelServices.CreateEXCEL(Proyecto);
 
-         if (rutaNewExcel == null)
-            return NoContent();
-
-         return Ok(rutaNewExcel);
+         return rutaNewExcel == null ? (ActionResult<string>)NoContent() : (ActionResult<string>)Ok(rutaNewExcel);
       }
 
       // PETICIÓN PARA CREAR MEMORIAS WORD
@@ -49,14 +49,15 @@ namespace backend_API.Controllers
       public ActionResult<string> CrearMemorias(ProyectoDto Proyecto)
       {
          if (Proyecto == null)
+         {
             return NotFound("El proyecto no está registrado en la base de datos");
+         }
 
-         var newRuta = _wordService.InitServiceWORD(Proyecto);
+         string newRuta = _wordService.InitServiceWORD(Proyecto);
 
-         if (newRuta == null)
-            return StatusCode(503, "Error al generar los archivos WORDs. ERROR: " + newRuta);
-
-         return Ok("Memorias creadas con éxito. RUTA: " + newRuta);
+         return newRuta == null
+             ? (ActionResult<string>)StatusCode(503, "Error al generar los archivos WORDs. ERROR: " + newRuta)
+             : (ActionResult<string>)Ok("Memorias creadas con éxito. RUTA: " + newRuta);
       }
 
       // PETICIÓN PARA CREAR ARCHIVO PDF EN PVGIS
@@ -68,14 +69,15 @@ namespace backend_API.Controllers
       public ActionResult<string> CrearPVGIS(ProyectoDto Proyecto)
       {
          if (Proyecto == null)
+         {
             return NotFound("El proyecto no está registrado en la base de datos");
+         }
 
-         var newRuta = _pvgisService.CreatePVGIS(Proyecto);
+         string newRuta = _pvgisService.CreatePVGIS(Proyecto);
 
-         if (newRuta == null)
-            return StatusCode(503, "Error al generar el archivo del PVGIS. ERROR: " + newRuta);
-
-         return Ok("Archivo PVGIS creado con éxito. RUTA: " + newRuta);
+         return newRuta == null
+             ? (ActionResult<string>)StatusCode(503, "Error al generar el archivo del PVGIS. ERROR: " + newRuta)
+             : (ActionResult<string>)Ok("Archivo PVGIS creado con éxito. RUTA: " + newRuta);
       }
 
       // PETICIÓN PARA OBTENER LOS DOUMENTOS DE LEGALIZACIONES
@@ -87,14 +89,15 @@ namespace backend_API.Controllers
       public ActionResult<string> CrearLegalizaciones(ProyectoDto Proyecto)
       {
          if (Proyecto == null)
+         {
             return NotFound("El proyecto no está registrado en la base de datos");
+         }
 
-         var newRuta = _pdfService.InitFillPDF(Proyecto);
+         string newRuta = _pdfService.InitFillPDF(Proyecto);
 
-         if (newRuta == null)
-            return StatusCode(503, "Error al generar los archivos de subvenciones. ERROR: " + newRuta);
-
-         return Ok("Archivos de subvenciones creados con éxito. RUTA: " + newRuta);
+         return newRuta == null
+             ? (ActionResult<string>)StatusCode(503, "Error al generar los archivos de subvenciones. ERROR: " + newRuta)
+             : (ActionResult<string>)Ok("Archivos de subvenciones creados con éxito. RUTA: " + newRuta);
       }
    }
 }

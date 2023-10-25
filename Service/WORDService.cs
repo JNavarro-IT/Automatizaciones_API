@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using backend_API.Dto;
+using backend_API.Models.Dto;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -27,36 +27,35 @@ namespace backend_API.Service
 
       public string InitServiceWORD(ProyectoDto Proyecto)
       {
-         var folderDownloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-         var folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Referencia);
-         Directory.CreateDirectory(folderEnd);
+         string folderDownloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Downloads";
+         string folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Referencia);
+         _ = Directory.CreateDirectory(folderEnd);
 
-         string[]? pathsOrigin = Directory.GetFiles("Resources/TemplatesWORD");
+         string[]? pathsOrigin = Directory.GetFiles("Utilities/Resources/TemplatesWORD");
          folderEnd = _projectService.ClonarFiles(Proyecto, pathsOrigin, folderEnd);
          string[]? pathsWORD = Directory.GetFiles(folderEnd);
 
          Dictionary<string, string?> MapWORD = CreateMap(Proyecto);
-         var result = CreateMemorias(MapWORD, pathsWORD);
-         if (result != null) return result;
-         return "No se ha generado el archivo";
+         string result = CreateMemorias(MapWORD, pathsWORD);
+         return result ?? "No se ha generado el archivo";
       }
 
       // Crear las memorias justificativas de un proyecto
       public Dictionary<string, string?> CreateMap(ProyectoDto Proyecto)
       {
-         var Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month);
+         string Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month);
          Mes = Mes.ToUpper().ToCharArray()[0] + Mes[1..];
 
-         var Cliente = Proyecto.Cliente;
-         var Ubicacion = Proyecto.Cliente.Ubicaciones[0];
-         var Instalacion = Proyecto.Instalacion;
-         var Cadena = Instalacion.Cadenas[0];
-         var Inversor = Cadena.Inversor;
-         var Modulo = Cadena.Modulo;
-         var Hospital = Proyecto.LugaresPRL[0];
-         var CSalud = Proyecto.LugaresPRL[1];
-         var Mutua = Proyecto.LugaresPRL[2];
-         var Planta = Proyecto.LugaresPRL[3];
+         ClienteDto Cliente = Proyecto.Cliente;
+         UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+         InstalacionDto Instalacion = Proyecto.Instalacion;
+         CadenaDto Cadena = Instalacion.Cadenas[0];
+         InversorDto Inversor = Cadena.Inversor;
+         ModuloDto Modulo = Cadena.Modulo;
+         LugarPRLDto Hospital = Proyecto.LugaresPRL[0];
+         LugarPRLDto CSalud = Proyecto.LugaresPRL[1];
+         LugarPRLDto Mutua = Proyecto.LugaresPRL[2];
+         LugarPRLDto Planta = Proyecto.LugaresPRL[3];
 
          Dictionary<string, string?> MapWORD = new()
          {
@@ -152,31 +151,48 @@ namespace backend_API.Service
 
       public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD)
       {
-         if (MapWORD == null) return "ERROR => El diccionario está vacío o mal estructurado: " + MapWORD;
-         if (pathsWORD == null) return "ERROR => NO se han creado las rutas de destino:  " + pathsWORD;
+         if (MapWORD == null)
+         {
+            return "ERROR => El diccionario está vacío o mal estructurado: " + MapWORD;
+         }
+
+         if (pathsWORD == null)
+         {
+            return "ERROR => NO se han creado las rutas de destino:  " + pathsWORD;
+         }
 
          foreach (string ruta in pathsWORD)
          {
             if (Path.GetExtension(ruta).Equals(".docx"))
             {
-               using (DocX doc = DocX.Load(ruta))
+               using DocX doc = DocX.Load(ruta);
+               foreach (Paragraph parrafo in doc.Paragraphs)
                {
-                  foreach (Paragraph parrafo in doc.Paragraphs)
-                     foreach (var kvp in MapWORD)
-                        if (parrafo.Text.Contains(kvp.Key))
-                           parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-
-                  int numSections = doc.Sections.Count;
-                  for (int i = 0; i < numSections; i++)
+                  foreach (KeyValuePair<string, string> kvp in MapWORD)
                   {
-                     Headers headers = doc.Sections[i].Headers;
-                     foreach (Paragraph paragraph in headers.Odd.Paragraphs)
-                        foreach (var kvp in MapWORD)
-                           if (paragraph.Text.Contains(kvp.Key))
-                              paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                     if (parrafo.Text.Contains(kvp.Key))
+                     {
+                        parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                     }
                   }
-                  doc.Save();
                }
+
+               int numSections = doc.Sections.Count;
+               for (int i = 0; i < numSections; i++)
+               {
+                  Headers headers = doc.Sections[i].Headers;
+                  foreach (Paragraph paragraph in headers.Odd.Paragraphs)
+                  {
+                     foreach (KeyValuePair<string, string> kvp in MapWORD)
+                     {
+                        if (paragraph.Text.Contains(kvp.Key))
+                        {
+                           paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                        }
+                     }
+                  }
+               }
+               doc.Save();
             }
          }
 

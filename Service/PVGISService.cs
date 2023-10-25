@@ -1,4 +1,4 @@
-﻿using backend_API.Dto;
+﻿using backend_API.Models.Dto;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
@@ -9,17 +9,16 @@ namespace backend_API.Service
       public string CreatePVGIS(ProyectoDto Proyecto);
       public Task<string> GetJSON(ProyectoDto Proyecto);
       public void PDFGenerator();
-
    }
 
-   class PVGISService : IPVGISService
+   internal class PVGISService : IPVGISService
    {
-      string lat = "";
-      string lon = "";
-      string inclinacion = "";
-      string azimuth = "";
-      string potenciaPico = "";
-      string? datosJSON = null;
+      private string lat = "";
+      private string lon = "";
+      private string inclinacion = "";
+      private string azimuth = "";
+      private string potenciaPico = "";
+      private string? datosJSON = null;
 
       public string CreatePVGIS(ProyectoDto Proyecto)
       {
@@ -35,7 +34,7 @@ namespace backend_API.Service
                string nombreCliente = Proyecto.Cliente.Nombre.Replace(" ", "_");
                string newFileName = "PVGIS-5_" + nombreCliente + ".pdf";
                string newFilePath = "";
-               foreach (var ruta in rutas)
+               foreach (string ruta in rutas)
                {
                   string nombreFile = Path.GetFileName(ruta);
                   if (nombreFile.Contains("PVGIS"))
@@ -48,7 +47,9 @@ namespace backend_API.Service
                return "Fichero no encontrado";
             }
             else
+            {
                return "No se han obtenido datos del PVGIS-5";
+            }
          }
          catch (Exception ex) { return $"Error: {ex.Message}"; }
       }
@@ -64,20 +65,21 @@ namespace backend_API.Service
             potenciaPico = Proyecto.Instalacion.TotalPico + "";
             string apiUrl = $"https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?outputformat=basic&lat={lat}&lon={lon}&peakpower={potenciaPico}&loss=14&angle={inclinacion}&aspect={azimuth}";
 
-            using (HttpClient client = new())
+            using HttpClient client = new();
+            try
             {
-               try
+               HttpResponseMessage response = await client.GetAsync(apiUrl);
+               if (response.IsSuccessStatusCode)
                {
-                  HttpResponseMessage response = await client.GetAsync(apiUrl);
-                  if (response.IsSuccessStatusCode)
-                  {
-                     datosJSON = await response.Content.ReadAsStringAsync();
-                     return datosJSON;
-                  }
-                  else return "La petición no fue exitosa. STATUS: " + response.StatusCode;
+                  datosJSON = await response.Content.ReadAsStringAsync();
+                  return datosJSON;
                }
-               catch (Exception ex) { return "Error al realizar la petición: " + ex.Message; }
+               else
+               {
+                  return "La petición no fue exitosa. STATUS: " + response.StatusCode;
+               }
             }
+            catch (Exception ex) { return "Error al realizar la petición: " + ex.Message; }
          }
          catch (Exception ex) { return "Error al guardar JSON: " + ex.Message; }
       }
@@ -86,7 +88,7 @@ namespace backend_API.Service
       public void PDFGenerator()
       {
          //Configurar y abrir Chrome
-         var options = new ChromeOptions();
+         ChromeOptions options = new();
          options.AddArgument("--headless=new");
          options.AddUserProfilePreference("download.default_directory", "Files");
          ChromeDriver automatic = new(options)

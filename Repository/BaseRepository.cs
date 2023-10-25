@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using backend_API.Models.Context;
+using backend_API.Context;
 using backend_API.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -41,7 +41,7 @@ namespace backend_API.Repository
       //OBTENER LA LISTA DE LA ENTIDAD
       public async Task<IEnumerable<TDto>> GetEntitiesList()
       {
-         var entities = await _dbContext.Set<T>().ToListAsync();
+         List<T> entities = await _dbContext.Set<T>().ToListAsync();
          return _mapper.Map<IEnumerable<TDto>>(entities);
       }
 
@@ -51,10 +51,14 @@ namespace backend_API.Repository
          IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
 
          if (filter != null)
+         {
             query = query.Where(filter);
+         }
 
          if (includes != null)
+         {
             query = includes(query);
+         }
 
          return _mapper.ProjectTo<TDto>(query);
       }
@@ -64,34 +68,33 @@ namespace backend_API.Repository
       public async Task<TDto?> GetEntityDto(object? identity)
       {
          if (identity == null)
+         {
             return null;
+         }
 
          T? entity = await _dbContext.Set<T>().FindAsync(identity);
-         if (entity == null)
-            return null;
-         return _mapper.Map<TDto>(entity);
+         return entity == null ? null : _mapper.Map<TDto>(entity);
       }
 
       public async Task<T?> GetEntity(object identity)
       {
          if (identity == null)
+         {
             return null;
+         }
 
-         var entity = await _dbContext.Set<T>().FindAsync(identity);
-         if (entity == null)
-            return null;
-
-         return entity;
+         T entity = await _dbContext.Set<T>().FindAsync(identity);
+         return entity ?? null;
       }
       //CREAR UNA ENTIDAD 
       public async Task<TDto> CreateEntity(TDto entityDto)
       {
          try
          {
-            var entity = _mapper.Map<T>(entityDto);
-            var resultEntry = await _dbContext.Set<T>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            var newEntity = resultEntry.Entity;
+            T entity = _mapper.Map<T>(entityDto);
+            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> resultEntry = await _dbContext.Set<T>().AddAsync(entity);
+            _ = await _dbContext.SaveChangesAsync();
+            T newEntity = resultEntry.Entity;
             return _mapper.Map<TDto>(newEntity);
          }
          catch (Exception ex)
@@ -106,8 +109,8 @@ namespace backend_API.Repository
       {
          try
          {
-            var entity = _mapper.Map<T>(entityDto);
-            _dbContext.Set<T>().Update(entity);
+            T entity = _mapper.Map<T>(entityDto);
+            _ = _dbContext.Set<T>().Update(entity);
             int files = await _dbContext.SaveChangesAsync();
             return await _dbContext.SaveChangesAsync();
          }
@@ -118,13 +121,13 @@ namespace backend_API.Repository
          }
       }
 
-      //BORRAR UNA ENTIDAD
+      // BORRAR UNA ENTIDAD
       public async Task<int> DeleteEntity(TDto entityDto)
       {
          try
          {
-            var entity = _mapper.Map<T>(entityDto);
-            _dbContext.Set<T>().Remove(entity);
+            T entity = _mapper.Map<T>(entityDto);
+            _ = _dbContext.Set<T>().Remove(entity);
             return await _dbContext.SaveChangesAsync();
          }
          catch (Exception ex)
@@ -134,11 +137,18 @@ namespace backend_API.Repository
          }
       }
 
-      public async Task<bool> EntityExists(TDto entityDto)
+      // CHECKEAR SI EXISTE UNA ENTIDAD AL COMPLETO EN LA BASE DE DATOS INDEPENDIENTEMENTE DE SU ID
+      public async Task<TDto?> EntityExists(TDto entityDto)
       {
-         var entity = _mapper.Map<T>(entityDto);
-         var entitiesList = await _dbContext.Set<T>().ToListAsync();
-         return entitiesList.Contains(entity);
+         var properties = typeof(TDto).GetProperties().Where(p => p.Name != "Id");
+         var entity = await _dbContext.Set<T>()
+            .Where(e =>
+                  propertiesToMatch.All(property =>
+                     property.GetValue(entityDto).Equals(property.GetValue(e)))
+            ).FirstOrDefaultAsync();
+
+         if (entity == null) return null;
+         return _mapper.Map<TDto>(entity);
       }
    }
 }

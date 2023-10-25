@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using backend_API.Models.Context;
+using backend_API.Context;
 
 namespace backend_API.Migrations
 {

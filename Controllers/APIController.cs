@@ -1,5 +1,5 @@
-﻿using backend_API.Dto;
-using backend_API.Models;
+﻿using backend_API.Models;
+using backend_API.Models.Dto;
 using backend_API.Repository;
 using backend_API.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +16,15 @@ namespace backend_API.Controllers
       private readonly IBaseRepository<Proyecto, ProyectoDto> _proyectoRepository;
       private readonly IBaseRepository<Inversor, InversorDto> _inversorRepository;
       private readonly IBaseRepository<Modulo, ModuloDto> _moduloRepository;
-      private readonly IBaseRepository<Error, ErrorDto> _errorRepository;
       private readonly IProjectService _projectService;
 
-      public ApiController(IHttpClientFactory httpClientFactory, IBaseRepository<Proyecto, ProyectoDto> proyectoRepository, IBaseRepository<Inversor, InversorDto> inversorRepository, IBaseRepository<Modulo, ModuloDto> moduloRepository, IProjectService projectService, IBaseRepository<Error, ErrorDto> errorRepository)
+      public ApiController(IHttpClientFactory httpClientFactory, IBaseRepository<Proyecto, ProyectoDto> proyectoRepository, IBaseRepository<Inversor, InversorDto> inversorRepository, IBaseRepository<Modulo, ModuloDto> moduloRepository, IProjectService projectService)
       {
          _httpClientFactory = httpClientFactory;
          _proyectoRepository = proyectoRepository;
          _inversorRepository = inversorRepository;
          _moduloRepository = moduloRepository;
          _projectService = projectService;
-         _errorRepository = errorRepository;
       }
 
       //CONSULTAR APIS PUBLICAS MEDIANTE UN AUTOPROXY PARA SUBSANAR POLÍTICAS DE CORS
@@ -35,7 +33,11 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<IActionResult> UseProxy(string url)
       {
-         if (url == null) return BadRequest("Error en la url enviada");
+         if (url == null)
+         {
+            return BadRequest("Error en la url enviada");
+         }
+
          string? provincia = Request.Query["Provincia"];
          string? coordX = Request.Query["CoorX"];
          string? coordY = Request.Query["CoorY"];
@@ -43,10 +45,25 @@ namespace backend_API.Controllers
          string? refCatastral = Request.Query["RefCat"];
 
 
-         if (provincia != null) url += "?Provincia=" + provincia;
-         if (coordX != null && coordX != null && SRS != null) url += "?CoorX=" + coordX + "&CoorY=" + coordY + "&SRS=" + SRS;
-         if (refCatastral != null) url += "?RefCat=" + refCatastral;
-         if (url.Contains("PVGIS")) url = url.Split("=>")[1].Replace("*", "?");
+         if (provincia != null)
+         {
+            url += "?Provincia=" + provincia;
+         }
+
+         if (coordX != null && coordX != null && SRS != null)
+         {
+            url += "?CoorX=" + coordX + "&CoorY=" + coordY + "&SRS=" + SRS;
+         }
+
+         if (refCatastral != null)
+         {
+            url += "?RefCat=" + refCatastral;
+         }
+
+         if (url.Contains("PVGIS"))
+         {
+            url = url.Split("=>")[1].Replace("*", "?");
+         }
 
          try
          {
@@ -69,7 +86,10 @@ namespace backend_API.Controllers
       public async Task<ActionResult<string>> CrearReferencia()
       {
          IEnumerable<ProyectoDto> proyectosList = await _proyectoRepository.GetEntitiesList();
-         if (proyectosList == null) return NotFound("Lista de proyectos no encontrada");
+         if (proyectosList == null)
+         {
+            return NotFound("Lista de proyectos no encontrada");
+         }
 
          ProyectoDto? ultimoProyecto = proyectosList.OrderByDescending(p => p.IdProyecto).FirstOrDefault();
          int defaultNumReferencia = 5000;
@@ -89,7 +109,11 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<ProyectoDto>> GetProyecto(string referencia)
       {
-         if (referencia == null) return BadRequest("La referencia no es válida no existe");
+         if (referencia == null)
+         {
+            return BadRequest("La referencia no es válida no existe");
+         }
+
          ProyectoDto? Proyecto = _proyectoRepository.GetEntitiesInclude(
                filter: p => p.Referencia == referencia,
                includes: query => query
@@ -98,7 +122,10 @@ namespace backend_API.Controllers
                .Include(p => p.LugaresPRL))
                .FirstOrDefault();
 
-         if (Proyecto == null) return NotFound("No existe el proyecto para esa referencia");
+         if (Proyecto == null)
+         {
+            return NotFound("No existe el proyecto para esa referencia");
+         }
 
          IList<CadenaDto> Cadenas = Proyecto.Instalacion.Cadenas;
          foreach (CadenaDto? c in Cadenas)
@@ -119,7 +146,10 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<string> ObtenerCIF(string empresa)
       {
-         if (empresa is null or "") return BadRequest("Se requiere el nombre de la empresa para obtener el CIF");
+         if (empresa is null or "")
+         {
+            return BadRequest("Se requiere el nombre de la empresa para obtener el CIF");
+         }
 
          string CIF = _projectService.GetCIF(empresa);
          return CIF.Contains("ERROR") ? NotFound(CIF) : Ok(CIF);
@@ -140,7 +170,10 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<InversorDto>> InsertInversor(InversorDto Inversor)
       {
-         if (Inversor == null) return BadRequest("El inversor enviado no es válido");
+         if (Inversor == null)
+         {
+            return BadRequest("El inversor enviado no es válido");
+         }
 
          InversorDto newInversor = await _inversorRepository.CreateEntity(Inversor);
          return newInversor == null
@@ -163,7 +196,10 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<ModuloDto>> InsertModulo(ModuloDto Modulo)
       {
-         if (Modulo == null) return BadRequest("El módulo enviado no es válido");
+         if (Modulo == null)
+         {
+            return BadRequest("El módulo enviado no es válido");
+         }
 
          ModuloDto newModulo = await _moduloRepository.CreateEntity(Modulo);
          return newModulo == null
@@ -177,13 +213,18 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<InstalacionDto?> GetInstalacionCalculated(InstalacionDto? Instalacion)
       {
-         if (Instalacion == null) return BadRequest("La instalación enviada no es válida");
+         if (Instalacion == null)
+         {
+            return BadRequest("La instalación enviada no es válida");
+         }
+         else
+         {
+            int? size = Instalacion.Cadenas.Count;
 
-         int? size = Instalacion.Cadenas.Count;
-         Instalacion = _projectService.CalcularInstalacion(Instalacion);
-         if (Instalacion == null || Instalacion.Cadenas.Count < size) return NoContent();
+            Instalacion = _projectService.CalcularInstalacion(Instalacion);
 
-         return Ok(Instalacion);
+            return Instalacion.Cadenas.Count < size ? (ActionResult<InstalacionDto>)BadRequest() : (ActionResult<InstalacionDto>)Ok(Instalacion);
+         }
       }
 
       [HttpPost("proyecto/insert")]
@@ -194,20 +235,24 @@ namespace backend_API.Controllers
       {
          try
          {
-            if (Proyecto == null) return BadRequest("El proyecto enviado no es válido");
-            var Ubicacion = Proyecto.Cliente.Ubicaciones[0];
-            var Instalacion = Proyecto.Instalacion;
+            if (Proyecto == null)
+            {
+               return BadRequest("El proyecto enviado no es válido");
+            }
+
+            UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+            InstalacionDto Instalacion = Proyecto.Instalacion;
             Proyecto = _projectService.GetDatosLegalizaciones(Proyecto);
             double[] latLngUTM = _projectService.GetUTM(Instalacion);
             Ubicacion.CoordXUTM = latLngUTM[0];
             Ubicacion.CoordYUTM = latLngUTM[1];
-            var Cadenas = Instalacion.Cadenas;
+            IList<CadenaDto> Cadenas = Instalacion.Cadenas;
             foreach (CadenaDto c in Cadenas)
             {
                c.IdInversor = c.Inversor.IdInversor;
                c.IdModulo = c.Modulo.IdModulo;
             }
-            var newProyecto = await _proyectoRepository.CreateEntity(Proyecto);
+            ProyectoDto newProyecto = await _proyectoRepository.CreateEntity(Proyecto);
 
             return newProyecto == null ? NotFound("Error al crear el proyecto") : Ok(newProyecto);
          }
@@ -224,7 +269,10 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<ProyectoDto>> UpdateProyecto(ProyectoDto Proyecto)
       {
-         if (Proyecto == null) return BadRequest("El proyecto enviado no es válido");
+         if (Proyecto == null)
+         {
+            return BadRequest("El proyecto enviado no es válido");
+         }
 
          UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
          InstalacionDto Instalacion = Proyecto.Instalacion;
@@ -233,22 +281,16 @@ namespace backend_API.Controllers
          Ubicacion.CoordYUTM = latLngUTM[1];
 
          int files = await _proyectoRepository.UpdateEntity(Proyecto);
-         if (files == -1) return BadRequest("Error al crear el proyecto");
-         else if (files == 0) return NotFound("No se ha encontrado el proyecto a actualizar");
+         if (files == -1)
+         {
+            return BadRequest("Error al crear el proyecto");
+         }
+         else if (files == 0)
+         {
+            return NotFound("No se ha encontrado el proyecto a actualizar");
+         }
 
          return Ok("Proyecto actualizado con éxito");
-      }
-
-      [HttpPost("insertError")]
-      [ProducesResponseType(StatusCodes.Status400BadRequest)]
-      [ProducesResponseType(StatusCodes.Status404NotFound)]
-      [ProducesResponseType(StatusCodes.Status200OK)]
-      public async Task<IActionResult> InsertError(ErrorDto errorFront)
-      {
-         if (errorFront == null) return BadRequest("Datos de error no válidos.");
-
-         ErrorDto newError = await _errorRepository.CreateEntity(errorFront);
-         return newError == null ? BadRequest("No se ha pododoguardar el Error") : Ok("Error registrado exitosamente.");
       }
    }
 }

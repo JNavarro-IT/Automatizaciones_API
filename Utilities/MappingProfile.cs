@@ -12,12 +12,14 @@ namespace backend_API.Utilities
       {
          Type baseModelType = typeof(ModelBase);
          Type baseDtoType = typeof(DtoBase);
-         var assembly = Assembly.GetExecutingAssembly();
-         var entityTypes = assembly.GetTypes().Where(t => baseModelType.IsAssignableFrom(t) && !t.IsAbstract).ToList();
-         var dtoTypes = assembly.GetTypes().Where(t => baseDtoType.IsAssignableFrom(t) && !t.IsAbstract).ToList();
+         Assembly assembly = Assembly.GetExecutingAssembly();
+         List<Type> entityTypes = assembly.GetTypes().Where(t => baseModelType.IsAssignableFrom(t) && !t.IsAbstract).ToList();
+         List<Type> dtoTypes = assembly.GetTypes().Where(t => baseDtoType.IsAssignableFrom(t) && !t.IsAbstract).ToList();
 
          for (int i = 0; i < entityTypes.Count; i++)
-            CreateMap(entityTypes[i], dtoTypes[i]).ReverseMap();
+         {
+            _ = CreateMap(entityTypes[i], dtoTypes[i]).ReverseMap();
+         }
       }
    }
 
@@ -25,11 +27,18 @@ namespace backend_API.Utilities
    {
       public static IMapper Initialize()
       {
-         var configuration = new MapperConfiguration(cfg =>
+         MapperConfiguration configuration = new(cfg =>
          {
             cfg.AddProfile<MappingProfile>();
          });
          return configuration.CreateMapper();
       }
    }
+}
+
+namespace backend_API.Utilities
+{
+   public class ModelBase { }
+
+   public class DtoBase { }
 }

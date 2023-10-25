@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
-using backend_API.Dto;
+using backend_API.Models.Dto;
 using Newtonsoft.Json.Linq;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
@@ -8,7 +8,7 @@ using ProjNet.CoordinateSystems.Transformations;
 namespace backend_API.Service
 {
    // INTERFAZ QUE FUNCIONA COMO SERVICIO DEL PROYECTO PARA OTRAS CLASES, MEDIANTE INYECCION DE DEPENDENCIAS
-   public interface IProjectService 
+   public interface IProjectService
    {
       public InstalacionDto? CalcularInstalacion(InstalacionDto Instalacion);
       public double[] GetUTM(InstalacionDto Instalacion);
@@ -20,7 +20,7 @@ namespace backend_API.Service
    }
 
    //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
-    
+
    public class ProjectService : IProjectService
    {
       // CONSTRUCTOR POR DEFECTO
@@ -29,18 +29,37 @@ namespace backend_API.Service
       // CALCULAR LOS PARÁMETROS TÉCNICOS DE UNA INSTALACIÓN A TRAVES DE LA COMBINACIÓN DE CADENAS
       public InstalacionDto? CalcularInstalacion(InstalacionDto Instalacion)
       {
-         var Cadenas = Instalacion.Cadenas;
+         IList<CadenaDto> Cadenas = Instalacion.Cadenas;
          if (Cadenas.Count == 0) return null;
+         var hasError = false;
 
          foreach (CadenaDto c in Cadenas)
          {
-            c.MinModulos = (int)(Math.Ceiling(c.Inversor.Vmin / c.Modulo.Vca));
-            c.MaxModulos = (int)(Math.Ceiling(c.Inversor.Vmax / c.Modulo.Vca));
+            if (c.Modulo.Vca <= 1)
+            {
+               c.Modulo.Vca = 50;
+               hasError = true;
+            }
 
+            if (c.Inversor.Vmin <= 1)
+            {
+               c.Inversor.Vmin = 100;
+               hasError = true;
+            }
+
+            if (c.Inversor.Vmax == 0)
+            {
+               c.Inversor.Vmax = 500;
+               hasError = true;
+            }
+
+            c.MinModulos = (int)Math.Ceiling(c.Inversor.Vmin / c.Modulo.Vca);
+            c.MaxModulos = (int)Math.Ceiling(c.Inversor.Vmax / c.Modulo.Vca);
+                  
             c.PotenciaString = Math.Round(c.NumModulos * c.Modulo.Potencia, 2);
             c.PotenciaPico = Math.Round(c.Modulo.Potencia * c.NumModulos, 2) / 1000;
             c.PotenciaNominal = Math.Round((double)(c.NumInversores * c.Inversor.PotenciaNominal), 2);
-            c.TensionString = Math.Round((c.NumModulos * c.Modulo.Vca), 2);
+            c.TensionString = Math.Round(c.NumModulos * c.Modulo.Vca, 2);
 
             Instalacion.TotalModulos += c.NumModulos;
             Instalacion.TotalCadenas += c.NumCadenas;
@@ -51,6 +70,11 @@ namespace backend_API.Service
             c.IdInversor = c.Inversor.IdInversor;
             c.IdModulo = c.Modulo.IdModulo;
          }
+         if(hasError)
+         {
+            throw new InvalidOperationException("EXCEPTION: Uso de datos simulados.\n Datos insuficientes para el calcular la instalación.\n Actualice módulos e inversores");
+         }
+
          return Instalacion;
       }
 
@@ -73,8 +97,8 @@ namespace backend_API.Service
          {
             foreach (string path in pathsOrigin)
             {
-               var nameFileOrigin = Path.GetFileName(path).Replace("NAME", Proyecto.Cliente.Nombre); ;
-               var pathFileEnd = Path.Combine(folderEnd, nameFileOrigin);
+               string nameFileOrigin = Path.GetFileName(path).Replace("NAME", Proyecto.Cliente.Nombre); ;
+               string pathFileEnd = Path.Combine(folderEnd, nameFileOrigin);
                File.Copy(path, pathFileEnd, true);
             }
             return folderEnd;
@@ -87,29 +111,36 @@ namespace backend_API.Service
       {
          try
          {
-            string? filePath = "SeedData/CIFs.json";
+            string? filePath = "Utilities/SeedData/CIFs.json";
             string? jsonContent = File.ReadAllText(filePath);
             JObject? jsonObj = JObject.Parse(jsonContent);
             JArray? body = (JArray?)jsonObj["body"];
-
-            foreach (JToken? row in body)
+            if (body != null)
             {
-               string? CIF = row[8].ToString().ToUpper();
-               string fEmpresaDB = row[1].ToString().Split(",")[0];
-               string? empresaDB = WithoutTildes(fEmpresaDB).ToString();
-               Empresa = WithoutTildes(Empresa).ToString().Replace("_"," ");
-               Console.WriteLine(Empresa + "--------- " + empresaDB);
-               if (Empresa.Contains(empresaDB)) return CIF;
+               foreach (JToken? row in body)
+               {
+                  string CIF = row[8].ToString().ToUpper();
+                  string fEmpresaDB = row[1].ToString().Split(",")[0];
+                  string? empresaDB = WithoutTildes(fEmpresaDB).ToString();
+                  Empresa = WithoutTildes(Empresa).ToString().Replace("_", " ");
+                  Console.WriteLine(Empresa + "--------- " + empresaDB);
+                  if (Empresa.Contains(empresaDB))
+                  {
+                     return CIF;
+                  }
+               }
+            }
 
-            } return "ERROR => No se encontró ninguna empresa con ese nombre";
+            return "ERROR => No se encontró ninguna empresa con ese nombre";
 
-         } catch (Exception ex) { return "ERROR: " + ex.Message; }
+         }
+         catch (Exception ex) { return "ERROR: " + ex.Message; }
       }
 
       // OBTENER LOS DATOS PARA LEGALIZACIONES SOBRE EL DIRECTOR DE OBRA Y LA INSPECCIÓN SEGÚN LA POTENCIA NOMINAL DEL PROYECTO
       public ProyectoDto GetDatosLegalizaciones(ProyectoDto Proyecto)
       {
-         var Instalacion = Proyecto.Instalacion;
+         InstalacionDto Instalacion = Proyecto.Instalacion;
          if (Instalacion.TotalNominal >= 10 && Instalacion.DirectorObra == "")
          {
             Instalacion.DirectorObra = "ALBERTO ARENAS ÁLVARO";
@@ -118,7 +149,10 @@ namespace backend_API.Service
             Instalacion.NumColegiado = "11605";
          }
 
-         if (Instalacion.TotalNominal >= 25 && Proyecto.OCA == "") Proyecto.OCA = "OCA GLOBAL";
+         if (Instalacion.TotalNominal >= 25 && Proyecto.OCA == "")
+         {
+            Proyecto.OCA = "OCA GLOBAL";
+         }
 
          return Proyecto;
       }
@@ -132,26 +166,38 @@ namespace backend_API.Service
             string? jsonContent = File.ReadAllText(filePath);
             JObject? provincias = JObject.Parse(jsonContent);
 
-            foreach (var prov in provincias)
+            foreach (KeyValuePair<string, JToken> prov in provincias)
             {
                if (WithoutTildes(prov.Key).Equals(WithoutTildes(Ubicacion.Provincia)))
                {
                   JObject? municipios = (JObject?)prov.Value;
-                  foreach (var muni in municipios)
-                     if (WithoutTildes(muni.Key).Equals(WithoutTildes(Ubicacion.Municipio))) return true;
+                  foreach (KeyValuePair<string, JToken> muni in municipios)
+                  {
+                     if (WithoutTildes(muni.Key).Equals(WithoutTildes(Ubicacion.Municipio)))
+                     {
+                        return true;
+                     }
+                  }
                }
-            } return false;
+            }
+            return false;
 
-         } catch (Exception ex) { throw new Exception("EXCEPTION: " + ex.Message); }
+         }
+         catch (Exception ex) { throw new Exception("EXCEPTION: " + ex.Message); }
       }
 
       // OBTENER UNA CADENA DE TEXTO SIN TILDES
       public StringBuilder WithoutTildes(string item)
       {
          StringBuilder sb = new();
-         var format = item.Normalize(NormalizationForm.FormD);
+         string format = item.Normalize(NormalizationForm.FormD);
          foreach (char f in format)
-            if (CharUnicodeInfo.GetUnicodeCategory(f) != UnicodeCategory.NonSpacingMark) sb.Append(f);
+         {
+            if (CharUnicodeInfo.GetUnicodeCategory(f) != UnicodeCategory.NonSpacingMark)
+            {
+               _ = sb.Append(f);
+            }
+         }
 
          return sb;
       }

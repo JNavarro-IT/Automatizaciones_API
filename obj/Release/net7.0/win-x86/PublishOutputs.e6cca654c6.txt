@@ -2,8 +2,9 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\web.config
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\appsettings.Development.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\appsettings.Production.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\SeedData\CIFs.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\SeedData\ECO3.json
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\appsettings.Staging.json
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Utilities\SeedData\CIFs.json
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Utilities\SeedData\ECO3.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\selenium-manager\linux\selenium-manager
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\selenium-manager\macos\selenium-manager
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\selenium-manager\windows\selenium-manager.exe
@@ -32,9 +33,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\itext.svg.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\itext.bouncy-castle-adapter.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\itext.commons.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
@@ -49,8 +47,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyModel.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Http.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Core.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Options.dll
@@ -82,4 +78,5 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\System.Security.Permissions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\System.Windows.Extensions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\backend_API.xml
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\backend_API.deps.json
