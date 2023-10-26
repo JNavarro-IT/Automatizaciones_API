@@ -29,13 +29,13 @@ namespace backend_API.Controllers
        where T : ModelBase
        where TDto : DtoBase
    {
-      private readonly IBaseRepository<T, TDto> _repository;
+      private readonly IBaseRepository<T, TDto> _baseRepository;
 
       //CONSTRUCTOR CON INYECCION DE DEPENDENCIA
 
       public BaseController(IBaseRepository<T, TDto> repository)
       {
-         _repository = repository;
+         _baseRepository = repository;
       }
 
       //GET: OBTENER LA LISTA DE UNA ENTIDAD
@@ -44,8 +44,8 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<IEnumerable<TDto>>> GetListAsync()
       {
-         IEnumerable<TDto> entitiesList = await _repository.GetEntitiesList();
-         return entitiesList == null ? (ActionResult<IEnumerable<TDto>>)NoContent() : (ActionResult<IEnumerable<TDto>>)Ok(entitiesList);
+         IEnumerable<TDto> entitiesList = await _baseRepository.GetEntitiesList();
+         return entitiesList == null ? NoContent() : Ok(entitiesList);
       }
 
       //GET: OBTENER UNA ENTIDAD MEDIANTE EL ID
@@ -53,15 +53,12 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<TDto> GetByIdentity(object identity)
+      public async Task<ActionResult<TDto>> GetByIdentity(object identity)
       {
-         if (identity == null)
-         {
-            return BadRequest("El identificador enviado es nulo");
-         }
-
-         Task<TDto> entity = _repository.GetEntityDto(identity);
-         return entity == null ? (ActionResult<TDto>)NotFound("Objeto no encontrado con ese identificador") : (ActionResult<TDto>)Ok(entity);
+         if (identity == null) return BadRequest("El identificador enviado es nulo");
+         
+         TDto? entity = await _baseRepository.GetEntityDto(identity);
+         return entity == null ? NotFound("Objeto no encontrado con ese identificador") : Ok(entity);
       }
 
       //POST: CREAR UNA ENTIDAD
@@ -71,20 +68,14 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status204NoContent)]
       public async Task<ActionResult<TDto>> CreateEntity(object identity, [FromBody] TDto dto)
       {
-         if (dto == null || identity == null)
-         {
-            return BadRequest("No se ha enviado ningún dato");
-         }
-
+         if (dto == null || identity == null) return BadRequest("No se ha enviado ningún dato");
+        
          try
          {
-            TDto newDto = await _repository.CreateEntity(dto);
-            return newDto != null ? (ActionResult<TDto>)Ok(newDto) : (ActionResult<TDto>)NoContent();
-         }
-         catch (Exception ex)
-         {
-            return BadRequest(ex.ToString());
-         }
+            TDto newDto = await _baseRepository.CreateEntity(dto);
+            return newDto != null ? Ok(newDto) : NoContent();
+         
+         } catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
 
       //PUT: ACTUALIZAR UNA ENTIDAD POR UN IDENTIFICADOR
@@ -94,26 +85,17 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       public async Task<ActionResult<TDto>> UpdateEntity(object identity, [FromBody] TDto dto)
       {
-         if (dto == null || identity == null)
-         {
-            return BadRequest("No se ha enviado ningún dato");
-         }
+         if (dto == null || identity == null) return BadRequest("No se ha enviado ningún dato");
 
-         Task<TDto> dtoDB = _repository.GetEntityDto(identity);
-         if (dtoDB == null)
-         {
-            return NotFound("Objeto no encontrado con el identificador enviado");
-         }
+         Task<TDto?> dtoDB = _baseRepository.GetEntityDto(identity);
+         if (dtoDB == null) return NotFound("Objeto no encontrado con el identificador enviado");
 
          try
          {
-            int updated = await _repository.UpdateEntity(dto);
-            return updated > 0 ? (ActionResult<TDto>)Ok(dto) : (ActionResult<TDto>)NotFound("No se ha actualizado ningún objeto");
-         }
-         catch (Exception ex)
-         {
-            return BadRequest(ex.ToString());
-         }
+            int updated = await _baseRepository.UpdateEntity(dto);
+            return updated > 0 ? Ok(dto) : NotFound("No se ha actualizado ningún objeto");
+        
+         } catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
 
       //BORRAR UNA ENTIDAD POR EL ID
@@ -123,13 +105,10 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       public async Task<ActionResult<TDto>> DeleteEntity(object identity, [FromBody] TDto dto)
       {
-         if (identity == null)
-         {
-            return BadRequest("No se ha pasado ningún identificador");
-         }
+         if (identity == null) return BadRequest("No se ha pasado ningún identificador");
 
-         int deleted = await _repository.DeleteEntity(dto);
-         return deleted <= 0 ? (ActionResult<TDto>)NotFound("No se ha eliminado ningún objeto") : (ActionResult<TDto>)Ok(dto);
+         int deleted = await _baseRepository.DeleteEntity(dto);
+         return deleted <= 0 ? NotFound("No se ha eliminado ningún objeto") : Ok(dto);
       }
 
       //PATCH: ACTUALIZAR UNA ENTIDAD DE FORMA PARCIAL
@@ -139,33 +118,21 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       public async Task<ActionResult> UpdatePartialEntity(object identity, JsonPatchDocument<TDto> patchDto)
       {
-         if (patchDto == null || identity == null)
-         {
-            return BadRequest("No se han detectado parámetros para actualizar");
-         }
+         if (patchDto == null || identity == null) return BadRequest("No se han detectado parámetros para actualizar");
 
-         TDto entityDto = await _repository.GetEntityDto(identity);
-         if (entityDto == null)
-         {
-            return NotFound("No se ha encontrado ningún objeto con ese identificador");
-         }
+         TDto? entityDto = await _baseRepository.GetEntityDto(identity);
+         if (entityDto == null) return NotFound("No se ha encontrado ningún objeto con ese identificador");
 
          patchDto.ApplyTo(entityDto, (IObjectAdapter)ModelState);
 
-         if (!ModelState.IsValid)
-         {
-            return BadRequest("El modelo no es válido" + ModelState);
-         }
-
+         if (!ModelState.IsValid) return BadRequest("El modelo no es válido" + ModelState);
+         
          try
          {
-            int updated = await _repository.UpdateEntity(entityDto);
+            int updated = await _baseRepository.UpdateEntity(entityDto);
             return updated <= 0 ? BadRequest("No se ha actualizado ningún objeto") : Ok(entityDto);
-         }
-         catch (Exception ex)
-         {
-            return BadRequest(ex.ToString());
-         }
+        
+         } catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
    }
 }

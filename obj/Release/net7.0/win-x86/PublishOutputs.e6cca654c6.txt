@@ -15,6 +15,7 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Azure.Core.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Azure.Identity.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\BouncyCastle.Cryptography.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\ClosedXML.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\ClosedXML.Parser.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\DocumentFormat.OpenXml.dll
@@ -42,15 +43,9 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.DependencyModel.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Http.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Options.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Extensions.Primitives.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Identity.Client.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Identity.Client.Extensions.Msal.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.IdentityModel.Abstractions.dll
@@ -63,7 +58,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Newtonsoft.Json.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\Newtonsoft.Json.Bson.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\BouncyCastle.Crypto.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\ProjNET.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\RBush.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\PubTmp\Out\WebDriver.dll

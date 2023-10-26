@@ -2,12 +2,14 @@
 using backend_API.Models.Dto;
 using backend_API.Repository;
 using backend_API.Service;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend_API.Controllers
 {
    //CONTROLADOR DE LAS PETICIONES HTTP, TAMBIEN A APIS EXTERNAS COMO PROXY
+   [EnableCors("Cors")]
    [ApiController]
    [Route("[controller]")]
    public class ApiController : ControllerBase
@@ -33,22 +35,16 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<IActionResult> UseProxy(string url)
       {
-         if (url == null)
-         {
-            return BadRequest("Error en la url enviada");
-         }
-
-         string? provincia = Request.Query["Provincia"];
-         string? coordX = Request.Query["CoorX"];
-         string? coordY = Request.Query["CoorY"];
-         string? SRS = Request.Query["SRS"];
-         string? refCatastral = Request.Query["RefCat"];
+         if (url == null) return BadRequest("Error en la url enviada");
+         string provincia = Request.Query["Provincia"];
+         string coordX = Request.Query["CoorX"];
+         string coordY = Request.Query["CoorY"];
+         string SRS = Request.Query["SRS"];
+         string refCatastral = Request.Query["RefCat"];
 
 
-         if (provincia != null)
-         {
-            url += "?Provincia=" + provincia;
-         }
+         if (provincia != null) url += "?Provincia=" + provincia;
+         
 
          if (coordX != null && coordX != null && SRS != null)
          {
@@ -209,21 +205,24 @@ namespace backend_API.Controllers
 
       [HttpPost("instalacion/calcular")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
-      [ProducesResponseType(StatusCodes.Status204NoContent)]
+      [ProducesResponseType(StatusCodes.Status409Conflict)]
       [ProducesResponseType(StatusCodes.Status200OK)]
+      [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
       public ActionResult<InstalacionDto?> GetInstalacionCalculated(InstalacionDto? Instalacion)
       {
-         if (Instalacion == null)
+         if (Instalacion == null) return BadRequest("La instalación enviada no es válida");
+
+         int? size = Instalacion.Cadenas.Count;
+         try
          {
-            return BadRequest("La instalación enviada no es válida");
+            var result = _projectService.CalcularInstalacion(Instalacion);
+            return Ok(Instalacion);
          }
-         else
+         catch (InvalidOperationException ex) { return Conflict(ex.Message); }
+         catch (Exception e) 
          {
-            int? size = Instalacion.Cadenas.Count;
-
-            Instalacion = _projectService.CalcularInstalacion(Instalacion);
-
-            return Instalacion.Cadenas.Count < size ? (ActionResult<InstalacionDto>)BadRequest() : (ActionResult<InstalacionDto>)Ok(Instalacion);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + e.Message);
          }
       }
 
@@ -235,10 +234,7 @@ namespace backend_API.Controllers
       {
          try
          {
-            if (Proyecto == null)
-            {
-               return BadRequest("El proyecto enviado no es válido");
-            }
+            if (Proyecto == null) return BadRequest("El proyecto enviado no es válido");
 
             UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
             InstalacionDto Instalacion = Proyecto.Instalacion;

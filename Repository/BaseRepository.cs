@@ -20,7 +20,7 @@ namespace backend_API.Repository
       public Task<TDto> CreateEntity(TDto tDto);
       public Task<int> UpdateEntity(TDto entityDto);
       public Task<int> DeleteEntity(TDto entityDto);
-      public Task<bool> EntityExists(TDto entityDto);
+      public Task<TDto?> EntityExists(TDto entityDto);
    }
 
    //CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
@@ -83,7 +83,7 @@ namespace backend_API.Repository
             return null;
          }
 
-         T entity = await _dbContext.Set<T>().FindAsync(identity);
+         T? entity = await _dbContext.Set<T>().FindAsync(identity);
          return entity ?? null;
       }
       //CREAR UNA ENTIDAD 
@@ -143,7 +143,7 @@ namespace backend_API.Repository
          var properties = typeof(TDto).GetProperties().Where(p => p.Name != "Id");
          var entity = await _dbContext.Set<T>()
             .Where(e =>
-                  propertiesToMatch.All(property =>
+                  properties.All(property =>
                      property.GetValue(entityDto).Equals(property.GetValue(e)))
             ).FirstOrDefaultAsync();
 

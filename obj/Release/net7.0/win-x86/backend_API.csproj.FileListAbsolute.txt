@@ -2,8 +2,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\appsettings.Development.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\appsettings.Production.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\appsettings.Staging.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Utilities\SeedData\CIFs.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Utilities\SeedData\ECO3.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\selenium-manager\linux\selenium-manager
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\selenium-manager\macos\selenium-manager
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\selenium-manager\windows\selenium-manager.exe
@@ -17,6 +15,7 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Azure.Core.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Azure.Identity.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\BouncyCastle.Cryptography.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\ClosedXML.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\ClosedXML.Parser.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\DocumentFormat.OpenXml.dll
@@ -46,15 +45,9 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.EntityFrameworkCore.SqlServer.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.DependencyModel.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Http.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Logging.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Options.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Extensions.Primitives.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Identity.Client.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Identity.Client.Extensions.Msal.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.IdentityModel.Abstractions.dll
@@ -68,7 +61,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Mono.TextTemplating.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Newtonsoft.Json.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Newtonsoft.Json.Bson.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\BouncyCastle.Crypto.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\ProjNET.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\RBush.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\WebDriver.dll
@@ -85,8 +77,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\System.Windows.Extensions.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.csproj.AssemblyReference.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.Properties.Resources.resources
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.csproj.GenerateResource.cache
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.AssemblyInfoInputs.cache
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.AssemblyInfo.cs
@@ -107,3 +97,5 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.pdb
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\backend_API.genruntimeconfig.cache
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\obj\Release\net7.0\win-x86\ref\backend_API.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Utilities\SeedData\CIFs.json
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Gestor_Proyectos\backend_API\bin\Release\net7.0\win-x86\Utilities\SeedData\ECO3.json

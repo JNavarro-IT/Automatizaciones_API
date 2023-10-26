@@ -152,15 +152,11 @@ namespace backend_API.Service
       public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD)
       {
          if (MapWORD == null)
-         {
             return "ERROR => El diccionario está vacío o mal estructurado: " + MapWORD;
-         }
-
+         
          if (pathsWORD == null)
-         {
             return "ERROR => NO se han creado las rutas de destino:  " + pathsWORD;
-         }
-
+         
          foreach (string ruta in pathsWORD)
          {
             if (Path.GetExtension(ruta).Equals(".docx"))
@@ -168,13 +164,9 @@ namespace backend_API.Service
                using DocX doc = DocX.Load(ruta);
                foreach (Paragraph parrafo in doc.Paragraphs)
                {
-                  foreach (KeyValuePair<string, string> kvp in MapWORD)
-                  {
-                     if (parrafo.Text.Contains(kvp.Key))
-                     {
-                        parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-                     }
-                  }
+                  foreach (KeyValuePair<string, string?> kvp in MapWORD)
+                    if (parrafo.Text.Contains(kvp.Key))
+                        parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);              
                }
 
                int numSections = doc.Sections.Count;
@@ -183,19 +175,13 @@ namespace backend_API.Service
                   Headers headers = doc.Sections[i].Headers;
                   foreach (Paragraph paragraph in headers.Odd.Paragraphs)
                   {
-                     foreach (KeyValuePair<string, string> kvp in MapWORD)
-                     {
+                     foreach (KeyValuePair<string, string?> kvp in MapWORD)
                         if (paragraph.Text.Contains(kvp.Key))
-                        {
                            paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
-                        }
-                     }
                   }
-               }
-               doc.Save();
+               } doc.Save();
             }
          }
-
          string? folderEnd = Path.GetPathRoot(pathsWORD[0]);
          return "OK => Las memorias en formato WORD se han generado con éxito: " + folderEnd;
       }

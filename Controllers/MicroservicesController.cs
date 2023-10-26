@@ -1,10 +1,12 @@
 ﻿using backend_API.Models.Dto;
 using backend_API.Service;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_API.Controllers
 {
    //CONTROLADOR DE LAS PETICIONES HTTP PARA OBTENER ARCHIVOS
+   [EnableCors("Cors")]
    [ApiController]
    [Route("[controller]")]
    public class MicroservicesController : ControllerBase
@@ -13,31 +15,41 @@ namespace backend_API.Controllers
       private readonly IWORDService _wordService;
       private readonly IPVGISService _pvgisService;
       private readonly IPDFService _pdfService;
+      private readonly ILogger<MicroservicesController> _logger;
 
       //CONSTRUCTOR POR PARÁMETROS
-      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService)
+      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService, ILogger<MicroservicesController> logger)
       {
          _excelServices = excelServices;
          _wordService = wordService;
          _pvgisService = pvgisService;
          _pdfService = pdfService;
+         _logger = logger;      
       }
 
       // PETICIÓN PARA GENERAR ARCHIVO EXCEL
       [HttpPost("crearExcel")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
-      [ProducesResponseType(StatusCodes.Status204NoContent)]
+      [ProducesResponseType(StatusCodes.Status409Conflict)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string> CrearExcel(ProyectoDto Proyecto)
+
+      public ActionResult CrearExcel(ProyectoDto Proyecto)
       {
-         if (Proyecto == null)
+         if (Proyecto == null) return BadRequest("El proyecto no existe");
+
+         try
          {
-            return BadRequest("El proyecto no existe");
-         }
+            string tempPath = _excelServices.CreateEXCEL(Proyecto);
+            if (tempPath is null) return Conflict("Ruta null");
 
-         string rutaNewExcel = _excelServices.CreateEXCEL(Proyecto);
+            byte[] fileBytes = Convert.FromBase64String(tempPath);
 
-         return rutaNewExcel == null ? (ActionResult<string>)NoContent() : (ActionResult<string>)Ok(rutaNewExcel);
+            return Ok(new FileStreamResult(new MemoryStream(fileBytes), "application/vnd.ms-excel") { FileDownloadName = Proyecto.Referencia + ".xlsx" }); 
+         } 
+         catch (Exception ex) 
+         { 
+            throw new("EXCEPTION: " + ex.Message + "HELP: " + ex.HelpLink); 
+         }   
       }
 
       // PETICIÓN PARA CREAR MEMORIAS WORD
@@ -68,10 +80,7 @@ namespace backend_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<string> CrearPVGIS(ProyectoDto Proyecto)
       {
-         if (Proyecto == null)
-         {
-            return NotFound("El proyecto no está registrado en la base de datos");
-         }
+         if (Proyecto == null) return NotFound("El proyecto no está registrado en la base de datos");
 
          string newRuta = _pvgisService.CreatePVGIS(Proyecto);
 

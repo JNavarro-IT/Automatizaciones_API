@@ -25,6 +25,8 @@ namespace backend_API.Service
 
       public string InitFillPDF(ProyectoDto Proyecto)
       {
+         double? porcentajeGeneracion = 0;
+         double diferenciaGeneración = 0;
          string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
          string folderEnd = Path.Combine(downloads, "Documentacion_" + Proyecto.Referencia);
          _ = Directory.CreateDirectory(folderEnd);
@@ -36,41 +38,31 @@ namespace backend_API.Service
                UbicacionDto? Ubicacion = Proyecto.Cliente.Ubicaciones[0];
                InstalacionDto Instalacion = Proyecto.Instalacion;
 
-               if (Ubicacion.CCAA is not null or not "")
+               if (Ubicacion.CCAA is not "")
                {
                   string folderCCAA = pathBase + Ubicacion.CCAA;
                   List<string> pathsOrigin = Directory.GetFiles(folderCCAA).ToList();
 
                   if (Ubicacion.CCAA.Equals("Andalucia"))
                   {
-                     double? porcentaje = Instalacion.ConsumoEstimado / Instalacion.GeneracionAnual * 100;
+                     porcentajeGeneracion = Instalacion.ConsumoEstimado / Instalacion.GeneracionAnual * 100;
 
-                     _ = porcentaje >= 78 ? pathsOrigin.Remove(folderCCAA + "/2AND_NAME.docx") : pathsOrigin.Remove(folderCCAA + "/1AND_NAME.docx");
+                     _ = porcentajeGeneracion >= 78 ? pathsOrigin.Remove(folderCCAA + "/2AND_NAME.docx") : pathsOrigin.Remove(folderCCAA + "/1AND_NAME.docx");
 
                      bool eco3 = _projectService.CheckMunicipio(Ubicacion);
-                     if (eco3)
-                     {
-                        pathsOrigin = new() { folderCCAA + "/AND1_NAME.pdf" };
-                     }
-                     else
-                     {
-                        _ = pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
-                     }
+
+                     if (eco3) pathsOrigin = new() { folderCCAA + "/AND1_NAME.pdf" };
+                     else _ = pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
+                    
                   }
                   _ = _projectService.ClonarFiles(Proyecto, pathsOrigin.ToArray(), folderEnd);
                   string[] pathsEndLegal = Directory.GetFiles(folderEnd);
                   _ = FillPDFs(Proyecto, pathsOrigin.ToArray(), pathsEndLegal);
-
                }
-               else
-               {
-                  return "ERROR => Se requiere de una CCAA para obtener el documento...";
-               }
+               else return "ERROR => Se requiere de una CCAA para obtener el documento...";
             }
-            else
-            {
-               return "ERROR => Proyecto erróneo: " + Proyecto;
-            }
+            else return "ERROR => Proyecto erróneo: " + Proyecto;
+            
          }
          catch (Exception error) { return "ERROR => " + error.Message; }
 
@@ -150,10 +142,10 @@ namespace backend_API.Service
          {
             foreach (string fieldName in fieldsMap.Keys)
             {
-               System.Reflection.PropertyInfo propertyInfo = Cliente.GetType().GetProperty(fieldName);
+               System.Reflection.PropertyInfo? propertyInfo = Cliente.GetType().GetProperty(fieldName);
                if (propertyInfo != null)
                {
-                  object value = propertyInfo.GetValue(Cliente);
+                  object? value = propertyInfo.GetValue(Cliente);
                   if (value != null)
                   {
                      _ = ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
@@ -184,11 +176,11 @@ namespace backend_API.Service
             {
                if (fieldName != null)
                {
-                  System.Reflection.PropertyInfo propertyInfo = Ubicacion.GetType().GetProperty(fieldName);
+                  System.Reflection.PropertyInfo? propertyInfo = Ubicacion.GetType().GetProperty(fieldName);
 
                   if (propertyInfo != null)
                   {
-                     object value = propertyInfo.GetValue(Ubicacion);
+                     object? value = propertyInfo.GetValue(Ubicacion);
                      if (value != null && fieldName != null)
                      {
                         _ = ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
@@ -238,14 +230,11 @@ namespace backend_API.Service
       {
          foreach (string fieldName in fieldsMap.Keys)
          {
-            System.Reflection.PropertyInfo propertyInfo = Instalacion.GetType().GetProperty(fieldName);
+            System.Reflection.PropertyInfo? propertyInfo = Instalacion.GetType().GetProperty(fieldName);
             if (propertyInfo != null)
             {
-               object value = propertyInfo.GetValue(Instalacion);
-               if (value != null)
-               {
-                  _ = fieldsMap[fieldName].SetValue(value.ToString());
-               }
+               object? value = propertyInfo.GetValue(Instalacion);
+               if (value != null) _ = fieldsMap[fieldName].SetValue(value.ToString());
             }
 
             if (fieldsMap.ContainsKey("Fusible"))
@@ -255,12 +244,10 @@ namespace backend_API.Service
                _ = fieldsMap["IDiferencial"].SetValue(Instalacion.IDiferencial.Split(' ')[2].Replace("mA", ""));
                _ = fieldsMap["TotalNominal2"].SetValue(Instalacion.TotalNominal.ToString());
 
-               string sf = Instalacion.SeccionFase.ToString();
+               string? sf = Instalacion.SeccionFase.ToString();
                string seccionFase = sf + "/" + sf + "/" + sf;
                for (int i = 1; i < 3; i++)
-               {
                   _ = fieldsMap["SeccionFase" + i].SetValue(seccionFase);
-               }
             }
          }
       }

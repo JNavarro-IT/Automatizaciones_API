@@ -55,7 +55,7 @@ namespace backend_API
             .AddTransient<IProjectService, ProjectService>()
             .AddTransient<IEXCELServices, EXCELService>()
             .AddTransient<IWORDService, WORDService>()
-            .AddTransient<IPVGISService, PVGISService>()
+            .AddTransient<IPVGISService, PVGISServices>()
             .AddTransient<IPDFService, PDFService>()
             .AddControllers()
             .AddNewtonsoftJson(options =>
@@ -92,18 +92,18 @@ namespace backend_API
                app.AllowAnyOrigin()
                .AllowAnyHeader()
                .AllowAnyMethod()
+               .AllowAnyOrigin()
+               .WithMethods(["*", "OPTIONS"])
                .WithExposedHeaders("*");
             });
          });
 
          var app = builder.Build();
-         app
-            .UseDefaultFiles()
-            .UseStaticFiles() 
+         app.UseStaticFiles() 
             .UseDeveloperExceptionPage()
             .UseRewriter(new RewriteOptions()
-            .AddRedirect("^ruta-antigua$", "ruta-nueva")
-            .AddRedirect("otra-ruta-antigua", "otra-ruta-nueva"))
+            .AddRedirect("^/?$", "/")
+            .AddRedirect("/", "http://192.168.2.250:8087/"))
             .UseRouting()
             .UseCors("Cors")
             .UseEndpoints(endpoints => { endpoints.MapControllers(); });

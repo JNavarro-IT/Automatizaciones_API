@@ -12,24 +12,24 @@ namespace backend_API.Service
 
    public class EXCELService : IEXCELServices
    {
-      private readonly IProjectService _projectServices;
+      private readonly IProjectService _projectService;
 
       public EXCELService(IProjectService projectServices)
       {
-         _projectServices = projectServices;
+         _projectService = projectServices;
       }
 
       public string CreateEXCEL(ProyectoDto Proyecto)
       {
          string rutaArchivo = "Utilities/Resources/REFERENCIAS_MEMORIA.xlsx";
-         string newRuta = "";
+         string tempPath = "";
          using (XLWorkbook workbook = new(rutaArchivo))
          {
             IXLWorksheet worksheet = workbook.Worksheet(1);
             InstalacionDto Instalacion = Proyecto.Instalacion;
             ClienteDto Cliente = Proyecto.Cliente;
             UbicacionDto Ubicacion = Cliente.Ubicaciones[0];
-            double[] latlng = _projectServices.GetUTM(Instalacion);
+            double[] latlng = _projectService.GetUTM(Instalacion);
             string Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month).ToUpper();
             IList<CadenaDto> Cadenas = Instalacion.Cadenas;
             int row = 7;
@@ -76,15 +76,8 @@ namespace backend_API.Service
                InversorDto Inversor = c.Inversor;
                PropertyInfo[] propiedades = Modulo.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-               if (index == 1)
-               {
-                  row = 22;
-               }
-
-               if (index == 2)
-               {
-                  row = 36;
-               }
+               if (index == 1) row = 22;
+               if (index == 2) row = 36;
 
                worksheet.Cell(row, column++).Value = Modulo.Fabricante;
                worksheet.Cell(row, column).Value = Modulo.Modelo.TrimEnd();
@@ -93,24 +86,13 @@ namespace backend_API.Service
                {
                   string nombre = propiedad.Name;
 
-                  if (nombre.Equals("IdModulo") || nombre.Equals("Modelo") || nombre.Equals("Fabricante"))
-                  {
-                     continue;
-                  }
+                  if (nombre.Equals("IdModulo") || nombre.Equals("Modelo") || nombre.Equals("Fabricante")) continue;
 
-                  object valor = propiedad.GetValue(Modulo);
-                  if (valor is int i)
-                  {
-                     worksheet.Cell(startRow, column).Value = i;
-                  }
-                  else if (valor is double d)
-                  {
-                     worksheet.Cell(startRow, column).Value = d;
-                  }
-                  else if (valor is string s)
-                  {
-                     worksheet.Cell(startRow, column).Value = s;
-                  }
+                  object? valor = propiedad.GetValue(Modulo);
+
+                  if (valor is int i) worksheet.Cell(startRow, column).Value = i;
+                  else if (valor is double d) worksheet.Cell(startRow, column).Value = d;
+                  else if (valor is string s) worksheet.Cell(startRow, column).Value = s;
 
                   startRow++;
                }
@@ -126,25 +108,13 @@ namespace backend_API.Service
                foreach (PropertyInfo propiedad in propiedades)
                {
                   string nombre = propiedad.Name;
-                  object valor = propiedad.GetValue(Inversor);
+                  object? valor = propiedad.GetValue(Inversor);
 
-                  if (nombre.Equals("IdInversor", StringComparison.Ordinal) || nombre.Equals("Modelo") || nombre.Equals("Fabricante", StringComparison.Ordinal))
-                  {
-                     continue;
-                  }
-                  else if (valor is int i)
-                  {
-                     worksheet.Cell(startRow, column).Value = i;
-                  }
-                  else if (valor is double d)
-                  {
-                     worksheet.Cell(startRow, column).Value = d;
-                  }
-                  else if (valor is string s)
-                  {
-                     worksheet.Cell(startRow, column).Value = s;
-                  }
-
+                  if (nombre.Equals("IdInversor", StringComparison.Ordinal) || nombre.Equals("Modelo") || nombre.Equals("Fabricante", StringComparison.Ordinal)) continue;
+                  else if (valor is int i) worksheet.Cell(startRow, column).Value = i;
+                  else if (valor is double d) worksheet.Cell(startRow, column).Value = d;
+                  else if (valor is string s) worksheet.Cell(startRow, column).Value = s;
+                 
                   startRow++;
                }
 
@@ -206,12 +176,17 @@ namespace backend_API.Service
                row++;
                index++;
             }
-            string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-            string fileName = "EXCEL_Memorias_" + Cliente.Nombre.Replace(" ", "_") + ".xlsx";
-            newRuta = Path.Combine(downloads, fileName);
-            workbook.SaveAs(newRuta);
+            try
+            {
+               var fileName = Path.Combine(Proyecto.Referencia, "_REF_MEMORIA.xlsx");
+               var endFolder = Directory.CreateDirectory("Temp");
+
+               tempPath = Path.Combine("Temp", fileName);
+               workbook.SaveAs(tempPath);
+           
+            } catch(Exception ex) { return new ("EXCEPTION: " + ex.Message + "HELP: " + ex.HelpLink); }
          }
-         return newRuta;
+         return tempPath;
       }
    }
 }

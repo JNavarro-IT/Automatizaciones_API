@@ -58,27 +58,31 @@
             },
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.Abstractions": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[7.0.0, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
@@ -86,7 +90,7 @@
             },
             "Microsoft.Extensions.Http": {
               "target": "Package",
-              "version": "[8.0.0-rc.1.23419.4, )"
+              "version": "[7.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -100,13 +104,17 @@
               "target": "Package",
               "version": "[4.14.1, )"
             },
+            "System.Diagnostics.EventLog": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
             "itext7": {
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "itext7.bouncy-castle-adapter": {
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
