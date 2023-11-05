@@ -1,46 +1,48 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using backend_API.Models.Dto;
+using Automatizaciones_API.Models.Dto;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
-namespace backend_API.Service
+namespace Automatizaciones_API.Service
 {
-   // Interfaz que funciona como servicio para otras clases mediante inyeccion de dependencias
+   // INTERFAZ QUE DA SERVICIO A OTRAS CLASES PARA USAR ARCHIVOS WORD MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IWORDService
    {
       public string InitServiceWORD(ProyectoDto Proyecto);
       public Dictionary<string, string?> CreateMap(ProyectoDto Proyecto);
-      public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD);
+      public string CreateMemories(Dictionary<string, string?> MapWORD, string[] pathsWORD);
    }
 
-   // Clase que sirve de servicio para rellenar documentos WORD de un proyecto
+   // CLASE QUE IMPLEMENTA IWORDService PARA MANEJO Y RELLENO DE DOCUMENTOS WORD
    public class WORDService : IWORDService
    {
       private readonly IProjectService _projectService;
 
-      // Contructor por parámetros con inyeccion de dependencias del CRUD de Mod
+      // CONSTRUCTOR POR PARÁMETROS PARA INYECTAR DEPENDENCIAS
       public WORDService(IProjectService projectService)
       {
          _projectService = projectService;
       }
 
+      // INICIALIZAR EL PROCESO PARA RELLENAR ARCHIVOS WORD CON UN DICCIONARIO DE CLAVE-VALOR (Los archivos Word deben está customizados para el mapa)
       public string InitServiceWORD(ProyectoDto Proyecto)
       {
-         string folderDownloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Downloads";
-         string folderEnd = Path.Combine(folderDownloads, "MemoriasWORD_" + Proyecto.Referencia);
-         _ = Directory.CreateDirectory(folderEnd);
-
+         var tempPath = Directory.CreateDirectory("Utilities/Temp").FullName;
          string[]? pathsOrigin = Directory.GetFiles("Utilities/Resources/TemplatesWORD");
-         folderEnd = _projectService.ClonarFiles(Proyecto, pathsOrigin, folderEnd);
-         string[]? pathsWORD = Directory.GetFiles(folderEnd);
 
+         var resultClon = _projectService.ClonarFiles(Proyecto, pathsOrigin, tempPath);
+
+         if (resultClon.StartsWith("ERROR") || resultClon.StartsWith("EXCEPTION)")) return resultClon;
          Dictionary<string, string?> MapWORD = CreateMap(Proyecto);
-         string result = CreateMemorias(MapWORD, pathsWORD);
-         return result ?? "No se ha generado el archivo";
+         var pathsWORD = Directory.GetFiles(tempPath);
+         string resultMemorias = CreateMemories(MapWORD, pathsWORD);
+
+         if (resultMemorias.StartsWith("ERROR") || resultMemorias.StartsWith("EXCEPTION)")) return resultMemorias;
+         else return tempPath;
       }
 
-      // Crear las memorias justificativas de un proyecto
+      // GENERAR UN DICCIONARIO CON FORMATO CLAVE-VALOR COMO REFERENCIA PARA INTRODUCIR LOS VALORES DE UN PROYECTO
       public Dictionary<string, string?> CreateMap(ProyectoDto Proyecto)
       {
          string Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month);
@@ -56,19 +58,23 @@ namespace backend_API.Service
          LugarPRLDto CSalud = Proyecto.LugaresPRL[1];
          LugarPRLDto Mutua = Proyecto.LugaresPRL[2];
          LugarPRLDto Planta = Proyecto.LugaresPRL[3];
+         double? Porcentaje = Instalacion.ConsumoEstimado / Instalacion.GeneracionAnual * 100;
 
          Dictionary<string, string?> MapWORD = new()
          {
+            // PROYECTO
             { "#Dia", Proyecto.Fecha.Day.ToString() },
             { "#Mes", Mes },
             { "#Año", Proyecto.Fecha.Year.ToString()},
             { "#Presupuesto", Proyecto.Presupuesto.ToString()},
-            { "#PrespSyS", Proyecto.PresupuestoSyS.ToString()},
+            { "#PresupuestoSyS", Proyecto.PresupuestoSyS.ToString()},
             { "#PlazoEjecucion", Proyecto.PlazoEjecucionStr },
 
+            // CLIENTE
             { "#Nombre", Cliente.Nombre },
             { "#Dni", Cliente.Dni },
 
+            // UBICACIÓN
             { "#Direccion", Ubicacion.GetDireccion() },
             { "#Cp", Ubicacion.Cp.ToString() },
             { "#Municipio", Ubicacion.Municipio },
@@ -81,6 +87,7 @@ namespace backend_API.Service
             { "#Longitud", Ubicacion.Longitud.ToString() },
             { "#Cups", Ubicacion.Cups },
 
+            // INSTALACIÓN
             { "#Inclinacion", Instalacion.Inclinacion.ToString() },
             { "#Azimut", Instalacion.Azimut },
             { "#Tipo", Instalacion.Tipo },
@@ -95,9 +102,14 @@ namespace backend_API.Service
             { "#TotalCadenas", Instalacion.TotalCadenas.ToString() },
             { "#TotalModulos", Instalacion.TotalModulos.ToString() },
             { "#TotalInversores", Instalacion.TotalInversores.ToString() },
+            { "#PotenciaContratada", Instalacion.PotenciaContratada.ToString() },
+            { "#ConsumoEstimado", Instalacion.ConsumoEstimado.ToString() },
+            { "#GeneracionAnual", Instalacion.GeneracionAnual.ToString() },
+            { "#Porcentaje", Porcentaje.ToString() },
 
             { "#Cadena.NumModulos", Cadena.NumModulos.ToString() },
 
+            // INVERSOR
             { "#Inversor.Modelo", Inversor.Modelo.TrimEnd() },
             { "#Inversor.PotenciaNominal", Inversor.PotenciaNominal.ToString() },
             { "#Inversor.VmnMPPT", Inversor.VminMPPT.ToString()  },
@@ -108,6 +120,7 @@ namespace backend_API.Service
             { "#Inversor.VO", Inversor.VO.ToString() },
             { "#Inversor.Rendimiento", Inversor.Rendimiento.ToString() },
 
+            // MÓDULO
             { "#Modulo.Modelo", Modulo.Modelo.TrimEnd()},
             { "#Modulo.Potencia", Modulo.Potencia.ToString() },
             { "#Modulo.Fabricante", Modulo.Fabricante },
@@ -125,6 +138,7 @@ namespace backend_API.Service
             { "#Modulo.TaTONC", Modulo.TaTONC?.TrimEnd() },
             { "#Modulo.Tolerancia", Modulo.Tolerancia.ToString() },
 
+            // LUGARES PRL
             { "#Hospital.Nombre", Hospital.Nombre },
             { "#Hospital.Telefono", Hospital.Telefono },
             { "#Hospital.Direccion", Hospital.Direccion },
@@ -149,41 +163,48 @@ namespace backend_API.Service
          return MapWORD;
       }
 
-      public string CreateMemorias(Dictionary<string, string?> MapWORD, string[] pathsWORD)
+      // RELLENAR PLANTILLAS WORD CON EL DICCIONARIO CREADO PARA INTRODUCIR DATOS
+      public string CreateMemories(Dictionary<string, string?> MapWORD, string[] pathsWORD)
       {
-         if (MapWORD == null)
-            return "ERROR => El diccionario está vacío o mal estructurado: " + MapWORD;
-         
-         if (pathsWORD == null)
-            return "ERROR => NO se han creado las rutas de destino:  " + pathsWORD;
-         
-         foreach (string ruta in pathsWORD)
-         {
-            if (Path.GetExtension(ruta).Equals(".docx"))
-            {
-               using DocX doc = DocX.Load(ruta);
-               foreach (Paragraph parrafo in doc.Paragraphs)
-               {
-                  foreach (KeyValuePair<string, string?> kvp in MapWORD)
-                    if (parrafo.Text.Contains(kvp.Key))
-                        parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);              
-               }
+         if (MapWORD == null || MapWORD.Count == 0)
+            return "ERROR => El diccionario de palabras clave está mal estructurado o vacío: " + MapWORD;
 
-               int numSections = doc.Sections.Count;
-               for (int i = 0; i < numSections; i++)
+         if (pathsWORD == null || pathsWORD.Length == 0)
+            return "ERROR => No se han encontrado las rutas de destino:  " + pathsWORD;
+
+         try
+         {
+            foreach (string path in pathsWORD)
+            {
+               if (Path.GetExtension(path).Equals(".docx"))
                {
-                  Headers headers = doc.Sections[i].Headers;
-                  foreach (Paragraph paragraph in headers.Odd.Paragraphs)
+                  using DocX doc = DocX.Load(path);
+                  foreach (Paragraph parrafo in doc.Paragraphs)
                   {
                      foreach (KeyValuePair<string, string?> kvp in MapWORD)
-                        if (paragraph.Text.Contains(kvp.Key))
-                           paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                        if (parrafo.Text.Contains(kvp.Key))
+                           parrafo.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+
                   }
-               } doc.Save();
+
+                  int numSections = doc.Sections.Count;
+                  for (int i = 0; i < numSections; i++)
+                  {
+                     Headers headers = doc.Sections[i].Headers;
+                     foreach (Paragraph paragraph in headers.Odd.Paragraphs)
+                     {
+                        foreach (KeyValuePair<string, string?> kvp in MapWORD)
+                           if (paragraph.Text.Contains(kvp.Key))
+                              paragraph.ReplaceText(kvp.Key, kvp.Value, false, RegexOptions.IgnoreCase);
+                     }
+                  }
+                  doc.Save();
+               }
             }
+            return "OK";
+
          }
-         string? folderEnd = Path.GetPathRoot(pathsWORD[0]);
-         return "OK => Las memorias en formato WORD se han generado con éxito: " + folderEnd;
+         catch (Exception ex) { return new("EXCEPTION => " + ex.Message); }
       }
    }
 }

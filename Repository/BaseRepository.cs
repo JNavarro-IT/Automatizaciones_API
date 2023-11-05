@@ -1,16 +1,16 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using backend_API.Context;
-using backend_API.Utilities;
+using Automatizaciones_API.Context;
+using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace backend_API.Repository
+namespace Automatizaciones_API.Repository
 {
    //INTERFAZ PRINCIPAL QUE IMPLEMENTA UN CRUD BASICO A LOS CONTROLADORES
    public interface IBaseRepository<T, TDto>
-      where T : ModelBase
-      where TDto : DtoBase
+       where T : ModelBase
+       where TDto : DtoBase
    {
       public Task<IEnumerable<TDto>> GetEntitiesList();
       public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
@@ -20,7 +20,7 @@ namespace backend_API.Repository
       public Task<TDto> CreateEntity(TDto tDto);
       public Task<int> UpdateEntity(TDto entityDto);
       public Task<int> DeleteEntity(TDto entityDto);
-      public Task<TDto?> EntityExists(TDto entityDto);
+      public Task<bool?> EntityExists(TDto entityDto);
    }
 
    //CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
@@ -51,14 +51,10 @@ namespace backend_API.Repository
          IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
 
          if (filter != null)
-         {
             query = query.Where(filter);
-         }
 
          if (includes != null)
-         {
             query = includes(query);
-         }
 
          return _mapper.ProjectTo<TDto>(query);
       }
@@ -68,9 +64,7 @@ namespace backend_API.Repository
       public async Task<TDto?> GetEntityDto(object? identity)
       {
          if (identity == null)
-         {
             return null;
-         }
 
          T? entity = await _dbContext.Set<T>().FindAsync(identity);
          return entity == null ? null : _mapper.Map<TDto>(entity);
@@ -79,19 +73,17 @@ namespace backend_API.Repository
       public async Task<T?> GetEntity(object identity)
       {
          if (identity == null)
-         {
             return null;
-         }
 
          T? entity = await _dbContext.Set<T>().FindAsync(identity);
          return entity ?? null;
       }
       //CREAR UNA ENTIDAD 
-      public async Task<TDto> CreateEntity(TDto entityDto)
+      public async Task<TDto> CreateEntity(TDto tDto)
       {
          try
          {
-            T entity = _mapper.Map<T>(entityDto);
+            T entity = _mapper.Map<T>(tDto);
             Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> resultEntry = await _dbContext.Set<T>().AddAsync(entity);
             _ = await _dbContext.SaveChangesAsync();
             T newEntity = resultEntry.Entity;
@@ -138,8 +130,10 @@ namespace backend_API.Repository
       }
 
       // CHECKEAR SI EXISTE UNA ENTIDAD AL COMPLETO EN LA BASE DE DATOS INDEPENDIENTEMENTE DE SU ID
-      public async Task<TDto?> EntityExists(TDto entityDto)
+      public async Task<bool?> EntityExists(TDto? entityDto)
       {
+         if (entityDto == null) return false;
+
          var properties = typeof(TDto).GetProperties().Where(p => p.Name != "Id");
          var entity = await _dbContext.Set<T>()
             .Where(e =>
@@ -147,8 +141,8 @@ namespace backend_API.Repository
                      property.GetValue(entityDto).Equals(property.GetValue(e)))
             ).FirstOrDefaultAsync();
 
-         if (entity == null) return null;
-         return _mapper.Map<TDto>(entity);
+         if (entity == null) return false;
+         return true;
       }
    }
 }

@@ -1,6 +1,6 @@
-﻿using backend_API.Utilities;
+﻿using Automatizaciones_API.Utilities;
 
-namespace backend_API.Models.Dto
+namespace Automatizaciones_API.Models.Dto
 {
    //CLASE DTO PARA TRANSPORTAR LA INFORMACIÓN DE LA ENTIDAD CLIENTE
    public class ClienteDto : DtoBase

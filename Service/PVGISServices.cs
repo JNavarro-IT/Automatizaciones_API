@@ -1,9 +1,11 @@
-﻿using backend_API.Models.Dto;
+﻿using Automatizaciones_API.Models.Dto;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
-namespace backend_API.Service
+namespace Automatizaciones_API.Service
 {
+   // INTERFAZ PARA OBTENER UN ARCHIVO PDF DE LA WEB DEL PVGIS MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IPVGISService
    {
       public string CreatePVGIS(ProyectoDto Proyecto);
@@ -11,17 +13,26 @@ namespace backend_API.Service
       public void PDFGenerator();
    }
 
-   internal class PVGISServices : IPVGISService
+   // CLASE QUE IMPLEMENTA IPVGISService PARA OBTENER DATOS FOTOVOLTAICOS EN UN ARCHIVO PDF SACADO DESDE LA WEB OFICIAL DEL PVGIS DE LA COMISIÓN EUROPEA
+   public class PVGISServices : IPVGISService
    {
-      private string lat = "";
-      private string lon = "";
-      private string inclinacion = "";
-      private string azimuth = "";
-      private string potenciaPico = "";
-      private string? datosJSON = null;
+      string Latitud = "";
+      string Longitud = "";
+      string Inclinacion = "";
+      string Azimuth = "";
+      string? TotalPico = "";
+      string? datosJSON = null;
+      ChromeDriver? browser = null;
 
+      // INICIALIZACIÓN DEL PROCESO DE OBTENCIÓN DEL ARCHIVO DEL PVGIS EMULANDO LA NAVEGACIÓN POR LA PÁGINA OFICIAL DE LA COMISIÓN EUROPEA 
       public string CreatePVGIS(ProyectoDto Proyecto)
       {
+         if (Proyecto == null) return "ERROR => El proyecto no es válido";
+
+         var fileName = Proyecto.Referencia + "_PVGIS-5.pdf";
+         var tempFolder = Directory.CreateDirectory("Utilities/Temp").FullName;
+         var tempFile = Path.Combine(tempFolder, fileName);
+
          try
          {
             datosJSON = GetJSON(Proyecto).GetAwaiter().GetResult();
@@ -29,112 +40,149 @@ namespace backend_API.Service
             if (datosJSON.Length > 0)
             {
                PDFGenerator();
-               string downloads = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
-               string[] rutas = Directory.GetFiles(downloads);
-               string nombreCliente = Proyecto.Cliente.Nombre.Replace(" ", "_");
-               string newFileName = "PVGIS-5_" + nombreCliente + ".pdf";
-               string newFilePath = "";
-               foreach (string ruta in rutas)
-               {
-                  string nombreFile = Path.GetFileName(ruta);
-                  if (nombreFile.Contains("PVGIS"))
-                  {
-                     newFilePath = Path.Combine(downloads, newFileName);
-                     File.Move(ruta, newFilePath);
-                     return "Fichero generado con éxito. RUTA: " + newFilePath;
-                  }
-               }
-               return "Fichero no encontrado";
+               return tempFile;
             }
-            else
-            {
-               return "No se han obtenido datos del PVGIS-5";
-            }
+            else return "ERROR => No se han obtenido datos del PVGIS-5";
+
          }
-         catch (Exception ex) { return $"Error: {ex.Message}"; }
+         catch (Exception ex) { return "EXCEPTION => Al generar el archivo PVGIS: " + ex.Message; }
       }
 
       public async Task<string> GetJSON(ProyectoDto Proyecto)
       {
+         var Ubicacion = Proyecto.Cliente.Ubicaciones[0];
+         var Instalacion = Proyecto.Instalacion;
+
          try
          {
-            lat = Proyecto.Cliente.Ubicaciones[0].Latitud + "";
-            lon = Proyecto.Cliente.Ubicaciones[0].Longitud + "";
-            inclinacion = Proyecto.Instalacion.Inclinacion + "";
-            azimuth = Proyecto.Instalacion.Azimut.Split(" ")[0];
-            potenciaPico = Proyecto.Instalacion.TotalPico + "";
-            string apiUrl = $"https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?outputformat=basic&lat={lat}&lon={lon}&peakpower={potenciaPico}&loss=14&angle={inclinacion}&aspect={azimuth}";
+            Latitud = Ubicacion.Latitud.ToString();
+            Longitud = Ubicacion.Longitud.ToString();
+            Inclinacion = Instalacion.Inclinacion.ToString();
+            Azimuth = Instalacion.Azimut.Split(" ")[0];
+            TotalPico = Instalacion.TotalPico.ToString();
+
+            string apiUrl = $"https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?outputformat=basic&lat={Latitud}&lon={Longitud}&peakpower={TotalPico}&loss=14&angle={Inclinacion}&aspect={Azimuth}";
 
             using HttpClient client = new();
             try
             {
                HttpResponseMessage response = await client.GetAsync(apiUrl);
-               if (response.IsSuccessStatusCode)
-               {
-                  datosJSON = await response.Content.ReadAsStringAsync();
-                  return datosJSON;
-               }
-               else
-               {
-                  return "La petición no fue exitosa. STATUS: " + response.StatusCode;
-               }
+               if (response.IsSuccessStatusCode) return await response.Content.ReadAsStringAsync();
+               else return "ERROR => Mientras se generaba el archivo PVGIS:  " + response.RequestMessage;
+
             }
-            catch (Exception ex) { return "Error al realizar la petición: " + ex.Message; }
+            catch (Exception ex) { return "EXCEPTION => Mientras se generaba el archivo PVGIS: " + ex.Message; }
+
          }
-         catch (Exception ex) { return "Error al guardar JSON: " + ex.Message; }
+         catch (Exception ex) { return "EXCEPTION => Al obtener el archivo JSON: " + ex.Message; }
       }
 
+      public ChromeOptions GetOptions()
+      {
+         ChromeOptions options = new();
+         options.AddArgument("--silent");
+         options.AddArgument("--incognito");
+         options.AddArgument("--mute-audio");
+         options.AddArgument("--no-sandbox");
+         options.AddArgument("--headless=new");
+
+         options.AddArgument("--disable-gpu");
+         options.AddArgument("--disable-logging");
+         options.AddArgument("--disable-features");
+         options.AddArgument("--disable-infobars");
+
+         options.AddArgument("--disable-extensions");
+         options.AddArgument("--disable-web-security");
+         options.AddArgument("--disable-popup-blocking");
+         options.AddArgument("--disable-settings-window");
+         options.AddArgument("--disable-impl-side-painting");
+         options.AddArgument("--disable-features=UserAgentClientHint");
+         options.AddArgument("--disable-blink-features=AutomationControlled");
+
+         options.AddArgument("--dns-prefetch-disable");
+         options.AddArguments("--blink-settings=imagesEnabled=false");
+
+         options.AddArgument("--enable-javascript");
+         options.AddArgument("--enable-automation");
+         options.AddArguments("--allow-file-access");
+         options.AddArguments("--allow-file-access-from-files");
+         options.AddArgument("--allow-running-insecure-content");
+         options.AddArguments("--allow-cross-origin-auth-prompt");
+
+         options.AddArguments("user-data-dir=" + "Utilities/Temp");
+
+         options.AddArgument("--dump-dom");
+         options.AddArgument("--kiosk");
+
+         options.AddArgument("--log-level=3");
+         options.AddArgument("--remote-debugging-port=8087");
+
+         options.DebuggerAddress = "192.168.2.250:8087";
+
+         options.AddLocalStatePreference("browser.download.folderList", 2);
+         options.AddUserProfilePreference("download.directory_upgrade", true);
+         options.AddUserProfilePreference("download.prompt_for_download", false);
+         options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+         options.AddLocalStatePreference("browser.helperApps.alwaysAsk.force", false);
+         options.AddUserProfilePreference("download.default_directory", "Utilities/Temp");
+         options.AddLocalStatePreference("profile.managed_default_content_settings.popups", 2);
+         options.AddLocalStatePreference("profile.managed_default_content_settings.cookies", 2);
+         options.AddLocalStatePreference("profile.managed_default_content_settings.plugins", 2);
+         options.AddLocalStatePreference("profile.default_content_setting_values.geolocation", 2);
+         options.AddLocalStatePreference("profile.default_content_setting_values.notifications", 2);
+         options.AddLocalStatePreference("profile.managed_default_content_settings.geolocation", 2);
+         options.AddLocalStatePreference("profile.managed_default_content_settings.media_stream", 2);
+
+         return options;
+      }
+
+      public IWebElement FillValues(string idElement, string? value)
+      {
+         IWebElement? element = null;
+         var wait = new WebDriverWait(browser, TimeSpan.FromSeconds(20));
+         element = wait.Until(brw => brw.FindElement(By.Id(idElement)));
+
+         if (value != null)
+         {
+            element.Clear();
+            element.SendKeys(value);
+
+         }
+         else element.Click();
+
+         return element;
+      }
       // NAVEGAR POR LA WEB DEL PVGIS Y GENERAR EL PDF
       public void PDFGenerator()
       {
-         //Configurar y abrir Chrome
-         ChromeOptions options = new();
-         options.AddArgument("--headless=new");
-         options.AddUserProfilePreference("download.default_directory", "Files");
-         ChromeDriver automatic = new(options)
+         // CONFIGURAR OPCIONES Y ABRIR CHROME
+
+         browser = new(GetOptions())
          {
             Url = "https://re.jrc.ec.europa.eu/pvg_tools/en/tools.html"
          };
-         Thread.Sleep(2000);
 
-         //Introducir datos lan/lon
-         IWebElement webElement = automatic.FindElement(By.Id("inputLat"));
-         webElement.SendKeys(lat);
-         webElement = automatic.FindElement(By.Id("inputLon"));
-         webElement.SendKeys(lon);
-         Thread.Sleep(1000);
+         string? clickValue = null;
+         //  DATOS Latitud Y Longitud
+         FillValues("inputLat", Latitud);
+         FillValues("inputLon", Longitud);
 
-         //Click en "GO" (Botón para que lea lat/lon)
-         webElement = automatic.FindElement(By.Id("btninputLatLon"));
-         webElement.Click();
-         Thread.Sleep(2000);
+         // CLICK EN BOTÓN 'GO' PARA OBTENER UBICACIÓN
+         FillValues("btninputLatLon", clickValue);
 
-         //Introducir poteciaPico, inclinacion y azimuth
-         webElement = automatic.FindElement(By.Id("peakpower2"));
-         webElement.Clear();
-         webElement.SendKeys(potenciaPico);
-         Thread.Sleep(1000);
+         // DATOS TotalPico, Inclinacion y Azimuth
+         FillValues("peakpower2", TotalPico);
+         FillValues("angle", Inclinacion);
+         FillValues("aspect", Azimuth);
 
-         webElement = automatic.FindElement(By.Id("angle"));
-         webElement.Clear();
-         webElement.SendKeys(inclinacion);
-         Thread.Sleep(1000);
+         // CLICK EN "Visualize results" para INSERTAR DATOS y GENERAR RESULTADOS
+         FillValues("btviewPVGridGraph", clickValue);
 
-         webElement = automatic.FindElement(By.Id("aspect"));
-         webElement.Clear();
-         webElement.SendKeys(azimuth);
-         Thread.Sleep(1000);
+         // CLICK EN "PDF" y DESCARGA EL ARCHIVO SOLO
+         FillValues("PVP_print", clickValue);
 
-         //Click en "Visualize results" para que agregue los datos y genere los resultados
-         webElement = automatic.FindElement(By.Id("btviewPVGridGraph"));
-         webElement.Click();
-         Thread.Sleep(2000);
-
-         //Click en "PDF" y descarga
-         webElement = automatic.FindElement(By.Id("PVP_print"));
-         webElement.Click();
-         Thread.Sleep(4000);
-         automatic.Close();
+         // CERRAR CHROME
+         browser.Close();
       }
    }
 }

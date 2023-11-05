@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
+using System.Reflection;
 
-namespace backend_API.Utilities
+namespace Automatizaciones_API.Utilities
 {
    // CLASE PARA CREAR UN PERFIL MAPPER PERSONALIZADO Y GENÉRICO
    public class MappingProfile : Profile
@@ -36,7 +36,7 @@ namespace backend_API.Utilities
    }
 }
 
-namespace backend_API.Utilities
+namespace Automatizaciones_API.Utilities
 {
    public class ModelBase { }
 

@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CS0612: El tipo o el miembro están obsoletos
+dotnet_diagnostic.CS0612.severity = none
+
+# CS1555: No se encontró 'Automatizaciones_API.Program' especificado para el método Main
+dotnet_diagnostic.CS1555.severity = none
