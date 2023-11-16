@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QoTWobEooATWNmGJ/qGVNND4yQH+p5u6mblD4K5Ffv4fgNgJrc3/kkKijt00WSMc5RfOGC0C+w6oJUUFG6S5BA==",
+  "dgSpecHash": "a7vFB35ICSq5rNjC38nOrprtZ4+KGxRSWluoQxhDWvgzTIJsw01ndF5cHA7Or0MCJaNiVgtlioVbg1K0B9qkrg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\J Navarro\\Desktop\\PROYECTOS\\Lidera_Digital\\Gestor_Proyectos\\backend_API\\backend_API.csproj",
+  "projectFilePath": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\backend_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\J Navarro\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\J Navarro\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
