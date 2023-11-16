@@ -1,13 +1,12 @@
 using System.Reflection;
-using backend_API.Context;
-using backend_API.Controllers;
-using backend_API.Repository;
-using backend_API.Service;
-using backend_API.Utilities;
-using Microsoft.AspNetCore.Rewrite;
+using Automatizaciones_API.Context;
+using Automatizaciones_API.Controllers;
+using Automatizaciones_API.Repository;
+using Automatizaciones_API.Service;
+using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend_API
+namespace Automatizaciones_API
 {
 
    // CLASE DE ARRANQUE Y CONFIGURACIÓN DE LA API
@@ -16,10 +15,6 @@ namespace backend_API
       public static void Main(string[] args)
       {
          var builder = WebApplication.CreateBuilder(args);
-         builder.Logging
-            .AddConsole()
-            .AddDebug()
-            .AddJsonConsole();
 
          // MARCADORES DUMMY PARA ENSAMBLADO DE TIPOS
          Type baseModelType = typeof(ModelBase);
@@ -57,14 +52,7 @@ namespace backend_API
             .AddTransient<IWORDService, WORDService>()
             .AddTransient<IPVGISService, PVGISServices>()
             .AddTransient<IPDFService, PDFService>()
-            .AddControllers()
-            .AddNewtonsoftJson(options =>
-            {
-               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-               options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-               options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
-               options.UseCamelCasing(false);
-            });
+            .AddControllers();
 
          builder.Services
             .AddEndpointsApiExplorer()
@@ -89,25 +77,19 @@ namespace backend_API
          {
             options.AddPolicy("Cors", app =>
             {
-               app.AllowAnyOrigin()
+               app.WithOrigins(["*", "http://192.168.2.250:8087"])               
                .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowAnyOrigin()
                .WithMethods(["*", "OPTIONS"])
-               .WithExposedHeaders("*");
+               .WithExposedHeaders(["*"]);
             });
          });
 
          var app = builder.Build();
-         app.UseStaticFiles() 
-            .UseDeveloperExceptionPage()
-            .UseRewriter(new RewriteOptions()
-            .AddRedirect("^/?$", "/")
-            .AddRedirect("/", "http://192.168.2.250:8087/"))
-            .UseRouting()
-            .UseCors("Cors")
+         app.UseStaticFiles()
+            .UseRouting() 
+            .UseCors("Cors")            
             .UseEndpoints(endpoints => { endpoints.MapControllers(); });
-            app.Run();
+         app.Run();
       }
    }
 }

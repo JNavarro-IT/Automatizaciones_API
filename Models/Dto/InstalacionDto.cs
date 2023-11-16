@@ -1,6 +1,6 @@
-﻿using backend_API.Utilities;
+﻿using Automatizaciones_API.Utilities;
 
-namespace backend_API.Models.Dto
+namespace Automatizaciones_API.Models.Dto
 {
    public class InstalacionDto : DtoBase
    {
@@ -18,11 +18,7 @@ namespace backend_API.Models.Dto
       public string IDiferencial { get; set; } = string.Empty;
       public string IAutomatico { get; set; } = string.Empty;
       public string Estructura { get; set; } = string.Empty;
-      public string Definicion
-      {
-         get => GetDefinicion(Estructura);
-         set { }
-      }
+      public string Definicion { get => GetDefinicion(Estructura); }
       public string Vatimetro { get; set; } = string.Empty;
       public int? SeccionFase { get; set; } = 0;
       public double? TotalPico { get; set; } = 0;

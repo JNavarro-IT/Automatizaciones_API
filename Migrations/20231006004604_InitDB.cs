@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-
-namespace backend_API.Migrations
+namespace Automatizaciones_API.Migrations
 {
    /// <inheritdoc />
    public partial class InitDB : Migration

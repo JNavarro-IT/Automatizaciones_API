@@ -1,6 +1,6 @@
-﻿using backend_API.Utilities;
+﻿using Automatizaciones_API.Utilities;
 
-namespace backend_API.Models.Dto
+namespace Automatizaciones_API.Models.Dto
 {
    // CLASE DTO PARA TRANSFORMAR LA INFORMACIÓN DE LA ENTIDAD UBICACIÓN
    public class UbicacionDto : DtoBase
@@ -42,40 +42,26 @@ namespace backend_API.Models.Dto
       public string GetDireccion()
       {
          if (!Via.Equals(""))
-         {
             Direccion += Via + " " + Calle;
-         }
 
          if (!Km.Equals(""))
-         {
             Direccion += ", Km." + Km;
-         }
 
          Direccion += ", " + Numero;
          if (!Bloque.Equals(""))
-         {
             Direccion += ", Blq." + Bloque;
-         }
 
          if (!Portal.Equals(""))
-         {
             Direccion += ", P." + Portal;
-         }
 
          if (!Escalera.Equals(""))
-         {
             Direccion += ", Esc." + Escalera;
-         }
 
          if (!Piso.Equals(""))
-         {
             Direccion += ", " + Piso;
-         }
 
          if (!Puerta.Equals(""))
-         {
             Direccion += Puerta.ToUpper();
-         }
 
          return Direccion;
       }

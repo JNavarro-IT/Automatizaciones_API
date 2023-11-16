@@ -1,24 +1,25 @@
 ﻿using System.Globalization;
 using System.Text;
-using backend_API.Models;
-using backend_API.Models.Dto;
+using Automatizaciones_API.Models.Dto;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
 
-namespace backend_API.Service
+namespace Automatizaciones_API.Service
 {
    // INTERFAZ QUE FUNCIONA COMO SERVICIO DEL PROYECTO PARA OTRAS CLASES, MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IProjectService
    {
       public InstalacionDto? CalcularInstalacion(InstalacionDto Instalacion);
       public double[] GetUTM(InstalacionDto Instalacion);
-      public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string folderEnd);
-      public string GetCIF(string empresa);
+      public string GetCIF(string Empresa);
       public ProyectoDto GetDatosLegalizaciones(ProyectoDto Proyecto);
       public bool CheckMunicipio(UbicacionDto Ubicacion);
+      public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string tempPath);
       public StringBuilder WithoutTildes(string item);
+      public bool DeleteTemp();
    }
 
    //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
@@ -80,8 +81,8 @@ namespace backend_API.Service
          {
             if (hasError)
                throw new InvalidOperationException("Uso de datos simulados.\n Datos insuficientes para calcular la instalación.\n Actualice módulos e inversores => " + JsonConvert.SerializeObject(Instalacion));
-            
-            else throw ex = new("EXCEPTION: " + ex.Message + " HELP => " + ex.HelpLink);
+
+            else throw new("EXCEPTION: " + ex.Message + " HELP => " + ex.HelpLink);
          }
       }
 
@@ -97,28 +98,12 @@ namespace backend_API.Service
          return latLngUTM;
       }
 
-      // REALIZA UNA COPIA DE ARCHIVOS DEL PROYECTO DE UNA CARPETA ORIGEN A OTRA DE DESTINO 
-      public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string folderEnd)
-      {
-         try
-         {
-            foreach (string path in pathsOrigin)
-            {
-               string nameFileOrigin = Path.GetFileName(path).Replace("NAME", Proyecto.Cliente.Nombre); ;
-               string pathFileEnd = Path.Combine(folderEnd, nameFileOrigin);
-               File.Copy(path, pathFileEnd, true);
-            
-            } return folderEnd;
-
-         } catch (Exception error) { return "No se han creado los archivos. ERROR: " + error.Message; }
-      }
-
       // OBTENER EL CIF DE UNA EMPRESA DISTRIBUIDORA DESDE UN ARCHIVO JSON 
       public string GetCIF(string Empresa)
       {
          try
          {
-            string? filePath = "Utilities/SeedData/CIFs.json";
+            string? filePath = "Utilities/Resources/CIFs.json";
             string? jsonContent = File.ReadAllText(filePath);
             JObject? jsonObj = JObject.Parse(jsonContent);
             JArray? body = (JArray?)jsonObj["body"];
@@ -130,12 +115,14 @@ namespace backend_API.Service
                   string fEmpresaDB = row[1].ToString().Split(",")[0];
                   string? empresaDB = WithoutTildes(fEmpresaDB).ToString();
                   Empresa = WithoutTildes(Empresa).ToString().Replace("_", " ");
-                 
+
                   if (Empresa.Contains(empresaDB)) return CIF;
                }
-            } return "ERROR => No se encontró ninguna empresa con ese nombre";
+            }
+            return "ERROR => No se encontró ninguna empresa con ese nombre";
 
-         } catch (Exception ex) { return "ERROR: " + ex.Message; }
+         }
+         catch (Exception ex) { return "ERROR: " + ex.Message; }
       }
 
       // OBTENER LOS DATOS PARA LEGALIZACIONES SOBRE EL DIRECTOR DE OBRA Y LA INSPECCIÓN SEGÚN LA POTENCIA NOMINAL DEL PROYECTO
@@ -146,13 +133,13 @@ namespace backend_API.Service
          {
             Instalacion.DirectorObra = "ALBERTO ARENAS ÁLVARO";
             Instalacion.Titulacion = "INGENIERO TÉCNICO INDUSTRIAL";
-            Instalacion.ColeOficial = "COLEGIO OFICIAL DE GRADUADOS E INGENIEROS TÉCNICOS INDUSTRIALES DE SEVILLA(COGITISE)";
+            Instalacion.ColeOficial = "COLEGIO OFICIAL DE GRADUADOS E INGENIEROS TÉCNICOS INDUSTRIALES DE SEVILLA (COGITISE)";
             Instalacion.NumColegiado = "11605";
          }
 
          if (Instalacion.TotalNominal >= 25 && Proyecto.OCA == "")
             Proyecto.OCA = "OCA GLOBAL";
-        
+
          return Proyecto;
       }
 
@@ -161,7 +148,7 @@ namespace backend_API.Service
       {
          try
          {
-            string? filePath = "SeedData/ECO3.json";
+            string? filePath = "\"Utilities/Resources/ECO3.json";
             string? jsonContent = File.ReadAllText(filePath);
             JObject? provincias = JObject.Parse(jsonContent);
 
@@ -172,17 +159,43 @@ namespace backend_API.Service
                   JObject? municipios = (JObject?)prov.Value;
                   if (municipios != null)
                   {
-                     foreach (KeyValuePair<string, JToken?> muni in     municipios)
+                     foreach (KeyValuePair<string, JToken?> muni in municipios)
                      {
                         if (WithoutTildes(muni.Key).Equals(WithoutTildes(Ubicacion.Municipio)))
                            return true;
                      }
                   }
                }
-            }  return false;
+            }
+            return false;
 
-         } catch (Exception ex) { throw new Exception("EXCEPTION: " + ex.Message); }
+         }
+         catch (Exception ex) { throw new Exception("EXCEPTION: " + ex.Message); }
       }
+
+      //_________________________________________________________________________________\\
+      //--------------------------------- COMMONS METHODs ---------------------------------\\
+
+      // REALIZA UNA COPIA DE ARCHIVOS DEL PROYECTO DE UNA CARPETA ORIGEN A OTRA DE DESTINO 
+      public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string tempPath)
+      {
+         try
+         {
+            foreach (string path in pathsOrigin)
+            {
+               string nameFile = Path.GetFileName(path).Replace("NAME", Proyecto.Cliente.Nombre); ;
+               string pathDestine = Path.Combine(tempPath, nameFile);
+               File.Copy(path, pathDestine, true);
+
+            }
+            if (tempPath.IsNullOrEmpty()) return "ERROR WORD=> Clonacion de archivos no";
+
+            return tempPath;
+
+         }
+         catch (Exception ex) { return "EXCEPTION WORD => " + ex.Message; }
+      }
+
 
       // OBTENER UNA CADENA DE TEXTO SIN TILDES
       public StringBuilder WithoutTildes(string item)
@@ -193,8 +206,29 @@ namespace backend_API.Service
          {
             if (CharUnicodeInfo.GetUnicodeCategory(f) != UnicodeCategory.NonSpacingMark)
                _ = sb.Append(f);
-         
-         } return sb;
+
+         }
+         return sb;
+      }
+
+      public bool DeleteTemp()
+      {
+         var tempFolder = "Utilities/Temp";
+         if (Directory.Exists(tempFolder))
+         {
+            var oldFiles = Directory.GetFiles(tempFolder);
+            if (oldFiles.Length > 0)
+               foreach (var file in oldFiles)
+                  new FileInfo(file).Delete();
+
+            if (oldFiles.Length == 0) Directory.Delete(tempFolder, true);
+            else return false;
+
+            if (Directory.Exists(tempFolder)) return false;
+            else return true;
+
+         }
+         else return true;
       }
    }
 }

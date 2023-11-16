@@ -1,6 +1,6 @@
-﻿using backend_API.Utilities;
+﻿using Automatizaciones_API.Utilities;
 
-namespace backend_API.Models.Dto
+namespace Automatizaciones_API.Models.Dto
 {
    public class ProyectoDto : DtoBase
    {
@@ -8,11 +8,11 @@ namespace backend_API.Models.Dto
       public string Referencia { get; set; } = string.Empty;
       public double Version { get; set; } = 1.0;
       public DateTime Fecha { get; set; } = new();
-      public string FechaStr { get => Fecha.ToString("yyyy-MM-dd"); set { } }
+      public string FechaStr { get => Fecha.ToString("yyyy-MM-dd"); }
       public double? Presupuesto { get; set; } = 0;
       public double? PresupuestoSyS { get; set; } = 0;
       public DateTime PlazoEjecucion { get; set; } = new();
-      public string PlazoEjecucionStr { get => PlazoEjecucion.ToString("yyyy-MM-dd"); set { } }
+      public string PlazoEjecucionStr { get => PlazoEjecucion.ToString("yyyy-MM-dd"); }
       public string? OCA { get; set; } = string.Empty;
       public string? NumOCA { get; set; } = string.Empty;
       public string? InspeccionOCA { get; set; } = string.Empty;

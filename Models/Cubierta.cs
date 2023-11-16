@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using backend_API.Utilities;
+using Automatizaciones_API.Utilities;
 
-namespace backend_API.Models
+namespace Automatizaciones_API.Models
 {
    //CLASE QUE REPRESENTA LA SUPERFICIE DONDE SE REALIZA LA INSTALACIÓN
    [Table("Cubiertas")]

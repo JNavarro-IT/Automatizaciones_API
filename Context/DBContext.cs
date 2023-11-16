@@ -1,7 +1,7 @@
-﻿using backend_API.Models;
+﻿using Automatizaciones_API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend_API.Context
+namespace Automatizaciones_API.Context
 {
    //CLASE QUE GENERA UN CONTEXTO CON LA BD Y MAPEA LAS TABLAS
    public class DBContext : DbContext

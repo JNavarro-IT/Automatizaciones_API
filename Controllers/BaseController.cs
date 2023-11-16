@@ -1,10 +1,10 @@
-﻿using backend_API.Repository;
-using backend_API.Utilities;
+﻿using Automatizaciones_API.Repository;
+using Automatizaciones_API.Utilities;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Adapters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend_API.Controllers
+namespace Automatizaciones_API.Controllers
 {
    //INTERFAZ PRINCIPAL QUE IMPLENTA UN CRUD BASICO DE LOS CONTROLADORES
    public interface IBaseController<T, TDto>
@@ -56,7 +56,7 @@ namespace backend_API.Controllers
       public async Task<ActionResult<TDto>> GetByIdentity(object identity)
       {
          if (identity == null) return BadRequest("El identificador enviado es nulo");
-         
+
          TDto? entity = await _baseRepository.GetEntityDto(identity);
          return entity == null ? NotFound("Objeto no encontrado con ese identificador") : Ok(entity);
       }
@@ -69,13 +69,14 @@ namespace backend_API.Controllers
       public async Task<ActionResult<TDto>> CreateEntity(object identity, [FromBody] TDto dto)
       {
          if (dto == null || identity == null) return BadRequest("No se ha enviado ningún dato");
-        
+
          try
          {
             TDto newDto = await _baseRepository.CreateEntity(dto);
             return newDto != null ? Ok(newDto) : NoContent();
-         
-         } catch (Exception ex) { return BadRequest(ex.ToString()); }
+
+         }
+         catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
 
       //PUT: ACTUALIZAR UNA ENTIDAD POR UN IDENTIFICADOR
@@ -94,8 +95,9 @@ namespace backend_API.Controllers
          {
             int updated = await _baseRepository.UpdateEntity(dto);
             return updated > 0 ? Ok(dto) : NotFound("No se ha actualizado ningún objeto");
-        
-         } catch (Exception ex) { return BadRequest(ex.ToString()); }
+
+         }
+         catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
 
       //BORRAR UNA ENTIDAD POR EL ID
@@ -123,16 +125,17 @@ namespace backend_API.Controllers
          TDto? entityDto = await _baseRepository.GetEntityDto(identity);
          if (entityDto == null) return NotFound("No se ha encontrado ningún objeto con ese identificador");
 
-         patchDto.ApplyTo(entityDto, (IObjectAdapter)ModelState);
+         patchDto.ApplyTo(entityDto, ModelState as IObjectAdapter);
 
          if (!ModelState.IsValid) return BadRequest("El modelo no es válido" + ModelState);
-         
+
          try
          {
             int updated = await _baseRepository.UpdateEntity(entityDto);
             return updated <= 0 ? BadRequest("No se ha actualizado ningún objeto") : Ok(entityDto);
-        
-         } catch (Exception ex) { return BadRequest(ex.ToString()); }
+
+         }
+         catch (Exception ex) { return BadRequest(ex.ToString()); }
       }
    }
 }

@@ -29,7 +29,6 @@
     },
     "ISS Staging": {
       "commandName": "IIS",
-      "workingDirectory": "C:/inetpub/wwwroot",
       "launchBrowser": true,
       "launchUrl": "http://EWD5090LS:7087",
       "environmentVariables": {
@@ -55,7 +54,7 @@
   },
   "iisSettings": {
     "windowsAuthentication": false,
-    "anonymousAuthentication": false,
+    "anonymousAuthentication": true,
     "iis": {
       "applicationUrl": "http://192.168.2.250:8086",
       "sslPort": 0

@@ -1,29 +1,36 @@
 ﻿using System.Globalization;
 using System.Reflection;
-using backend_API.Models.Dto;
+using Automatizaciones_API.Models.Dto;
 using ClosedXML.Excel;
 
-namespace backend_API.Service
+namespace Automatizaciones_API.Service
 {
+   // INTERFAZ QUE DA SERVICIO A OTRAS CLASES PARA GENERAR UN ARCHIVO EXCEL MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IEXCELServices
    {
       public string CreateEXCEL(ProyectoDto Proyecto);
    }
 
+   // CLASE QUE IMPLEMENTA IEXCELService PARA MANEJO Y RELLENO DE UN ARCHIVO EXCEL
    public class EXCELService : IEXCELServices
    {
       private readonly IProjectService _projectService;
 
+      // CONSTRUCTOR POR PARÁMETROS PARA INYECTAR DEPENDENCIAS
       public EXCELService(IProjectService projectServices)
       {
          _projectService = projectServices;
       }
 
-      public string CreateEXCEL(ProyectoDto Proyecto)
+      // GENERA UN ARCHIVO EXCEL CON LOS DATOS DE UN PROYECTO
+      public string CreateEXCEL(ProyectoDto? Proyecto)
       {
-         string rutaArchivo = "Utilities/Resources/REFERENCIAS_MEMORIA.xlsx";
-         string tempPath = "";
-         using (XLWorkbook workbook = new(rutaArchivo))
+         if (Proyecto == null) return "ERROR => El proyecto no es válido";
+
+         string pathOrigin = "Utilities/Resources/REFERENCIAS_MEMORIA.xlsx";
+         string tempFile = "";
+
+         using (XLWorkbook workbook = new(pathOrigin))
          {
             IXLWorksheet worksheet = workbook.Worksheet(1);
             InstalacionDto Instalacion = Proyecto.Instalacion;
@@ -35,18 +42,16 @@ namespace backend_API.Service
             int row = 7;
             int column = 2;
             int startRow = row + 1;
-            int columnModelo = 24;
-            int columnInversor = 30;
 
-            //Proyecto
+            // PROYECTO
             worksheet.Cell(row, column++).Value = Mes;
             worksheet.Cell(row, column++).Value = Proyecto.Fecha.Year;
 
-            //Cliente
+            // CLIENTE
             worksheet.Cell(row, column++).Value = Cliente.Nombre.ToUpper();
             worksheet.Cell(row, column++).Value = Cliente.Dni.ToUpper();
 
-            //Ubicación
+            // UBICACION
             worksheet.Cell(row, column++).Value = Ubicacion.GetDireccion();
             worksheet.Cell(row, column++).Value = Ubicacion.Cp;
             worksheet.Cell(row, column++).Value = Ubicacion.Municipio;
@@ -59,7 +64,7 @@ namespace backend_API.Service
             worksheet.Cell(row, column++).Value = Ubicacion.Latitud;
             worksheet.Cell(row, column++).Value = Ubicacion.Longitud;
 
-            //Instalación
+            // INSTALACIÓN
             worksheet.Cell(row, column++).Value = Instalacion.Inclinacion;
             worksheet.Cell(row, column++).Value = Instalacion.Azimut;
             worksheet.Cell(row, column++).Value = Instalacion.TotalPico;
@@ -68,12 +73,14 @@ namespace backend_API.Service
             worksheet.Cell(row, column++).Value = Instalacion.CoordXConexion;
             worksheet.Cell(row, column++).Value = Instalacion.CoordYConexion;
 
-            //CADENAS
+            // CADENAS
             int index = 0;
             foreach (CadenaDto c in Cadenas)
             {
                ModuloDto Modulo = c.Modulo;
                InversorDto Inversor = c.Inversor;
+
+               // MODULO
                PropertyInfo[] propiedades = Modulo.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
                if (index == 1) row = 22;
@@ -103,8 +110,10 @@ namespace backend_API.Service
                worksheet.Cell(row, column++).Value = Inversor.Fabricante;
                worksheet.Cell(row, column).Value = Inversor.Modelo.TrimEnd();
 
-               startRow = row + 1;
+               // INVERSOR
                propiedades = Inversor.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+               startRow = row + 1;
+
                foreach (PropertyInfo propiedad in propiedades)
                {
                   string nombre = propiedad.Name;
@@ -114,7 +123,7 @@ namespace backend_API.Service
                   else if (valor is int i) worksheet.Cell(startRow, column).Value = i;
                   else if (valor is double d) worksheet.Cell(startRow, column).Value = d;
                   else if (valor is string s) worksheet.Cell(startRow, column).Value = s;
-                 
+
                   startRow++;
                }
 
@@ -135,6 +144,7 @@ namespace backend_API.Service
             worksheet.Cell(row, column++).Value = Instalacion.Estructura;
             worksheet.Cell(row, column++).Value = Instalacion.Definicion;
 
+            // CUBIERTAS
             foreach (CubiertaDto c in Instalacion.Cubiertas)
             {
                worksheet.Cell(row, 38).Value = c.MedidasColectivas;
@@ -151,8 +161,9 @@ namespace backend_API.Service
             worksheet.Cell(10, column++).Value = Proyecto?.PlazoEjecucion.Date.ToShortDateString();
             worksheet.Cell(row, column++).Value = Proyecto?.PresupuestoSyS;
 
-            index = 0;
+            // LUGARES PRL
             List<LugarPRLDto>? list = Proyecto?.LugaresPRL;
+            index = 0;
             for (int i = 0; i < list?.Count; i++)
             {
                LugarPRLDto? l = list[i];
@@ -176,17 +187,19 @@ namespace backend_API.Service
                row++;
                index++;
             }
+
             try
             {
-               var fileName = Path.Combine(Proyecto.Referencia, "_REF_MEMORIA.xlsx");
-               var endFolder = Directory.CreateDirectory("Temp");
+               if (Proyecto == null) return "Proyecto erróneo o mal estructurado";
+               string fileName = Proyecto.Referencia + "_REF_MEMORIA.xlsx";
+               tempFile = Path.Combine("Utilities/Temp/" + fileName);
 
-               tempPath = Path.Combine("Temp", fileName);
-               workbook.SaveAs(tempPath);
-           
-            } catch(Exception ex) { return new ("EXCEPTION: " + ex.Message + "HELP: " + ex.HelpLink); }
+               workbook.SaveAs(tempFile);
+
+            }
+            catch (Exception ex) { return new("EXCEPTION => " + ex.Message + "HELP: " + ex.HelpLink); }
          }
-         return tempPath;
+         return tempFile;
       }
    }
 }
