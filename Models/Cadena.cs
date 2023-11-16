@@ -25,7 +25,7 @@ namespace Automatizaciones_API.Models
 
       [Required]
       [Column(TypeName = "int")]
-      public int NumModulos { get; set; } = 0;
+      public int NumModulos { get; set; } = 0; 
 
       [Required]
       [Column(TypeName = "int")]

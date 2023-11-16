@@ -19,7 +19,7 @@ namespace Automatizaciones_API.Service
       public bool CheckMunicipio(UbicacionDto Ubicacion);
       public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string tempPath);
       public StringBuilder WithoutTildes(string item);
-      public bool DeleteTemp();
+      public bool DeleteTemp(); 
    }
 
    //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO

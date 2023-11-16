@@ -25,7 +25,7 @@ namespace Automatizaciones_API.Models
       public double Potencia { get; set; } = 0;
 
       [Required]
-      [Column(TypeName = "float")]
+      [Column(TypeName = "float")] 
       public double Vmp { get; set; } = 0;
 
       [Required]

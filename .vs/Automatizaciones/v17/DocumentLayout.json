@@ -3,8 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\service\\pvgisservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:service\\pvgisservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\service\\wordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:service\\wordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\service\\projectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:service\\projectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\repository\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:repository\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\models\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:models\\modulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\models\\dto\\lugarprldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:models\\dto\\lugarprldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\models\\cadena.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:models\\cadena.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\controllers\\microservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:controllers\\microservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\controllers\\apicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:controllers\\apicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|c:\\users\\j navarro\\source\\repos\\automatizaciones_api\\context\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B6655AEF-4631-4FD5-BB65-9D3219D1A839}|Automatizaciones API.csproj|solutionrelative:context\\dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 738,
-          "SelectedChildIndex": 16,
+          "SelectedChildIndex": 18,
           "Children": [
             {
               "$type": "Bookmark",
@@ -70,6 +106,14 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
             },
             {
@@ -83,14 +127,131 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PVGISServices.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\PVGISServices.cs",
+              "RelativeDocumentMoniker": "Service\\PVGISServices.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\PVGISServices.cs",
+              "RelativeToolTip": "Service\\PVGISServices.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:40:39.011Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProjectService.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\ProjectService.cs",
+              "RelativeDocumentMoniker": "Service\\ProjectService.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\ProjectService.cs",
+              "RelativeToolTip": "Service\\ProjectService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:40:33.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BaseRepository.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Repository\\BaseRepository.cs",
+              "RelativeDocumentMoniker": "Repository\\BaseRepository.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Repository\\BaseRepository.cs",
+              "RelativeToolTip": "Repository\\BaseRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAABbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:40:13.844Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Modulo.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Modulo.cs",
+              "RelativeDocumentMoniker": "Models\\Modulo.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Modulo.cs",
+              "RelativeToolTip": "Models\\Modulo.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:40:08.342Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LugarPRLDto.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Dto\\LugarPRLDto.cs",
+              "RelativeDocumentMoniker": "Models\\Dto\\LugarPRLDto.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Dto\\LugarPRLDto.cs",
+              "RelativeToolTip": "Models\\Dto\\LugarPRLDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:40:02.808Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Cadena.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Cadena.cs",
+              "RelativeDocumentMoniker": "Models\\Cadena.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Models\\Cadena.cs",
+              "RelativeToolTip": "Models\\Cadena.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:39:57.874Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MicroservicesController.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Controllers\\MicroservicesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MicroservicesController.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Controllers\\MicroservicesController.cs",
+              "RelativeToolTip": "Controllers\\MicroservicesController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:39:52.267Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "WORDService.cs",
               "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\WORDService.cs",
               "RelativeDocumentMoniker": "Service\\WORDService.cs",
               "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Service\\WORDService.cs",
               "RelativeToolTip": "Service\\WORDService.cs",
-              "ViewState": "AQIAAKkAAAAAAAAAAADwv70AAAA3AAAA",
+              "ViewState": "AQIAAKkAAAAAAAAAAAAIwMkAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2023-11-16T07:53:05.347Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "APIController.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Controllers\\APIController.cs",
+              "RelativeDocumentMoniker": "Controllers\\APIController.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Controllers\\APIController.cs",
+              "RelativeToolTip": "Controllers\\APIController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:39:45.306Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DBContext.cs",
+              "DocumentMoniker": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Context\\DBContext.cs",
+              "RelativeDocumentMoniker": "Context\\DBContext.cs",
+              "ToolTip": "C:\\Users\\J Navarro\\source\\repos\\Automatizaciones_API\\Context\\DBContext.cs",
+              "RelativeToolTip": "Context\\DBContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAABQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-11-16T08:39:41.41Z",
               "EditorCaption": ""
             }
           ]

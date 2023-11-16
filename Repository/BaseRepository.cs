@@ -13,13 +13,13 @@ namespace Automatizaciones_API.Repository
        where TDto : DtoBase
    {
       public Task<IEnumerable<TDto>> GetEntitiesList();
-      public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
+      public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null, 
      Func<IQueryable<T>, IIncludableQueryable<T, object>>? includes = null);
       public Task<T?> GetEntity(object identity);
       public Task<TDto?> GetEntityDto(object identity);
       public Task<TDto> CreateEntity(TDto tDto);
       public Task<int> UpdateEntity(TDto entityDto);
-      public Task<int> DeleteEntity(TDto entityDto);
+      public Task<int> DeleteEntity(TDto entityDto);  
       public Task<bool?> EntityExists(TDto entityDto);
    }
 

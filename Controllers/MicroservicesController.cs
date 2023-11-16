@@ -23,7 +23,7 @@ namespace Automatizaciones_API.Controllers
       public MicroservicesController(IEXCELServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService, IBaseRepository<Proyecto, ProyectoDto> projectRepository)
       {
          _excelServices = excelServices;
-         _wordService = wordService;
+         _wordService = wordService; 
          _pvgisService = pvgisService;
          _pdfService = pdfService;
          _projectService = projectService;
