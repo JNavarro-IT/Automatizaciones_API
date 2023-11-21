@@ -87,7 +87,11 @@
             },
             "Microsoft.NETCore.DotNetHostResolver": {
               "target": "Package",
-              "version": "[7.0.13, )"
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "ProjNet": {
               "target": "Package",

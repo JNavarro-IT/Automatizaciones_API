@@ -20,11 +20,7 @@
     <Optimize>True</Optimize>
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="Utilities\Resources\CIFs.json" />
-    <Content Remove="Utilities\Resources\ECO3.json" />
-  </ItemGroup>
-  <ItemGroup>
+   <ItemGroup>
     <None Include="Utilities\Resources\CIFs.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -37,7 +33,8 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="ClosedXML" Version="0.102.1" />
     <PackageReference Include="itext7" Version="8.0.2" />
-    <PackageReference Include="Microsoft.NETCore.DotNetHostResolver" Version="7.0.13" />
+    <PackageReference Include="Microsoft.NETCore.DotNetHostResolver" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
     <PackageReference Include="ProjNet" Version="2.0.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
     <PackageReference Include="Xceed.Words.NET" Version="3.0.23523.1209" />

@@ -4,6 +4,7 @@ using Automatizaciones_API.Repository;
 using Automatizaciones_API.Service;
 using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Reflection;
 
@@ -77,38 +78,65 @@ namespace Automatizaciones_API
             var connection = builder.Configuration.GetConnectionString("MasterConnection");
             options.UseSqlServer(connection, sql => sql.EnableRetryOnFailure());
          });
+         var testDatabaseGuid = Guid.NewGuid().ToString().Replace("-", string.Empty);
+         var testDatabaseName = $"secured-query-engine-{testDatabaseGuid}";
+
+         builder.Configuration
+             .AddUserSecrets(typeof(Program).Assembly)
+             .AddEnvironmentVariables();
 
 
-
-         // CONFIG. SOLO TESTEO EN LOCAL
          var httpPort = 4046;
-         var httpsPort = 443;
-         builder.WebHost
-           .PreferHostingUrls(true)
-           .UseContentRoot(Directory.GetCurrentDirectory());
 
-         if (development == true)
-         {
-            builder.WebHost
+         builder.WebHost
            .UseKestrel(opt =>
            {
+              opt.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
               opt.Limits.MaxRequestBodySize = null;
               opt.AllowSynchronousIO = true;
-
-
               opt.ListenLocalhost(httpPort);
               opt.Configure().LocalhostEndpoint(httpPort);
            })
-            .UseKestrelCore();
-         }
+           .UseUrls("http://192.168.2.250:8087")
+           .PreferHostingUrls(true)
+           .UseContentRoot(Directory.GetCurrentDirectory())
+           .ConfigureLogging((hostingContext, logging) =>
+           {
+              logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+              logging.AddConsole();
+              logging.AddDebug();
+           })
+           .UseIIS()
+           .UseIISIntegration();
 
-            builder.WebHost.UseIIS().UseIISIntegration();
 
-            builder.Services.AddCors(options =>
+         /* // CONFIG. SOLO TESTEO EN LOCAL
+          var httpsPort = 443;
+          builder.WebHost
+            .PreferHostingUrls(true)
+            .UseContentRoot(Directory.GetCurrentDirectory());
+
+          if (development == true)
+          {
+             builder.WebHost
+               .UseKestrel(opt =>
+               {
+                  opt.Limits.MaxRequestBodySize = null;
+                  opt.AllowSynchronousIO = true;
+                  opt.ListenLocalhost(httpPort);
+                  opt.Configure().LocalhostEndpoint(httpPort);
+               })
+                .UseKestrelCore();
+          }*/
+
+
+
+         builder.Services
+            .AddCors(options =>
             {
                options.AddPolicy("Cors", police =>
                {
-                  police.WithOrigins(["*", "192.168.2.250:8087"])
+                  police.WithOrigins(["*", "http://192.168.2.250:8087"])
                      .SetIsOriginAllowedToAllowWildcardSubdomains()
                      .WithHeaders("*")
                      .WithMethods(["*", "OPTIONS"])
@@ -117,8 +145,7 @@ namespace Automatizaciones_API
             });
 
             var app = builder.Build();
-            app.UseDefaultFiles()
-               .UseRouting()
+            app.UseRouting()
                .UseCors("Cors")
                .UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.Run();
