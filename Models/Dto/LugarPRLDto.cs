@@ -17,7 +17,7 @@ namespace Automatizaciones_API.Models.Dto
       public string Telefono { get; set; } = string.Empty;
       public string Email { get; set; } = string.Empty;
       public string? NIMA { get; set; } = string.Empty;
-      public string? Autorizacion { get; set; } = string.Empty; 
+      public string? Autorizacion { get; set; } = string.Empty;
       public double Latitud { get; set; } = 0;
       public double Longitud { get; set; } = 0;
       public string? RutaImg { get; set; } = string.Empty;

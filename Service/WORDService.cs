@@ -1,6 +1,6 @@
-﻿using System.Globalization;
+﻿using Automatizaciones_API.Models.Dto;
+using System.Globalization;
 using System.Text.RegularExpressions;
-using Automatizaciones_API.Models.Dto;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -199,7 +199,7 @@ namespace Automatizaciones_API.Service
                      }
                   }
                   doc.Save();
-               }  
+               }
             }
             return "OK";
 

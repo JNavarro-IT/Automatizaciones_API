@@ -5,8 +5,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:6086",
-      "httpPort": 6087,
+      "applicationUrl": "http://localhost:4086",
+      "httpPort": 4086,
+      "publishAllPorts": true,
       "nativeDebugging": true,
       "sqlDebugging": true,
       "jsWebView2Debugging": true,
@@ -16,11 +17,11 @@
     "ISS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:6087/",
+      "launchUrl": "http://localhost:4087/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:6086",
+      "applicationUrl": "http://localhost:4086",
       "nativeDebugging": true,
       "sqlDebugging": true,
       "jsWebView2Debugging": true,
@@ -30,7 +31,7 @@
     "ISS Staging": {
       "commandName": "IIS",
       "launchBrowser": true,
-      "launchUrl": "http://EWD5090LS:7087",
+      "launchUrl": "http://EWD5090LS:5087",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },
@@ -60,7 +61,7 @@
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://EWD5090LS:7086",
+      "applicationUrl": "http://EWD5090LS:5086",
       "sslPort": 0
     }
   }

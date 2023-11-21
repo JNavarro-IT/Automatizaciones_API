@@ -1,10 +1,11 @@
-using System.Reflection;
 using Automatizaciones_API.Context;
 using Automatizaciones_API.Controllers;
 using Automatizaciones_API.Repository;
 using Automatizaciones_API.Service;
 using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Reflection;
 
 namespace Automatizaciones_API
 {
@@ -52,19 +53,23 @@ namespace Automatizaciones_API
             .AddTransient<IWORDService, WORDService>()
             .AddTransient<IPVGISService, PVGISServices>()
             .AddTransient<IPDFService, PDFService>()
+            .AddHttpClient()
+            .AddRouting()
+            .AddEndpointsApiExplorer()
             .AddControllers();
 
-         builder.Services
-            .AddEndpointsApiExplorer()
-            .AddHttpClient();
-
+         var development = false;
          builder.Services.AddDbContext<DBContext>(options =>
          {
             if (builder.Environment.IsDevelopment())
+            {
                builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+               development = true;
+            }
 
             else if (builder.Environment.IsStaging())
-               builder.Configuration.AddJsonFile("appsettings.Staging.json", optional: true, reloadOnChange: true);
+               builder.Configuration.AddJsonFile("appsettings.Staging.json", optional: true, reloadOnChange: false);
+
 
             else
                builder.Configuration.AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true);
@@ -73,23 +78,50 @@ namespace Automatizaciones_API
             options.UseSqlServer(connection, sql => sql.EnableRetryOnFailure());
          });
 
-         builder.Services.AddCors(options =>
-         {
-            options.AddPolicy("Cors", app =>
-            {
-               app.WithOrigins(["*", "http://192.168.2.250:8087"])               
-               .AllowAnyHeader()
-               .WithMethods(["*", "OPTIONS"])
-               .WithExposedHeaders(["*"]);
-            });
-         });
 
-         var app = builder.Build();
-         app.UseStaticFiles()
-            .UseRouting() 
-            .UseCors("Cors")            
-            .UseEndpoints(endpoints => { endpoints.MapControllers(); });
-         app.Run();
+
+         // CONFIG. SOLO TESTEO EN LOCAL
+         var httpPort = 4046;
+         var httpsPort = 443;
+         builder.WebHost
+           .PreferHostingUrls(true)
+           .UseContentRoot(Directory.GetCurrentDirectory());
+
+         if (development == true)
+         {
+            builder.WebHost
+           .UseKestrel(opt =>
+           {
+              opt.Limits.MaxRequestBodySize = null;
+              opt.AllowSynchronousIO = true;
+
+
+              opt.ListenLocalhost(httpPort);
+              opt.Configure().LocalhostEndpoint(httpPort);
+           })
+            .UseKestrelCore();
+         }
+
+            builder.WebHost.UseIIS().UseIISIntegration();
+
+            builder.Services.AddCors(options =>
+            {
+               options.AddPolicy("Cors", police =>
+               {
+                  police.WithOrigins(["*", "192.168.2.250:8087"])
+                     .SetIsOriginAllowedToAllowWildcardSubdomains()
+                     .WithHeaders("*")
+                     .WithMethods(["*", "OPTIONS"])
+                     .WithExposedHeaders(["*", "Content-Disposition"]);
+               });
+            });
+
+            var app = builder.Build();
+            app.UseDefaultFiles()
+               .UseRouting()
+               .UseCors("Cors")
+               .UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.Run();
+         }
       }
    }
-}

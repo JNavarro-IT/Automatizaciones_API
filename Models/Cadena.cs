@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Automatizaciones_API.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Automatizaciones_API.Utilities;
 
 namespace Automatizaciones_API.Models
 {
@@ -25,7 +25,7 @@ namespace Automatizaciones_API.Models
 
       [Required]
       [Column(TypeName = "int")]
-      public int NumModulos { get; set; } = 0; 
+      public int NumModulos { get; set; } = 0;
 
       [Required]
       [Column(TypeName = "int")]

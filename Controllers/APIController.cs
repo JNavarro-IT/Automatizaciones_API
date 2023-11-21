@@ -192,7 +192,8 @@ namespace Automatizaciones_API.Controllers
 
       public ActionResult<InstalacionDto?> GetInstalacionCalculated(InstalacionDto? Instalacion)
       {
-         if (Instalacion == null) return BadRequest("La instalación enviada no es válida");
+         if (Instalacion == null)
+            return BadRequest("La instalación enviada no es válida");
 
          try
          {

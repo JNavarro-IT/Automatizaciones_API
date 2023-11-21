@@ -22,7 +22,7 @@ namespace Automatizaciones_API.Service
       string Azimuth = "";
       string? TotalPico = "";
       string? datosJSON = null;
-      ChromeDriver? browser = null;  
+      ChromeDriver? browser = null;
 
       // INICIALIZACIÓN DEL PROCESO DE OBTENCIÓN DEL ARCHIVO DEL PVGIS EMULANDO LA NAVEGACIÓN POR LA PÁGINA OFICIAL DE LA COMISIÓN EUROPEA 
       public string CreatePVGIS(ProyectoDto Proyecto)

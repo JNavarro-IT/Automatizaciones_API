@@ -3,6 +3,7 @@ using Automatizaciones_API.Models.Dto;
 using Automatizaciones_API.Repository;
 using Automatizaciones_API.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.IO.Compression;
 
 namespace Automatizaciones_API.Controllers
@@ -20,10 +21,12 @@ namespace Automatizaciones_API.Controllers
       private readonly IBaseRepository<Proyecto, ProyectoDto> _projectRepository;
 
       //CONSTRUCTOR POR PARÁMETROS
-      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService, IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService, IBaseRepository<Proyecto, ProyectoDto> projectRepository)
+      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService,
+                       IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService,
+                       IBaseRepository<Proyecto, ProyectoDto> projectRepository)
       {
          _excelServices = excelServices;
-         _wordService = wordService; 
+         _wordService = wordService;
          _pvgisService = pvgisService;
          _pdfService = pdfService;
          _projectService = projectService;
@@ -33,17 +36,24 @@ namespace Automatizaciones_API.Controllers
       // PETICIÓN PARA GENERAR ARCHIVO EXCEL
       [HttpPost("crearExcel")]
       [ProducesResponseType(StatusCodes.Status400BadRequest)]
+      [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status409Conflict)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string>? CrearExcel(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>?> CrearExcel(ProyectoDto Proyecto)
       {
-         var result = ValidateAndClean(Proyecto);
-         if (result == null || result.Value.StartsWith("ERROR")) return result;
+         Console.Error.WriteLine("weeeeeeeeeeeeeeeeeeeeeeeeee");
+         var result = await ValidateAndClean(Proyecto);
+         Console.Error.WriteLine(result.Value);
+
+         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+
+         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
 
          try
          {
             var tempFile = _excelServices.CreateEXCEL(Proyecto);
-            if (tempFile is null || tempFile.StartsWith("ERROR") || tempFile.StartsWith("EXCEPTION"))
+            if (tempFile is null) return NotFound("No se ha generado niguna ruta para el archivo");
+            if (tempFile.StartsWith("ERROR") || tempFile.StartsWith("EXCEPTION"))
                return Conflict(tempFile);
 
             var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.ReadWrite);
@@ -59,10 +69,12 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string>? CrearMemorias(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>?> CrearMemorias(ProyectoDto Proyecto)
       {
-         var result = ValidateAndClean(Proyecto);
-         if (result == null || result.Value.StartsWith("ERROR")) return result;
+         var result = await ValidateAndClean(Proyecto);
+         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+
+         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
 
          string? tempPath;
          var memoryStream = new MemoryStream();
@@ -103,10 +115,12 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string>? CrearPVGIS(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>?> CrearPVGIS(ProyectoDto Proyecto)
       {
-         var result = ValidateAndClean(Proyecto);
-         if (result == null || result.Value.StartsWith("ERROR")) return result;
+         var result = await ValidateAndClean(Proyecto);
+         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+
+         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
 
          try
          {
@@ -128,33 +142,31 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public ActionResult<string>? CrearLegalizaciones(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>?> CrearLegalizaciones(ProyectoDto Proyecto)
       {
-         var result = ValidateAndClean(Proyecto);
-         if (result == null || result.Value.StartsWith("ERROR")) return result;
+         var result = await ValidateAndClean(Proyecto);
+         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+
+         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
 
          string newRuta = _pdfService.InitFillPDF(Proyecto);
          return newRuta == null
-             ? StatusCode(503, "Error al generar los archivos de subvenciones. ERROR: " + newRuta)
+             ? StatusCode(404, "Error al generar los archivos de subvenciones. ERROR: " + newRuta)
              : Ok("Archivos de subvenciones creados con éxito. RUTA: " + newRuta);
       }
 
-      private ActionResult<string> ValidateAndClean(ProyectoDto Proyecto)
+      // REALIZAR VALIDACIONES SOBRE UN PROYECTO Y ELIMINAR LOS ARCHIVOS TEMPORALES SI LOS HUBIERA
+      private async Task<ActionResult<string>> ValidateAndClean(ProyectoDto Proyecto)
       {
          if (Proyecto == null) return BadRequest("ERROR => Proyecto erróneo o mal estructurado");
-
-
-
-
-         bool? exist = _projectRepository.EntityExists(Proyecto).Result;
          if (Proyecto.IdProyecto == null) return NotFound("ERROR => Proyecto no tiene identificación");
-         if (exist.HasValue) return NotFound("ERROR => Proyecto no está registrado en la Base de Datos");
 
+         bool? exist = await _projectRepository.EntityExists(Proyecto);
+
+         if (exist is false) return NotFound("ERROR => Proyecto no está registrado en la Base de Datos");
          if (!_projectService.DeleteTemp()) return Conflict("ERROR => No se han podido eliminar los archivos antiguos");
 
          return Ok();
       }
    }
-
-
 }

@@ -1,11 +1,11 @@
-﻿using System.Globalization;
-using System.Text;
-using Automatizaciones_API.Models.Dto;
+﻿using Automatizaciones_API.Models.Dto;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
+using System.Globalization;
+using System.Text;
 
 namespace Automatizaciones_API.Service
 {
@@ -19,7 +19,7 @@ namespace Automatizaciones_API.Service
       public bool CheckMunicipio(UbicacionDto Ubicacion);
       public string ClonarFiles(ProyectoDto Proyecto, string[] pathsOrigin, string tempPath);
       public StringBuilder WithoutTildes(string item);
-      public bool DeleteTemp(); 
+      public bool DeleteTemp();
    }
 
    //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
@@ -211,6 +211,7 @@ namespace Automatizaciones_API.Service
          return sb;
       }
 
+      // ELIMINAR CARPETA TEMPORAL
       public bool DeleteTemp()
       {
          var tempFolder = "Utilities/Temp";

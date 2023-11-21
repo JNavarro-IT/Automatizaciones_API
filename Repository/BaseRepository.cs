@@ -1,9 +1,10 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using Automatizaciones_API.Context;
 using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Linq.Expressions;
 
 namespace Automatizaciones_API.Repository
 {
@@ -13,14 +14,15 @@ namespace Automatizaciones_API.Repository
        where TDto : DtoBase
    {
       public Task<IEnumerable<TDto>> GetEntitiesList();
-      public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null, 
-     Func<IQueryable<T>, IIncludableQueryable<T, object>>? includes = null);
-      public Task<T?> GetEntity(object identity);
-      public Task<TDto?> GetEntityDto(object identity);
+      public IQueryable<TDto> GetEntitiesInclude(
+         Expression<Func<T, bool>>? filter = null,
+         Func<IQueryable<T>,
+         IIncludableQueryable<T, object>>? includes = null);
+      public Task<TDto?> GetEntityDto(object? identity);
       public Task<TDto> CreateEntity(TDto tDto);
       public Task<int> UpdateEntity(TDto entityDto);
-      public Task<int> DeleteEntity(TDto entityDto);  
-      public Task<bool?> EntityExists(TDto entityDto);
+      public Task<int> DeleteEntity(TDto entityDto);
+      public Task<bool> EntityExists(TDto entityDto);
    }
 
    //CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
@@ -45,7 +47,7 @@ namespace Automatizaciones_API.Repository
          return _mapper.Map<IEnumerable<TDto>>(entities);
       }
 
-      public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
+      public IQueryable<TDto>GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
       Func<IQueryable<T>, IIncludableQueryable<T, object>>? includes = null)
       {
          IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
@@ -83,15 +85,15 @@ namespace Automatizaciones_API.Repository
       {
          try
          {
-            T entity = _mapper.Map<T>(tDto);
-            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> resultEntry = await _dbContext.Set<T>().AddAsync(entity);
+            var entity = _mapper.Map<T>(tDto);
+            EntityEntry<T> resultEntry = await _dbContext.Set<T>().AddAsync(entity);
             _ = await _dbContext.SaveChangesAsync();
-            T newEntity = resultEntry.Entity;
+            var newEntity = resultEntry.Entity;
             return _mapper.Map<TDto>(newEntity);
          }
          catch (Exception ex)
          {
-            Console.Error.WriteLine("ERROR al crear la entidad. ERROR: " + ex);
+            Console.Error.WriteLine("ERROR => al crear la entidad: " + ex);
             throw new InvalidOperationException();
          }
       }
@@ -130,18 +132,23 @@ namespace Automatizaciones_API.Repository
       }
 
       // CHECKEAR SI EXISTE UNA ENTIDAD AL COMPLETO EN LA BASE DE DATOS INDEPENDIENTEMENTE DE SU ID
-      public async Task<bool?> EntityExists(TDto? entityDto)
+      public async Task<bool> EntityExists(TDto? entityDto)
       {
-         if (entityDto == null) return false;
+         if (entityDto is null) return false;
 
-         var properties = typeof(TDto).GetProperties().Where(p => p.Name != "Id");
-         var entity = await _dbContext.Set<T>()
-            .Where(e =>
-                  properties.All(property =>
-                     property.GetValue(entityDto).Equals(property.GetValue(e)))
-            ).FirstOrDefaultAsync();
+         var dtoProperties = typeof(TDto).GetProperties();
+         if (dtoProperties.Length == 0) return false;
 
-         if (entity == null) return false;
+         foreach (var dtoProperty in dtoProperties)
+         {
+            if (dtoProperty.Name.StartsWith("Id"))
+            {
+               var id = dtoProperty.GetValue(entityDto);
+               if (id is null) return false;
+               var findDto = await GetEntityDto(id);
+               if (findDto is null) return false;
+            }
+         }
          return true;
       }
    }
