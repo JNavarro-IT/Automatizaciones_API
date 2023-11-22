@@ -1,0 +1,63 @@
+{
+  "Almería": 
+  [
+    "Adra", "Albánchez", "Alboloduy", "Albox", "Alhabia", "Alhama de Almería", "Alicúin", "Almería", "Alsodux", "Antas", "Arboleas", "Bédar",
+    "Benahadux", "Benizalón", "Bentarique", "Berja", "Cantoria", "Carboneras", "Cuevas del Almanzora", "Da lías", "Ejido, El", "Fines", "Gádor",
+    "Gallardos, los", "Garrucha", "Huécija", "Huércal de Almería", "Huércal-Overa", "lllar", "lnstinción", "Lucainena de las Torres", "Mojácar",
+    "Mojonera, la", "Pechina", "Pulpí", "Rágol", "Rioja", "Roquetas de Mar", "Santa Cruz de Marchena", "Santa Fe de Mondújar", "Níjar", "Sorbas",
+    "Tabernas", "Terque", "Turre", "Vera", "Viator", "Vícar", "Zurgena"
+  ],
+
+  "Cádiz": 
+  [
+    "Alcalá de los Gazules", "Algar", "Algeciras", "Arcos de la Frontera", "Barbate", "Barrios, Los", "Benalup-Casas Viejas", "Bornos", "Bosque, El",
+    "Cádiz", "Castellar de la Frontera", "Chiclana de la Frontera", "Línea de la Concepción, La", "Medina-Sidonia", "Paterna de Rivera",
+    "Puerto de Santa María, El", "Puerto Real", "Puerto Serrano", "Chipiona", "Conil de la Frontera", "Espera", "Jerez de la Frontera",
+    "Jimena de la Frontera", "Rota", "San Fernando", "San José del Valle", "San Roque", "Sanlúcar de Barrameda", "Tarifa", "Torre Alháquime",
+    "Trebujena", "Ubrique", "Vejer de la Frontera"
+  ],
+
+  "Córdoba": 
+  [
+    "Aguilar de la Frontera", "Almodóvar del Río", "Cabra", "Carlota, La", "Carpio, El", "Castro del Río", "Córdoba", "Doña Mencía", "Hornachuelas",
+    "Lucena", "Montalbán de Córdoba", "Montilla", "Monturque", "Moriles", "Nueva Carteya", "Palma del Río", "Pedro Abad", "Posadas", "Santaella",
+    "Victoria, La", "Villafranca de Córdoba"
+  ],
+
+  "Granada": 
+  [
+    "Albuñol", "Almuñécar", "Guajares, Los", "Gualchos", "Ltrabo", "Órgiva", "Otívar", "Salobreña", "Pinar, El", "Jete", "Molvízar", "Vélez de Benaudalla"
+  ],
+
+  "Huelva": 
+  [
+    "Aljaraque", "Almendro, El", "Almonte", "Alosno", "Ayamonte", "Bollullos Par del Condado", "Sonares", "Cabezas Rubias", "Calañas", "Cartaya",
+    "Cerro de Andévalo, El", "Chucena", "Escacena del campo", "Gibraleón", "Granado, El", "Hinojos", "Huelva", "Isla Cristina", "Lepe",
+    "Lucena del Puerto", "Manzanilla", "Moguer", "Niebla", "Palma del Condado, La", "Palos de la Frontera", "Paterna del campo", "Paymogo",
+    "Puebla de Guzmán", "Punta Umbría", "Rociana del Condado", "Rosal de la Frontera", "San Bartolomé de la Torre", "San Juan del Puerto",
+    "San Sitvestre de Guzmán", "Sanlúcar de Guadiana", "Santa Bárbara de Casa", "Trigueros", "Villa blanca", "Villa Iba del Alcor",
+    "Villa nueva de las Cruces", "Villa nueva de los castillejos", "Villarrasa"
+  ],
+
+  "Málaga": 
+  [
+    "Alcaucín", "Alhaurín de la Torre", "Alhaurín el Grande", "Almáchar", "Almogía", "Álora", "Ardales", "Arenas", "Benahavís", "Benalmádena",
+    "Benamargosa", "Benamocarra", "Borge, El", "Carratraca", "Cártama", "Casarabonela", "Casares", "Coín", "Cútar", "Estepona", "Frigiliana",
+    "Fuengirola", "Guaro", "Istán", "Iznate", "Macharaviaya", "Málaga", "Manilva", "Marbella", "Mijas", "Monda", "Nerja", "Ojén", "Periana",
+    "Pizarra", "Rincón de la Victoria", "Sayalonga", "Tolox", "Torremolinos", "Torrox", "Totalán", "Valle de Abdalajís", "Vélez Málaga", 
+    "Viñuela", "Yunquera"
+  ],
+
+  "Sevilla":
+  [
+    "Aguadulce", "Albaida del Aljarafe", "Alcalá de Guadaíra", "Alcalá del Río", "Alcolea del Río", "Algaba, la", "Almensilla", "Arahal", "Aznalcázar",
+    "Aznalcóllar", "Badolatosa", "Benacazón", "Bollullos de la Mitación", "Bormujos", "Brenes", "Burguillos", "Cabezas de San Juan, Las", "Camas", 
+    "Campana, La", "Cantillana", "Cañada Rosal", "Castilleja de Guzmán", "Castilleja de la Cuesta", "Coria del Río", "Coripe", "Coronil, El", 
+    "Cuervo de Sevilla, El", "Dos Hermanas", "Espartinas", "Fuentes de Andalucía", "Gelves", "Gerena", "Gines", "Guillena", "Herrera", 
+    "Huévar del Aljarafe", "Isla Mayor", "Lantejuela, La", "Lora del Río", "Luisiana, La", "Mairena del Alcor", "Marinaleda", "Molares, los", 
+    "Montellano", "Olivares", "Osuna", "Palacios y Villafranca", "Los Palomares del Río", "Paradas", "Peñaflor", "Pilas", "Puebla de Cazalla, La", 
+    "Puebla del Río, La", "Rinconada, La", "Rubio, El", "Salteras", "San Juan de Aznalfarache", "Sanlúcar la Mayor", "Santiponce", "Sevilla", 
+    "Tocina", "Tomares", "Umbrete", "Utrera", "Valencina de la Concepción", "Villamanrique de la Condesa", "Villanueva del Ariscal", 
+    "Villa nueva del Río y Minas", "Villaverde del Río", "Viso del Alcor, El"
+  ] 
+}
