@@ -85,14 +85,6 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
-            "Microsoft.NETCore.DotNetHostResolver": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
             "ProjNet": {
               "target": "Package",
               "version": "[2.0.0, )"
@@ -100,6 +92,10 @@
             "Selenium.WebDriver": {
               "target": "Package",
               "version": "[4.15.0, )"
+            },
+            "System.Reflection.TypeExtensions": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             },
             "Xceed.Words.NET": {
               "target": "Package",

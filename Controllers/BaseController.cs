@@ -1,5 +1,5 @@
-﻿using Automatizaciones_API.Repository;
-using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
+using Automatizaciones_API.Repository;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Adapters;
 using Microsoft.AspNetCore.Mvc;
@@ -25,18 +25,10 @@ namespace Automatizaciones_API.Controllers
    */
    [ApiController]
    [Route("api")]
-   public class BaseController<T, TDto> : ControllerBase
+   public class BaseController<T, TDto>(IBaseRepository<T, TDto> repository) : ControllerBase
        where T : ModelBase
        where TDto : DtoBase
    {
-      private readonly IBaseRepository<T, TDto> _baseRepository;
-
-      //CONSTRUCTOR CON INYECCION DE DEPENDENCIA
-
-      public BaseController(IBaseRepository<T, TDto> repository)
-      {
-         _baseRepository = repository;
-      }
 
       //GET: OBTENER LA LISTA DE UNA ENTIDAD
       [HttpGet("list")]
@@ -44,7 +36,7 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<IEnumerable<TDto>>> GetListAsync()
       {
-         IEnumerable<TDto> entitiesList = await _baseRepository.GetEntitiesList();
+         IEnumerable<TDto> entitiesList = await repository.GetEntitiesList();
          return entitiesList == null ? NoContent() : Ok(entitiesList);
       }
 
@@ -57,7 +49,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (identity == null) return BadRequest("El identificador enviado es nulo");
 
-         TDto? entity = await _baseRepository.GetEntityDto(identity);
+         TDto? entity = await repository.GetEntityDto(identity);
          return entity == null ? NotFound("Objeto no encontrado con ese identificador") : Ok(entity);
       }
 
@@ -72,7 +64,7 @@ namespace Automatizaciones_API.Controllers
 
          try
          {
-            TDto newDto = await _baseRepository.CreateEntity(dto);
+            TDto newDto = await repository.CreateEntity(dto);
             return newDto != null ? Ok(newDto) : NoContent();
 
          }
@@ -88,12 +80,12 @@ namespace Automatizaciones_API.Controllers
       {
          if (dto == null || identity == null) return BadRequest("No se ha enviado ningún dato");
 
-         Task<TDto?> dtoDB = _baseRepository.GetEntityDto(identity);
+         Task<TDto?> dtoDB = repository.GetEntityDto(identity);
          if (dtoDB == null) return NotFound("Objeto no encontrado con el identificador enviado");
 
          try
          {
-            int updated = await _baseRepository.UpdateEntity(dto);
+            int updated = await repository.UpdateEntity(dto);
             return updated > 0 ? Ok(dto) : NotFound("No se ha actualizado ningún objeto");
 
          }
@@ -109,7 +101,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (identity == null) return BadRequest("No se ha pasado ningún identificador");
 
-         int deleted = await _baseRepository.DeleteEntity(dto);
+         int deleted = await repository.DeleteEntity(dto);
          return deleted <= 0 ? NotFound("No se ha eliminado ningún objeto") : Ok(dto);
       }
 
@@ -122,7 +114,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (patchDto == null || identity == null) return BadRequest("No se han detectado parámetros para actualizar");
 
-         TDto? entityDto = await _baseRepository.GetEntityDto(identity);
+         TDto? entityDto = await repository.GetEntityDto(identity);
          if (entityDto == null) return NotFound("No se ha encontrado ningún objeto con ese identificador");
 
          patchDto.ApplyTo(entityDto, ModelState as IObjectAdapter);
@@ -131,7 +123,7 @@ namespace Automatizaciones_API.Controllers
 
          try
          {
-            int updated = await _baseRepository.UpdateEntity(entityDto);
+            int updated = await repository.UpdateEntity(entityDto);
             return updated <= 0 ? BadRequest("No se ha actualizado ningún objeto") : Ok(entityDto);
 
          }

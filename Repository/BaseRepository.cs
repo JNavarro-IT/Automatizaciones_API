@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Automatizaciones_API.Configurations;
 using Automatizaciones_API.Context;
-using Automatizaciones_API.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -25,29 +25,22 @@ namespace Automatizaciones_API.Repository
       public Task<bool> EntityExists(TDto entityDto);
    }
 
-   //CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
-   public class BaseRepository<T, TDto> : IBaseRepository<T, TDto>
+   // CLASE ENCARGADA DE HACER EL CRUD A LA BASE DE DATOS DE FORMA GENÉRICA
+   public class BaseRepository<T, TDto>(DBContext dbContext, IMapper mapper) : IBaseRepository<T, TDto>
        where T : ModelBase
        where TDto : DtoBase
    {
-      private readonly DBContext _dbContext;
-      private readonly IMapper _mapper;
+      private readonly DBContext _dbContext = dbContext;
+      private readonly IMapper _mapper = mapper;
 
-      //CONSTRUCTOR PARA LA INYECCION DE DEPENDENCIAS DE DBCONTEXT Y AUTOMAPPER
-      public BaseRepository(DBContext dbContext, IMapper mapper)
-      {
-         _dbContext = dbContext;
-         _mapper = mapper;
-      }
-
-      //OBTENER LA LISTA DE LA ENTIDAD
+      // OBTENER LA LISTA DE LA ENTIDAD
       public async Task<IEnumerable<TDto>> GetEntitiesList()
       {
          List<T> entities = await _dbContext.Set<T>().ToListAsync();
          return _mapper.Map<IEnumerable<TDto>>(entities);
       }
 
-      public IQueryable<TDto>GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
+      public IQueryable<TDto> GetEntitiesInclude(Expression<Func<T, bool>>? filter = null,
       Func<IQueryable<T>, IIncludableQueryable<T, object>>? includes = null)
       {
          IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
@@ -61,8 +54,7 @@ namespace Automatizaciones_API.Repository
          return _mapper.ProjectTo<TDto>(query);
       }
 
-
-      //OBTENER UNA ENTIDAD POR SU ID
+      // OBTENER UNA ENTIDAD POR SU ID
       public async Task<TDto?> GetEntityDto(object? identity)
       {
          if (identity == null)
@@ -80,7 +72,7 @@ namespace Automatizaciones_API.Repository
          T? entity = await _dbContext.Set<T>().FindAsync(identity);
          return entity ?? null;
       }
-      //CREAR UNA ENTIDAD 
+      // CREAR UNA ENTIDAD 
       public async Task<TDto> CreateEntity(TDto tDto)
       {
          try
@@ -98,7 +90,7 @@ namespace Automatizaciones_API.Repository
          }
       }
 
-      //ACTUALIZAR UNA ENTIDAD
+      // ACTUALIZAR UNA ENTIDAD
       public async Task<int> UpdateEntity(TDto entityDto)
       {
          try

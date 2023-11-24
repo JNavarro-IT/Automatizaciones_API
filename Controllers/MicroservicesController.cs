@@ -11,27 +11,16 @@ namespace Automatizaciones_API.Controllers
    //CONTROLADOR DE LAS PETICIONES HTTP PARA OBTENER ARCHIVOS
    [ApiController]
    [Route("[controller]")]
-   public class MicroservicesController : ControllerBase
+   public class MicroservicesController(IEXCELServices excelServices, IWORDService wordService,
+                    IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService,
+                    IBaseRepository<Proyecto, ProyectoDto> projectRepository) : ControllerBase
    {
-      private readonly IEXCELServices _excelServices;
-      private readonly IWORDService _wordService;
-      private readonly IPVGISService _pvgisService;
-      private readonly IPDFService _pdfService;
-      private readonly IProjectService _projectService;
-      private readonly IBaseRepository<Proyecto, ProyectoDto> _projectRepository;
-
-      //CONSTRUCTOR POR PARÁMETROS
-      public MicroservicesController(IEXCELServices excelServices, IWORDService wordService,
-                       IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService,
-                       IBaseRepository<Proyecto, ProyectoDto> projectRepository)
-      {
-         _excelServices = excelServices;
-         _wordService = wordService;
-         _pvgisService = pvgisService;
-         _pdfService = pdfService;
-         _projectService = projectService;
-         _projectRepository = projectRepository;
-      }
+      private readonly IEXCELServices _excelServices = excelServices;
+      private readonly IWORDService _wordService = wordService;
+      private readonly IPVGISService _pvgisService = pvgisService;
+      private readonly IPDFService _pdfService = pdfService;
+      private readonly IProjectService _projectService = projectService;
+      private readonly IBaseRepository<Proyecto, ProyectoDto> _projectRepository = projectRepository;
 
       // PETICIÓN PARA GENERAR ARCHIVO EXCEL
       [HttpPost("crearExcel")]
@@ -142,12 +131,12 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public async Task<ActionResult<string>?> CrearLegalizaciones(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>> CrearLegalizaciones(ProyectoDto Proyecto)
       {
-         var result = await ValidateAndClean(Proyecto);
-         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+         ActionResult<string> result = await ValidateAndClean(Proyecto);
+         if (result.Value.IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
 
-         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
+         if (result.Value.StartsWith("ERROR")) return Conflict(result);
 
          string newRuta = _pdfService.InitFillPDF(Proyecto);
          return newRuta == null

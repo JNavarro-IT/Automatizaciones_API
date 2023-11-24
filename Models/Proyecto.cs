@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -48,7 +48,7 @@ namespace Automatizaciones_API.Models
       [ForeignKey("IdInstalacion")]
       public Instalacion Instalacion { get; set; } = new();
 
-      public List<LugarPRL> LugaresPRL { get; set; } = new();
+      public List<LugarPRL> LugaresPRL { get; set; } = [];
 
       // CONSTRUCTOR POR DEFECTO
       public Proyecto() { }

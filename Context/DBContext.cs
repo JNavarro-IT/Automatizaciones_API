@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Automatizaciones_API.Context
 {
    //CLASE QUE GENERA UN CONTEXTO CON LA BD Y MAPEA LAS TABLAS
-   public class DBContext : DbContext
+   public class DBContext(DbContextOptions<DBContext> options) : DbContext(options)
    {
       public DbSet<Cadena> Cadenas { get; set; }
       public DbSet<Cliente> Clientes { get; set; }
@@ -15,8 +15,6 @@ namespace Automatizaciones_API.Context
       public DbSet<Modulo> Modulos { get; set; }
       public DbSet<Proyecto> Proyectos { get; set; }
       public DbSet<Ubicacion> Ubicaciones { get; set; }
-
-      public DBContext(DbContextOptions<DBContext> options) : base(options) { }
 
       //API FLUENTE => PARA INDICAR EXPLICITAMENTE LOS PK, FK, COSTRAINST
       protected override void OnModelCreating(ModelBuilder modelBuilder)

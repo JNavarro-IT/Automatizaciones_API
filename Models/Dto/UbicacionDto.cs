@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 
 namespace Automatizaciones_API.Models.Dto
 {

@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 
 namespace Automatizaciones_API.Models.Dto
 {
@@ -20,7 +20,7 @@ namespace Automatizaciones_API.Models.Dto
       // RELATIONS
       public ClienteDto Cliente { get; set; } = new();
       public InstalacionDto Instalacion { get; set; } = new();
-      public List<LugarPRLDto> LugaresPRL { get; set; } = new();
+      public List<LugarPRLDto> LugaresPRL { get; set; } = [];
 
       // CONSTRUCTOR POR DEFECTO
       public ProyectoDto() { }

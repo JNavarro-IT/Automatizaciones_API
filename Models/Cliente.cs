@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,8 +31,8 @@ namespace Automatizaciones_API.Models
       public string? Observaciones { get; set; } = string.Empty;
 
       //RELATIONS
-      public List<Proyecto>? Proyectos { get; set; } = new List<Proyecto>();
-      public List<Ubicacion> Ubicaciones { get; set; } = new List<Ubicacion>();
+      public List<Proyecto>? Proyectos { get; set; }
+      public List<Ubicacion> Ubicaciones { get; set; } = [];
 
       //CONSTRUCTOR POR DEFECTO
       public Cliente() { }

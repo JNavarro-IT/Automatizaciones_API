@@ -9,6 +9,7 @@ using System.Text;
 
 namespace Automatizaciones_API.Service
 {
+
    // INTERFAZ QUE FUNCIONA COMO SERVICIO DEL PROYECTO PARA OTRAS CLASES, MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IProjectService
    {
@@ -23,7 +24,6 @@ namespace Automatizaciones_API.Service
    }
 
    //CLASE QUE SIRVE DE SERVICIO PARA REALIZAR CÁLCULOS SOBRE LA INSTALACION DE UN PROYECTO
-
    public class ProjectService : IProjectService
    {
       // CONSTRUCTOR POR DEFECTO
@@ -93,7 +93,7 @@ namespace Automatizaciones_API.Service
          CoordinateSystem wgs84 = GeographicCoordinateSystem.WGS84;
          ProjectedCoordinateSystem utm = ProjectedCoordinateSystem.WGS84_UTM(30, true);
          ICoordinateTransformation transformation = factory.CreateFromCoordinateSystems(wgs84, utm);
-         double[] latLng = { Instalacion.CoordXConexion, Instalacion.CoordYConexion };
+         double[] latLng = [Instalacion.CoordXConexion, Instalacion.CoordYConexion];
          double[] latLngUTM = transformation.MathTransform.Transform(latLng);
          return latLngUTM;
       }

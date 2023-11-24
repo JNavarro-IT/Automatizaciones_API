@@ -12,16 +12,8 @@ namespace Automatizaciones_API.Service
    }
 
    // CLASE QUE IMPLEMENTA IEXCELService PARA MANEJO Y RELLENO DE UN ARCHIVO EXCEL
-   public class EXCELService : IEXCELServices
+   public class EXCELService(IProjectService projectServices) : IEXCELServices
    {
-      private readonly IProjectService _projectService;
-
-      // CONSTRUCTOR POR PARÁMETROS PARA INYECTAR DEPENDENCIAS
-      public EXCELService(IProjectService projectServices)
-      {
-         _projectService = projectServices;
-      }
-
       // GENERA UN ARCHIVO EXCEL CON LOS DATOS DE UN PROYECTO
       public string CreateEXCEL(ProyectoDto? Proyecto)
       {
@@ -36,7 +28,7 @@ namespace Automatizaciones_API.Service
             InstalacionDto Instalacion = Proyecto.Instalacion;
             ClienteDto Cliente = Proyecto.Cliente;
             UbicacionDto Ubicacion = Cliente.Ubicaciones[0];
-            double[] latlng = _projectService.GetUTM(Instalacion);
+            double[] latlng = projectServices.GetUTM(Instalacion);
             string Mes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Proyecto.Fecha.Month).ToUpper();
             IList<CadenaDto> Cadenas = Instalacion.Cadenas;
             int row = 7;

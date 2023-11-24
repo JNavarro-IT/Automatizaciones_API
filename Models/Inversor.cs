@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

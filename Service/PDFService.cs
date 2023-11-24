@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace Automatizaciones_API.Service
 {
-   // INTERFAZ QUE DA SERVICIO A OTRAS PARA USAR ARCHIVOS PDF MEDIANTE INYECCION DE DEPENDENCIAS
+   // INTERFAZ QUE DA SERVICIO A OTRAS CLASES PARA USAR ARCHIVOS PDF MEDIANTE INYECCION DE DEPENDENCIAS
    public interface IPDFService
    {
       public string InitFillPDF(ProyectoDto Proyecto);
@@ -17,20 +17,11 @@ namespace Automatizaciones_API.Service
    }
 
    // CLASE QUE IMPLEMENTA IPDFService PARA MANEJO Y RELLENO DE DOCUMENTOS PDF
-   public class PDFService : IPDFService
+   public class PDFService(IProjectService projectService, IWORDService wordService) : IPDFService
    {
-      private readonly IProjectService _projectService;
-      private readonly IWORDService _wordService;
       private IDictionary<string, PdfFormField>? fieldsMap;
       private readonly string pathBase = "Utilities/Resources/Subvenciones/";
       private double? PotenciaGeneracion = 0;
-
-      // CONSTRUCTOR POR PARÁMETROS PARA INYECTAR DEPENDENCIAS
-      public PDFService(IProjectService projectService, IWORDService wordService)
-      {
-         _projectService = projectService;
-         _wordService = wordService;
-      }
 
       // INICIALIZAR EL PROCESO PARA MANEJAR ARCHIVOS PDF, SE ELIGEN EN FUNCIÓN DE LA CCAA Y SE RELLENAN MEDIANTE UN DICCIONARIO DE CLAVE-VALOR (Los archivos Pdf deben está customizados para el mapa)
       public string InitFillPDF(ProyectoDto Proyecto)
@@ -47,7 +38,7 @@ namespace Automatizaciones_API.Service
                return "ERROR => Se requiere de una CCAA para obtener los documentos correspondientes";
 
             string folderCCAA = pathBase + Ubicacion.CCAA;
-            List<string> pathsOrigin = Directory.GetFiles(folderCCAA).ToList();
+            List<string> pathsOrigin = [.. Directory.GetFiles(folderCCAA)];
 
             if (Ubicacion.CCAA.Equals("Andalucia"))
             {
@@ -57,18 +48,18 @@ namespace Automatizaciones_API.Service
                if (Porcentaje >= 78) pathsOrigin.Remove(folderCCAA + "/2AND_NAME.docx");
                else pathsOrigin.Remove(folderCCAA + "/1AND_NAME.docx");
 
-               bool eco3 = _projectService.CheckMunicipio(Ubicacion);
+               bool eco3 = projectService.CheckMunicipio(Ubicacion);
 
-               if (eco3) pathsOrigin = new() { folderCCAA + "/AND1_NAME.pdf" };
+               if (eco3) pathsOrigin = [folderCCAA + "/AND1_NAME.pdf"];
                else pathsOrigin.Remove(folderCCAA + "/AND1_NAME.pdf");
             }
 
             // GENERAR ARCHIVOS TEMPORALES Y RELLENARLOS
-            var resultClon = _projectService.ClonarFiles(Proyecto, pathsOrigin.ToArray(), tempPath);
+            var resultClon = projectService.ClonarFiles(Proyecto, [.. pathsOrigin], tempPath);
 
             if (resultClon.StartsWith("ERROR") || resultClon.StartsWith("EXCEPTION)")) return resultClon;
             string[] pathsEnd = Directory.GetFiles(tempPath);
-            var resultFill = FillPDFs(Proyecto, pathsOrigin.ToArray(), pathsEnd);
+            var resultFill = FillPDFs(Proyecto, [.. pathsOrigin], pathsEnd);
 
             if (resultFill.StartsWith("ERROR") || resultFill.StartsWith("EXCEPTION)")) return resultFill;
             else return tempPath;
@@ -121,8 +112,8 @@ namespace Automatizaciones_API.Service
 
          if (filesWord.Length > 0)
          {
-            Dictionary<string, string?> MapWORD = _wordService.CreateMap(Proyecto);
-            string result = _wordService.CreateMemories(MapWORD, filesWord);
+            Dictionary<string, string?> MapWORD = wordService.CreateMap(Proyecto);
+            string result = wordService.CreateMemories(MapWORD, filesWord);
          }
 
          return "OK";
@@ -134,28 +125,28 @@ namespace Automatizaciones_API.Service
          string Day = DateTime.Now.Day.ToString();
          string Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(DateTime.Now.Month).ToUpper();
          string Year = DateTime.Now.Year.ToString();
-         if (fieldsMap.ContainsKey("Dia"))
+         if (fieldsMap.TryGetValue("Dia", out PdfFormField? value))
          {
-            ((PdfTextFormField)fieldsMap["Dia"]).SetValue(Day);
+            ((PdfTextFormField)value).SetValue(Day);
             ((PdfTextFormField)fieldsMap["Mes"]).SetValue(Month);
             ((PdfTextFormField)fieldsMap["Año"]).SetValue(Year);
          }
 
-         if (fieldsMap.ContainsKey("cbDia"))
+         if (fieldsMap.TryGetValue("cbDia", out PdfFormField? value1))
          {
-            ((PdfChoiceFormField)fieldsMap["cbDia"]).SetValue(Day);
+            ((PdfChoiceFormField)value1).SetValue(Day);
             ((PdfChoiceFormField)fieldsMap["cbMes"]).SetValue(Month);
          }
 
-         if (fieldsMap.ContainsKey("cbAño"))
-            ((PdfChoiceFormField)fieldsMap["cbAño"]).SetValue(Year);
+         if (fieldsMap.TryGetValue("cbAño", out PdfFormField? value2))
+            ((PdfChoiceFormField)value2).SetValue(Year);
 
-         if (fieldsMap.ContainsKey("FechaActual"))
-            ((PdfChoiceFormField)fieldsMap["FechaActual"]).SetValue(Day + "/" + Month + "/" + Year);
+         if (fieldsMap.TryGetValue("FechaActual", out PdfFormField? value3))
+            ((PdfChoiceFormField)value3).SetValue(Day + "/" + Month + "/" + Year);
 
-         if (fieldsMap.ContainsKey("Fecha"))
+         if (fieldsMap.TryGetValue("Fecha", out PdfFormField? value4))
          {
-            ((PdfChoiceFormField)fieldsMap["Fecha"]).SetValue(Proyecto.FechaStr);
+            ((PdfChoiceFormField)value4).SetValue(Proyecto.FechaStr);
             ((PdfChoiceFormField)fieldsMap["Fecha1"]).SetValue(Proyecto.FechaStr);
             ((PdfChoiceFormField)fieldsMap["PlazoEjecucion"]).SetValue(Proyecto.PlazoEjecucionStr);
          }
@@ -173,25 +164,25 @@ namespace Automatizaciones_API.Service
                System.Reflection.PropertyInfo? propertyInfo = Cliente.GetType().GetProperty(fieldName);
                if (propertyInfo != null)
                {
-                  object? value = propertyInfo.GetValue(Cliente);
-                  if (value != null)
-                     ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
+                  object? value1 = propertyInfo.GetValue(Cliente);
+                  if (value1 != null)
+                     ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value1.ToString());
                }
 
-               if (fieldsMap.ContainsKey("Nombre0"))
+               if (fieldsMap.TryGetValue("Nombre0", out PdfFormField? value))
                {
                   try
                   {
                      if (words.Length == 3)
                      {
-                        ((PdfTextFormField)fieldsMap["Nombre0"]).SetValue(words[0]);
+                        ((PdfTextFormField)value).SetValue(words[0]);
                         ((PdfTextFormField)fieldsMap["ApellidoA"]).SetValue(words[1]);
                         ((PdfTextFormField)fieldsMap["ApellidoB"]).SetValue(words[2]);
                      }
 
                      else if (words.Length > 3)
                      {
-                        ((PdfTextFormField)fieldsMap["Nombre0"]).SetValue(words[0] + " " + words[1]);
+                        ((PdfTextFormField)value).SetValue(words[0] + " " + words[1]);
                         ((PdfTextFormField)fieldsMap["ApellidoA"]).SetValue(words[2]);
                         ((PdfTextFormField)fieldsMap["ApellidoB"]).SetValue(words[3]);
                      }
@@ -201,17 +192,17 @@ namespace Automatizaciones_API.Service
                   catch (Exception e) { throw new("EXCEPTION => " + e.Message); }
                }
 
-               if (fieldsMap.ContainsKey("Nombre1"))
-                  ((PdfTextFormField)fieldsMap["Nombre1"]).SetValue(Cliente.Nombre);
+               if (fieldsMap.TryGetValue("Nombre1", out PdfFormField? value2))
+                  ((PdfTextFormField)value2).SetValue(Cliente.Nombre);
 
-               if (fieldsMap.ContainsKey("ApNombre"))
+               if (fieldsMap.TryGetValue("ApNombre", out PdfFormField? value3))
                {
                   var ApNombre = words.Reverse().ToArray();
-                  ((PdfTextFormField)fieldsMap["ApNombre"]).SetValue(ApNombre.ToString());
+                  ((PdfTextFormField)value3).SetValue(ApNombre.ToString());
                }
 
-               if (fieldsMap.ContainsKey("Dni1"))
-                  ((PdfTextFormField)fieldsMap["Dni1"]).SetValue(Cliente.Dni);
+               if (fieldsMap.TryGetValue("Dni1", out PdfFormField? value4))
+                  ((PdfTextFormField)value4).SetValue(Cliente.Dni);
             }
          }
       }
@@ -231,18 +222,18 @@ namespace Automatizaciones_API.Service
 
                   if (propertyInfo != null)
                   {
-                     object? value = propertyInfo.GetValue(Ubicacion);
-                     if (value != null && fieldName != null)
-                        ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value.ToString());
+                     object? value4 = propertyInfo.GetValue(Ubicacion);
+                     if (value4 != null && fieldName != null)
+                        ((PdfTextFormField)fieldsMap[fieldName]).SetValue(value4.ToString());
                   }
                }
             }
 
-            if (fieldsMap.ContainsKey("Direccion1"))
-               ((PdfTextFormField)fieldsMap["Direccion1"]).SetValue(Ubicacion.GetDireccion());
+            if (fieldsMap.TryGetValue("Direccion1", out PdfFormField? value))
+               ((PdfTextFormField)value).SetValue(Ubicacion.GetDireccion());
 
-            if (fieldsMap.ContainsKey("CpB"))
-               ((PdfTextFormField)fieldsMap["CpB"]).SetValue(Ubicacion.Cp.ToString());
+            if (fieldsMap.TryGetValue("CpB", out PdfFormField? value1))
+               ((PdfTextFormField)value1).SetValue(Ubicacion.Cp.ToString());
 
             for (int i = 0; i < CpArray.Length; i++)
             {
@@ -262,8 +253,8 @@ namespace Automatizaciones_API.Service
                }
             }
 
-            if (fieldsMap.ContainsKey("cbProvincia"))
-               ((PdfChoiceFormField)fieldsMap["cbProvincia"]).SetValue(Ubicacion.Provincia.ToUpper());
+            if (fieldsMap.TryGetValue("cbProvincia", out PdfFormField? value3))
+               ((PdfChoiceFormField)value3).SetValue(Ubicacion.Provincia.ToUpper());
          }
       }
 
@@ -278,8 +269,8 @@ namespace Automatizaciones_API.Service
             System.Reflection.PropertyInfo? propertyInfo = Instalacion.GetType().GetProperty(fieldName);
             if (propertyInfo != null)
             {
-               object? value = propertyInfo.GetValue(Instalacion);
-               if (value != null) fieldsMap[fieldName].SetValue(value.ToString());
+               object? value5 = propertyInfo.GetValue(Instalacion);
+               if (value5 != null) fieldsMap[fieldName].SetValue(value5.ToString());
             }
          }
 
@@ -290,9 +281,9 @@ namespace Automatizaciones_API.Service
 
          var NominalIndividual = Instalacion.TotalNominal / Instalacion.TotalInversores;
 
-         if (fieldsMap.ContainsKey("Fusible"))
+         if (fieldsMap.TryGetValue("Fusible", out PdfFormField? value))
          {
-            fieldsMap["Fusible"].SetValue(Instalacion.Fusible.Split('A')[0]);
+            value.SetValue(Instalacion.Fusible.Split('A')[0]);
             fieldsMap["IAutomatico"].SetValue(Instalacion.IAutomatico.Split('A')[0]);
             fieldsMap["IDiferencial"].SetValue(Instalacion.IDiferencial.Split(' ')[2].Replace("mA", ""));
             fieldsMap["NominalIndividual"].SetValue(NominalIndividual.ToString());

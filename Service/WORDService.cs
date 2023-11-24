@@ -15,15 +15,8 @@ namespace Automatizaciones_API.Service
    }
 
    // CLASE QUE IMPLEMENTA IWORDService PARA MANEJO Y RELLENO DE DOCUMENTOS WORD
-   public class WORDService : IWORDService
+   public class WORDService(IProjectService projectService) : IWORDService
    {
-      private readonly IProjectService _projectService;
-
-      // CONSTRUCTOR POR PARÁMETROS PARA INYECTAR DEPENDENCIAS
-      public WORDService(IProjectService projectService)
-      {
-         _projectService = projectService;
-      }
 
       // INICIALIZAR EL PROCESO PARA RELLENAR ARCHIVOS WORD CON UN DICCIONARIO DE CLAVE-VALOR (Los archivos Word deben está customizados para el mapa)
       public string InitServiceWORD(ProyectoDto Proyecto)
@@ -31,7 +24,7 @@ namespace Automatizaciones_API.Service
          var tempPath = Directory.CreateDirectory("Utilities/Temp").FullName;
          string[]? pathsOrigin = Directory.GetFiles("Utilities/Resources/TemplatesWORD");
 
-         var resultClon = _projectService.ClonarFiles(Proyecto, pathsOrigin, tempPath);
+         var resultClon = projectService.ClonarFiles(Proyecto, pathsOrigin, tempPath);
 
          if (resultClon.StartsWith("ERROR") || resultClon.StartsWith("EXCEPTION)")) return resultClon;
          Dictionary<string, string?> MapWORD = CreateMap(Proyecto);

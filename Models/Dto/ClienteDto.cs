@@ -1,4 +1,4 @@
-﻿using Automatizaciones_API.Utilities;
+﻿using Automatizaciones_API.Configurations;
 
 namespace Automatizaciones_API.Models.Dto
 {
@@ -13,7 +13,7 @@ namespace Automatizaciones_API.Models.Dto
       public string? Observaciones { get; set; } = string.Empty;
 
       //RELATIONS
-      public List<UbicacionDto> Ubicaciones { get; set; } = new List<UbicacionDto>();
+      public List<UbicacionDto> Ubicaciones { get; set; } = [];
 
       //CONSTRUCTOR POR DEFECTO
       public ClienteDto() { }
