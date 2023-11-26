@@ -9,6 +9,7 @@ namespace Automatizaciones_API.Service
    /// Interfaz que da servicio a otras clases para generar un archivo EXCEL mediante inyección de dependencias
    public interface IEXCELService
    {
+      /// Genera un archivo EXCEL con los datos de un proyecto    
       public (byte[]?, string?) CreateEXCEL(ProyectoDto Proyecto);
    }
 
