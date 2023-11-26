@@ -7,5 +7,7 @@
     <WebStackScaffolding_ViewDialogWidth>800</WebStackScaffolding_ViewDialogWidth>
     <ShouldLintTypeScriptReact>False</ShouldLintTypeScriptReact>
     <ShouldLintJavaScriptReact>False</ShouldLintJavaScriptReact>
+    <IsLinterEnabled>True</IsLinterEnabled>
+    <ShouldLintJavaScript>True</ShouldLintJavaScript>
   </PropertyGroup>
 </Project>

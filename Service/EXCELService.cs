@@ -6,22 +6,21 @@ using System.Reflection;
 
 namespace Automatizaciones_API.Service
 {
-   // INTERFAZ QUE DA SERVICIO A OTRAS CLASES PARA GENERAR UN ARCHIVO EXCEL MEDIANTE INYECCION DE DEPENDENCIAS
+   /// Interfaz que da servicio a otras clases para generar un archivo EXCEL mediante inyección de dependencias
    public interface IEXCELService
    {
       public (byte[]?, string?) CreateEXCEL(ProyectoDto Proyecto);
    }
 
-   // CLASE QUE IMPLEMENTA IEXCELService PARA MANEJO Y RELLENO DE UN ARCHIVO EXCEL
+   /// Clase que implementa IEXCELService para manejo y relleno de un archivo EXCEL
    public class EXCELService(IProjectService projectServices) : IEXCELService
    {
-      // GENERA UN ARCHIVO EXCEL CON LOS DATOS DE UN PROYECTO
+      /// Genera un archivo EXCEL con los datos de un proyecto    
       public (byte[]?, string?) CreateEXCEL(ProyectoDto? Proyecto)
       {
          if (Proyecto == null) return (null, "ERROR => El proyecto no es válido");
 
          string pathOrigin = "Utilities/Resources/REFERENCIAS_MEMORIA.xlsx";
-
 
          using (XLWorkbook workbook = new(pathOrigin))
          {
@@ -36,15 +35,15 @@ namespace Automatizaciones_API.Service
             int column = 2;
             int startRow = row + 1;
 
-            // PROYECTO
+            // Proyecto
             worksheet.Cell(row, column++).Value = Mes;
             worksheet.Cell(row, column++).Value = Proyecto.Fecha.Year;
 
-            // CLIENTE
+            // Cliente
             worksheet.Cell(row, column++).Value = Cliente.Nombre.ToUpper();
             worksheet.Cell(row, column++).Value = Cliente.Dni.ToUpper();
 
-            // UBICACION
+            // Ubicación
             worksheet.Cell(row, column++).Value = Ubicacion.GetDireccion();
             worksheet.Cell(row, column++).Value = Ubicacion.Cp;
             worksheet.Cell(row, column++).Value = Ubicacion.Municipio;
@@ -57,7 +56,7 @@ namespace Automatizaciones_API.Service
             worksheet.Cell(row, column++).Value = Ubicacion.Latitud;
             worksheet.Cell(row, column++).Value = Ubicacion.Longitud;
 
-            // INSTALACIÓN
+            // Instalación
             worksheet.Cell(row, column++).Value = Instalacion.Inclinacion;
             worksheet.Cell(row, column++).Value = Instalacion.Azimut;
             worksheet.Cell(row, column++).Value = Instalacion.TotalPico;
@@ -66,14 +65,14 @@ namespace Automatizaciones_API.Service
             worksheet.Cell(row, column++).Value = Instalacion.CoordXConexion;
             worksheet.Cell(row, column++).Value = Instalacion.CoordYConexion;
 
-            // CADENAS
+            // Cadenas
             int index = 0;
             foreach (CadenaDto c in Cadenas)
             {
                ModuloDto Modulo = c.Modulo;
                InversorDto Inversor = c.Inversor;
 
-               // MODULO
+               // Módulo
                PropertyInfo[] propiedades = Modulo.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
                if (index == 1) row = 22;
@@ -96,14 +95,13 @@ namespace Automatizaciones_API.Service
 
                   startRow++;
                }
-
                column = 28;
                worksheet.Cell(row, 26).Value = c.NumCadenas;
                worksheet.Cell(row, column++).Value = Modulo.Potencia;
                worksheet.Cell(row, column++).Value = Inversor.Fabricante;
                worksheet.Cell(row, column).Value = Inversor.Modelo.TrimEnd();
 
-               // INVERSOR
+               // Inversor
                propiedades = Inversor.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
                startRow = row + 1;
 
@@ -119,7 +117,6 @@ namespace Automatizaciones_API.Service
 
                   startRow++;
                }
-
                worksheet.Cell(row, 32).Value = Inversor.IO;
                worksheet.Cell(row, 42).Value = c.NumInversores;
                worksheet.Cell(row, 43).Value = c.Inversor.PotenciaNominal;
@@ -137,7 +134,7 @@ namespace Automatizaciones_API.Service
             worksheet.Cell(row, column++).Value = Instalacion.Estructura;
             worksheet.Cell(row, column++).Value = Instalacion.Definicion;
 
-            // CUBIERTAS
+            // Cubiertas
             foreach (CubiertaDto c in Instalacion.Cubiertas)
             {
                worksheet.Cell(row, 38).Value = c.MedidasColectivas;
@@ -154,7 +151,7 @@ namespace Automatizaciones_API.Service
             worksheet.Cell(10, column++).Value = Proyecto?.PlazoEjecucion.Date.ToShortDateString();
             worksheet.Cell(row, column++).Value = Proyecto?.PresupuestoSyS;
 
-            // LUGARES PRL
+            // Lugares PRL
             List<LugarPRLDto>? list = Proyecto?.LugaresPRL;
             index = 0;
             for (int i = 0; i < list?.Count; i++)
@@ -191,8 +188,6 @@ namespace Automatizaciones_API.Service
                   excelStream.Position = 0;
                   return (excelStream.ToArray(), string.Empty);
                }
-
-
             }
             catch (Exception ex) { return (null, "EXCEPTION => " + ex.Message + " HELP: " + ex.StackTrace); }
          }

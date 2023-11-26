@@ -2,17 +2,17 @@
   "profiles": {
     "Development": {
       "commandName": "Project",
+      "launchUrl": "http://localhost:8087/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:8087/",
       "publishAllPorts": true,
       "nativeDebugging": true,
       "sqlDebugging": true,
       "jsWebView2Debugging": true,
       "remoteDebugEnabled": true,
-      "dotnetRunMessages": true
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:8086/"
     },
     "Staging": {
       "commandName": "IISExpress",
