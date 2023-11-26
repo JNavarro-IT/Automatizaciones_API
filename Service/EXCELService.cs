@@ -3,24 +3,25 @@ using ClosedXML.Excel;
 using System.Globalization;
 using System.Reflection;
 
+
 namespace Automatizaciones_API.Service
 {
    // INTERFAZ QUE DA SERVICIO A OTRAS CLASES PARA GENERAR UN ARCHIVO EXCEL MEDIANTE INYECCION DE DEPENDENCIAS
-   public interface IEXCELServices
+   public interface IEXCELService
    {
-      public string CreateEXCEL(ProyectoDto Proyecto);
+      public (byte[]?, string?) CreateEXCEL(ProyectoDto Proyecto);
    }
 
    // CLASE QUE IMPLEMENTA IEXCELService PARA MANEJO Y RELLENO DE UN ARCHIVO EXCEL
-   public class EXCELService(IProjectService projectServices) : IEXCELServices
+   public class EXCELService(IProjectService projectServices) : IEXCELService
    {
       // GENERA UN ARCHIVO EXCEL CON LOS DATOS DE UN PROYECTO
-      public string CreateEXCEL(ProyectoDto? Proyecto)
+      public (byte[]?, string?) CreateEXCEL(ProyectoDto? Proyecto)
       {
-         if (Proyecto == null) return "ERROR => El proyecto no es válido";
+         if (Proyecto == null) return (null, "ERROR => El proyecto no es válido");
 
          string pathOrigin = "Utilities/Resources/REFERENCIAS_MEMORIA.xlsx";
-         string tempFile = "";
+
 
          using (XLWorkbook workbook = new(pathOrigin))
          {
@@ -182,16 +183,19 @@ namespace Automatizaciones_API.Service
 
             try
             {
-               if (Proyecto == null) return "Proyecto erróneo o mal estructurado";
-               string fileName = Proyecto.Referencia + "_REF_MEMORIA.xlsx";
-               tempFile = Path.Combine("Utilities/Temp/" + fileName);
+               if (Proyecto == null) return (null, "Proyecto erróneo o mal estructurado");
 
-               workbook.SaveAs(tempFile);
+               using (var excelStream = new MemoryStream())
+               {
+                  workbook.SaveAs(excelStream);
+                  excelStream.Position = 0;
+                  return (excelStream.ToArray(), string.Empty);
+               }
+
 
             }
-            catch (Exception ex) { return new("EXCEPTION => " + ex.Message + "HELP: " + ex.HelpLink); }
+            catch (Exception ex) { return (null, "EXCEPTION => " + ex.Message + " HELP: " + ex.StackTrace); }
          }
-         return tempFile;
       }
    }
 }

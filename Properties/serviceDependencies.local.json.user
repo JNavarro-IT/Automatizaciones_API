@@ -3,6 +3,10 @@
     "secrets.user": {
       "restored": true,
       "restoreTime": "2023-11-21T12:56:45.6264959Z"
+    },
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2023-11-24T06:46:02.0017752Z"
     }
   },
   "parameters": {}

@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -55,7 +54,7 @@
             },
             "ClosedXML": {
               "target": "Package",
-              "version": "[0.102.1, )"
+              "version": "[0.104.0-preview2, )"
             },
             "EntityFramework": {
               "target": "Package",
@@ -78,10 +77,6 @@
               "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.Extensions.Http": {
               "target": "Package",
               "version": "[8.0.0, )"
             },

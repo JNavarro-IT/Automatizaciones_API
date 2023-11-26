@@ -2,34 +2,33 @@ using Automatizaciones_API.Configurations;
 using Automatizaciones_API.Context;
 using Microsoft.EntityFrameworkCore;
 
+// CLASE DE ARRANQUE Y CONFIGURACIÓN DE LA API
+var builder = WebApplication.CreateBuilder(args);
+var Services = builder.Services;
+var Env = builder.Environment;
 
-    // CLASE DE ARRANQUE Y CONFIGURACIÓN DE LA API
-      var builder = WebApplication.CreateBuilder(args);
-      var Services = builder.Services;
-      builder.Configuration
-          .AddUserSecrets(typeof(Program).Assembly)
-          .AddEnvironmentVariables();
+new AutoConfig(Services).InitAutoConfig();        // AUTOCONFIG
+Services.AddSingleton(AutoMapperConfig.Initialize()); // AUTOMAPPER 
+Services.AddHttpClient();
+Services.AddRouting();
+Services.AddEndpointsApiExplorer();
+Services.AddControllers();
 
-      Services.AddDbContext<DBContext>(opt =>
-      {
-         var env = builder.Environment.EnvironmentName;
-         var connectionKey = $"ConnectionStrings:{env[..3]}Connection";
+builder.Configuration
+    .AddUserSecrets(typeof(Program).Assembly)         // SECRETS
+    .AddEnvironmentVariables();
 
-         var connection = builder.Configuration[connectionKey];
-         opt.UseSqlServer(connection, sql => sql.EnableRetryOnFailure());
-      });
+Services.AddDbContext<DBContext>(opt =>               // DBCONECTION
+{
+   var EnvName = Env.EnvironmentName;
+   var connectionKey = $"ConnectionStrings:{EnvName[..4]}Connection";
+   var connection = builder.Configuration[connectionKey];
 
-      // AUTOMAPPER MODELO-DTO 
-      var automaticService = new Automationfig(Services);
-      Services.AddSingleton(AutoMapperConfig.Initialize());
-      Services.AddHttpClient();
-      Services.AddRouting();
-      Services.AddEndpointsApiExplorer();
-      Services.AddControllers();
+   opt.UseSqlServer(connection, sql => sql.EnableRetryOnFailure());
+});
 
-      var app = builder.Build(); ;
-
-      app.UseRouting()
-         .UseCors()
-         .UseEndpoints(ep => ep.MapControllers());
-      app.Run();
+var app = builder.Build();
+app.UseRouting()
+   .UseCors("Cors")
+   .UseEndpoints(ep => ep.MapControllers());
+app.Run();

@@ -10,15 +10,19 @@ namespace Automatizaciones_API.Controllers
    // CONTROLADOR DE LAS PETICIONES HTTP ACERCA DEL PROYECTO, TAMBIEN LLAMA A APIS EXTERNAS COMO PROXY
    [ApiController]
    [Route("[controller]")]
-   public class ApiController
-      (
+   public class ApiController(
       IHttpClientFactory httpClientFactory,
-      IBaseRepository<Proyecto, ProyectoDto> proyectoRepository,
       IBaseRepository<Inversor, InversorDto> inversorRepository,
-      IBaseRepository<Modulo, ModuloDto>? moduloRepository,
-      IProjectService projectService
-      ) : ControllerBase
+      IBaseRepository<Modulo, ModuloDto> moduloRepository,
+      IProjectService projectService,
+      IBaseRepository<Proyecto, ProyectoDto> proyectoRepository
+    ) : ControllerBase
    {
+      private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+      private readonly IBaseRepository<Proyecto, ProyectoDto> _proyectoRepository = proyectoRepository;
+      private readonly IBaseRepository<Inversor, InversorDto> _inversorRepository = inversorRepository;
+      private readonly IBaseRepository<Modulo, ModuloDto> _moduloRepository = moduloRepository;
+      private readonly IProjectService _projectService = projectService;
 
       // CONSULTAR APIS PUBLICAS MEDIANTE UN AUTOPROXY PARA SUBSANAR POLÍTICAS DE CORS
       [HttpGet("proxy/{*url}")]
@@ -27,7 +31,7 @@ namespace Automatizaciones_API.Controllers
       public async Task<IActionResult> UseProxy(string url)
       {
          if (url == null) return BadRequest("Error en la url enviada");
-         
+
          string? provincia = Request.Query["Provincia"];
          string? coordX = Request.Query["CoorX"];
          string? coordY = Request.Query["CoorY"];
@@ -46,8 +50,8 @@ namespace Automatizaciones_API.Controllers
 
          try
          {
-            HttpClient client = httpClientFactory.CreateClient();
-            HttpResponseMessage response = await client.GetAsync(url);
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                string content = await response.Content.ReadAsStringAsync();
@@ -65,7 +69,7 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<string>> CrearReferencia()
       {
-         IEnumerable<ProyectoDto> proyectosList = await proyectoRepository.GetEntitiesList();
+         IEnumerable<ProyectoDto> proyectosList = await _proyectoRepository.GetEntitiesList();
 
          if (proyectosList == null) return NotFound("Lista de proyectos no encontrada");
 
@@ -89,7 +93,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (referencia == null) return BadRequest("La referencia no es válida no existe");
 
-         ProyectoDto? Proyecto = proyectoRepository.GetEntitiesInclude(
+         ProyectoDto? Proyecto = _proyectoRepository.GetEntitiesInclude(
                filter: p => p.Referencia == referencia,
                includes: query => query
                .Include(p => p.Cliente)
@@ -101,12 +105,12 @@ namespace Automatizaciones_API.Controllers
             return NotFound("No existe el proyecto para esa referencia");
 
          IList<CadenaDto> Cadenas = Proyecto.Instalacion.Cadenas;
-         foreach (CadenaDto c in Cadenas)
+         foreach (CadenaDto? c in Cadenas)
          {
-            if (c is null) continue;
+            if (c is null || c.Inversor is null) continue;
 
-            c.Inversor = await inversorRepository.GetEntityDto(c.IdInversor);
-            c.Modulo = await moduloRepository.GetEntityDto(c.IdModulo);
+            c.Inversor = await _inversorRepository.GetEntityDto(c.IdInversor);
+            c.Modulo = await _moduloRepository.GetEntityDto(c.IdModulo);
          }
          Proyecto.Fecha = Proyecto.Fecha.Date;
          Proyecto.PlazoEjecucion = Proyecto.PlazoEjecucion.Date;
@@ -123,7 +127,7 @@ namespace Automatizaciones_API.Controllers
          if (empresa is null or "")
             return BadRequest("Se requiere el nombre de la empresa para obtener el CIF");
 
-         string CIF = projectService.GetCIF(empresa);
+         string CIF = _projectService.GetCIF(empresa);
          return CIF.Contains("ERROR") ? NotFound(CIF) : Ok(CIF);
       }
 
@@ -132,7 +136,7 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<IEnumerable<InversorDto>> GetInversoresList()
       {
-         List<InversorDto>? inversoresList = inversorRepository.GetEntitiesList().Result.ToList();
+         List<InversorDto>? inversoresList = _inversorRepository.GetEntitiesList().Result.ToList();
 
          if (inversoresList == null) return NotFound("ERROR => No se ha encontrado ninguna lista de inversores");
 
@@ -147,7 +151,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (Inversor == null) return BadRequest("El inversor enviado no es válido");
 
-         InversorDto newInversor = await inversorRepository.CreateEntity(Inversor);
+         InversorDto newInversor = await _inversorRepository.CreateEntity(Inversor);
          return newInversor == null
             ? NotFound("Error al crear el inversor")
             : Ok("Inversor creado. Id: " + newInversor.IdInversor + ", Modelo: " + newInversor.Modelo);
@@ -158,7 +162,7 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public ActionResult<IEnumerable<ModuloDto>> GetModulosList()
       {
-         IEnumerable<ModuloDto> modulosList = moduloRepository.GetEntitiesList().Result;
+         IEnumerable<ModuloDto?> modulosList = _moduloRepository.GetEntitiesList().Result;
          return modulosList == null ? NotFound("No se ha encontrado ninguna lista de módulos") : (ActionResult<IEnumerable<ModuloDto>>)Ok(modulosList);
       }
 
@@ -170,7 +174,7 @@ namespace Automatizaciones_API.Controllers
       {
          if (Modulo == null) return BadRequest("El módulo enviado no es válido");
 
-         ModuloDto newModulo = await moduloRepository.CreateEntity(Modulo);
+         ModuloDto newModulo = await _moduloRepository.CreateEntity(Modulo);
          return newModulo == null
             ? NotFound("Error al crear el módulo")
             : Ok("Módulo creado. Id: " + newModulo.IdModulo + ",  Modelo: " + newModulo.Modelo);
@@ -189,7 +193,7 @@ namespace Automatizaciones_API.Controllers
 
          try
          {
-            var newInstalacion = projectService.CalcularInstalacion(Instalacion);
+            var newInstalacion = _projectService.CalcularInstalacion(Instalacion);
             return Ok(newInstalacion);
          }
          catch (InvalidOperationException ex) { return Conflict(ex.Message); }
@@ -211,8 +215,8 @@ namespace Automatizaciones_API.Controllers
 
             UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
             InstalacionDto Instalacion = Proyecto.Instalacion;
-            Proyecto = projectService.GetDatosLegalizaciones(Proyecto);
-            double[] latLngUTM = projectService.GetUTM(Instalacion);
+            Proyecto = _projectService.GetDatosLegalizaciones(Proyecto);
+            double[] latLngUTM = _projectService.GetUTM(Instalacion);
             Ubicacion.CoordXUTM = latLngUTM[0];
             Ubicacion.CoordYUTM = latLngUTM[1];
             IList<CadenaDto> Cadenas = Instalacion.Cadenas;
@@ -221,7 +225,7 @@ namespace Automatizaciones_API.Controllers
                c.IdInversor = c.Inversor.IdInversor;
                c.IdModulo = c.Modulo.IdModulo;
             }
-            ProyectoDto newProyecto = await proyectoRepository.CreateEntity(Proyecto);
+            ProyectoDto newProyecto = await _proyectoRepository.CreateEntity(Proyecto);
 
             return newProyecto == null ? NotFound("ERROR => Durante la creación del proyecto") : Ok(newProyecto);
          }
@@ -239,11 +243,11 @@ namespace Automatizaciones_API.Controllers
 
          UbicacionDto Ubicacion = Proyecto.Cliente.Ubicaciones[0];
          InstalacionDto Instalacion = Proyecto.Instalacion;
-         double[] latLngUTM = projectService.GetUTM(Instalacion);
+         double[] latLngUTM = _projectService.GetUTM(Instalacion);
          Ubicacion.CoordXUTM = latLngUTM[0];
          Ubicacion.CoordYUTM = latLngUTM[1];
 
-         int files = await proyectoRepository.UpdateEntity(Proyecto);
+         int files = await _proyectoRepository.UpdateEntity(Proyecto);
          if (files == -1)
             return BadRequest("ERROR => Error al crear el proyecto");
 

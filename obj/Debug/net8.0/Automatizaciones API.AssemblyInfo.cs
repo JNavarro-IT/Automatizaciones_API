@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Automatizaciones API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91a30ca898c9564864e2fe3fdc574ed9f7b12cde")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+153d7a3e26e8ffbcc5cdbfe5e9ac26580b0cc4bf")]
 [assembly: System.Reflection.AssemblyProductAttribute("Automatizaciones API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Automatizaciones API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

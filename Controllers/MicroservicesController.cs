@@ -3,7 +3,6 @@ using Automatizaciones_API.Models.Dto;
 using Automatizaciones_API.Repository;
 using Automatizaciones_API.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.IO.Compression;
 
 namespace Automatizaciones_API.Controllers
@@ -11,11 +10,11 @@ namespace Automatizaciones_API.Controllers
    //CONTROLADOR DE LAS PETICIONES HTTP PARA OBTENER ARCHIVOS
    [ApiController]
    [Route("[controller]")]
-   public class MicroservicesController(IEXCELServices excelServices, IWORDService wordService,
+   public class MicroservicesController(IEXCELService excelService, IWORDService wordService,
                     IPVGISService pvgisService, IPDFService pdfService, IProjectService projectService,
                     IBaseRepository<Proyecto, ProyectoDto> projectRepository) : ControllerBase
    {
-      private readonly IEXCELServices _excelServices = excelServices;
+      private readonly IEXCELService _excelService = excelService;
       private readonly IWORDService _wordService = wordService;
       private readonly IPVGISService _pvgisService = pvgisService;
       private readonly IPDFService _pdfService = pdfService;
@@ -28,28 +27,23 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status404NotFound)]
       [ProducesResponseType(StatusCodes.Status409Conflict)]
       [ProducesResponseType(StatusCodes.Status200OK)]
-      public async Task<ActionResult<string>?> CrearExcel(ProyectoDto Proyecto)
+      public async Task<ActionResult<string>> CrearExcel(ProyectoDto Proyecto)
       {
-         Console.Error.WriteLine("weeeeeeeeeeeeeeeeeeeeeeeeee");
-         var result = await ValidateAndClean(Proyecto);
-         Console.Error.WriteLine(result.Value);
+         var validation = await ValidateAndClean(Proyecto);
 
-         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
 
-         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
+         if (validation.Result is BadRequestObjectResult || validation.Result is NotFoundObjectResult || validation.Result is ConflictObjectResult)
+            return validation.Result;
 
          try
          {
-            var tempFile = _excelServices.CreateEXCEL(Proyecto);
-            if (tempFile is null) return NotFound("No se ha generado niguna ruta para el archivo");
-            if (tempFile.StartsWith("ERROR") || tempFile.StartsWith("EXCEPTION"))
-               return Conflict(tempFile);
+            var (excelStream, error) = _excelService.CreateEXCEL(Proyecto);
+            if (excelStream is null) return Conflict(error);
 
-            var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.ReadWrite);
-            return File(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Proyecto.Referencia + "_MEMORIAS.xlsx");
+            return File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{Proyecto.Referencia}_REF_MEMORIAS.xlsx");
 
          }
-         catch (Exception ex) { return StatusCode(503, "EXCEPTION => " + ex.Message); }
+         catch (Exception ex) { return StatusCode(500, "EXCEPTION => " + ex.Message + ", " + ex.StackTrace); }
       }
 
       // PETICIÓN PARA CREAR MEMORIAS WORD
@@ -60,10 +54,10 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<string>?> CrearMemorias(ProyectoDto Proyecto)
       {
-         var result = await ValidateAndClean(Proyecto);
-         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+         var validation = await ValidateAndClean(Proyecto);
 
-         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
+         if (validation.Result is BadRequestObjectResult || validation.Result is NotFoundObjectResult || validation.Result is ConflictObjectResult)
+            return validation.Result;
 
          string? tempPath;
          var memoryStream = new MemoryStream();
@@ -106,10 +100,10 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<string>?> CrearPVGIS(ProyectoDto Proyecto)
       {
-         var result = await ValidateAndClean(Proyecto);
-         if (result.Value is null || result.Value.ToString().IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+         var validation = await ValidateAndClean(Proyecto);
 
-         if (result.Value.ToString().StartsWith("ERROR")) return Conflict(result);
+         if (validation.Result is BadRequestObjectResult || validation.Result is NotFoundObjectResult || validation.Result is ConflictObjectResult)
+            return validation.Result;
 
          try
          {
@@ -133,10 +127,10 @@ namespace Automatizaciones_API.Controllers
       [ProducesResponseType(StatusCodes.Status200OK)]
       public async Task<ActionResult<string>> CrearLegalizaciones(ProyectoDto Proyecto)
       {
-         ActionResult<string> result = await ValidateAndClean(Proyecto);
-         if (result.Value.IsNullOrEmpty()) return BadRequest("ERROR => Al intentar validar el proyecto");
+         var validation = await ValidateAndClean(Proyecto);
 
-         if (result.Value.StartsWith("ERROR")) return Conflict(result);
+         if (validation.Result is BadRequestObjectResult || validation.Result is NotFoundObjectResult || validation.Result is ConflictObjectResult)
+            return validation.Result;
 
          string newRuta = _pdfService.InitFillPDF(Proyecto);
          return newRuta == null

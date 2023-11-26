@@ -1,16 +1,5 @@
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.csproj.AssemblyReference.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Interop.EnvDTEProperties120.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.csproj.ResolveComReference.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.AssemblyInfoInputs.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.AssemblyInfo.cs
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.csproj.CoreCompileInputs.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.sourcelink.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\web.config
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Configurations\appsettings.Development.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Configurations\appsettings.json
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Configurations\appsettings.Staging.json
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\appsettings.Production.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Utilities\Resources\CIFs.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Utilities\Resources\ECO3.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\selenium-manager\linux\selenium-manager
@@ -72,12 +61,12 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizac
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Azure.Core.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Azure.Identity.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\ClosedXML.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\ClosedXML.Parser.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\DocumentFormat.OpenXml.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\EntityFramework.SqlServer.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\EntityFramework.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\ExcelNumberFormat.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Humanizer.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Irony.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\itext.barcodes.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\itext.bouncy-castle-connector.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\itext.forms.dll
@@ -118,6 +107,7 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizac
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Newtonsoft.Json.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\ProjNET.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\RBush.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\WebDriver.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\SixLabors.Fonts.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\System.CodeDom.dll
@@ -139,7 +129,6 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizac
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Xceed.Document.NET5.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Xceed.PDF.NET5.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\Xceed.Words.NET5.dll
-C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\XLParser.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -208,6 +197,13 @@ C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizac
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.csproj.AssemblyReference.cache
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.AssemblyInfoInputs.cache
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.AssemblyInfo.cs
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.csproj.CoreCompileInputs.cache
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\Automatizaciones API.sourcelink.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\staticwebassets.build.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\staticwebassets.development.json
 C:\Users\J Navarro\Desktop\PROYECTOS\Lidera_Digital\Automatizaciones\Automatizaciones_API\obj\Release\net8.0\staticwebassets\msbuild.Automatizaciones API.Microsoft.AspNetCore.StaticWebAssets.props

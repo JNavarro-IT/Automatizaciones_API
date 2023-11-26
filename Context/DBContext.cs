@@ -16,10 +16,12 @@ namespace Automatizaciones_API.Context
       public DbSet<Proyecto> Proyectos { get; set; }
       public DbSet<Ubicacion> Ubicaciones { get; set; }
 
+      protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+
       //API FLUENTE => PARA INDICAR EXPLICITAMENTE LOS PK, FK, COSTRAINST
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
-         _ = modelBuilder.Entity<Proyecto>()
+         modelBuilder.Entity<Proyecto>()
         .HasMany(p => p.LugaresPRL)
         .WithMany(l => l.Proyectos)
         .UsingEntity(j => j.ToTable("LugaresConProyectos"));

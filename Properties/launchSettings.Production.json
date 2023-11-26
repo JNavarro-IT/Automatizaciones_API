@@ -1,0 +1,68 @@
+{
+  "profiles": {
+    "Development": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:4086",
+      "httpPort": 4086,
+      "publishAllPorts": true,
+      "nativeDebugging": true,
+      "sqlDebugging": true,
+      "jsWebView2Debugging": true,
+      "remoteDebugEnabled": true,
+      "dotnetRunMessages": true
+    },
+    "ISS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:4087/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:4086",
+      "nativeDebugging": true,
+      "sqlDebugging": true,
+      "jsWebView2Debugging": true,
+      "remoteDebugEnabled": true,
+      "dotnetRunMessages": true
+    },
+    "ISS Staging": {
+      "commandName": "IIS",
+      "launchBrowser": true,
+      "launchUrl": "http://EWD5090LS:5087",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging"
+      },
+      "httpPort": 7087,
+      "ancmHostingModel": "InProcess",
+      "useSSL": false,
+      "nativeDebugging": true,
+      "sqlDebugging": true,
+      "jsWebView2Debugging": true,
+      "remoteDebugEnabled": true
+    },
+    "IIS Production": {
+      "commandName": "IIS",
+      "launchBrowser": true,
+      "launchUrl": "http://192.168.2.250:8087",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "ancmHostingModel": "InProcess"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://192.168.2.250:8086",
+      "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "http://EWD5090LS:5086",
+      "sslPort": 0
+    }
+  }
+}

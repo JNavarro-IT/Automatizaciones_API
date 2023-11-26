@@ -64,15 +64,7 @@ namespace Automatizaciones_API.Repository
          return entity == null ? null : _mapper.Map<TDto>(entity);
       }
 
-      public async Task<T?> GetEntity(object identity)
-      {
-         if (identity == null)
-            return null;
-
-         T? entity = await _dbContext.Set<T>().FindAsync(identity);
-         return entity ?? null;
-      }
-      // CREAR UNA ENTIDAD 
+      //CREAR UNA ENTIDAD 
       public async Task<TDto> CreateEntity(TDto tDto)
       {
          try
@@ -89,6 +81,7 @@ namespace Automatizaciones_API.Repository
             throw new InvalidOperationException();
          }
       }
+
 
       // ACTUALIZAR UNA ENTIDAD
       public async Task<int> UpdateEntity(TDto entityDto)

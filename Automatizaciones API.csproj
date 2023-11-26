@@ -6,27 +6,13 @@
     <UserSecretsId>b4ec74c5-bfb9-4fd4-a4d5-e14db3c1aebd</UserSecretsId>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <AspNetCoreHostingModel>inProcess</AspNetCoreHostingModel>
-    <LangVersion>preview</LangVersion>
-    <ErrorReport>send</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="obj\**" />
-    <Content Remove="obj\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="obj\**" />
+    <Content Remove="Properties\launchSettings.Production.json" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="EnvDTEProperties120">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>12</VersionMajor>
-      <Guid>b4aa6999-eb9d-4404-8597-bb41495469cd</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-   <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\launchSettings.Production.json" />
+  </ItemGroup>   <ItemGroup>
     <None Include="Utilities\Resources\CIFs.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -36,20 +22,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
+    <PackageReference Include="ClosedXML" Version="0.104.0-preview2" />
     <PackageReference Include="itext7" Version="8.0.2" />
     <PackageReference Include="ProjNet" Version="2.0.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageReference Include="Xceed.Words.NET" Version="3.0.23523.1209" />
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="EntityFramework" Version="6.4.4"/>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.Development.json">
